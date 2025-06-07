@@ -13,7 +13,7 @@
 	<artifactId>spring</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>spring</name>
-	<description>Demo project for Spring Boot</description>
+	<description>🌾 Projeto acadêmico do IFBA – Web Avançado I. Aplicação backend em Spring Boot que simula o monitoramento de sensores agrícolas, utilizando os protocolos MQTT e RabbitMQ (AMQP).</description>
 	<url />
 	<licenses>
 		<license />
