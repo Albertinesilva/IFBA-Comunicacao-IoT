@@ -24,6 +24,7 @@ O principal objetivo do projeto é criar uma plataforma robusta que permita:
 
 📂 O projeto está organizado em pacotes seguindo boas práticas:
 
+```java
 projeto/
 ├── amqp/
 │ └── AmqpPublisher.java # Publicador AMQP
@@ -51,6 +52,7 @@ projeto/
 └── IoTApplication.java # Classe principal de inicialização
 ├── resources/
 │ ├── application.properties # Configurações do H2
+```
 
 ---
 
