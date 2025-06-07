@@ -1,5 +1,7 @@
 <h1 align="center">🌾 Projeto IoT - Monitoramento de Sensores na Agricultura</h1>
 
+## 📘 Disciplina: Tópicos Avançados em WEB I
+
 ## 📌 Introdução
 
 Este projeto é uma aplicação backend desenvolvida em Java com Spring Boot para o monitoramento de dados de sensores em ambientes agrícolas. A aplicação coleta, armazena e publica informações de sensores de temperatura, umidade e luminosidade, simulando a comunicação via protocolos MQTT e RabbitMQ (AMQP). O sistema visa facilitar a gestão e análise em tempo real das condições ambientais para otimizar processos agrícolas.
