@@ -52,6 +52,37 @@ projeto/
 └── IoTApplication.java # Classe principal de inicialização
 ├── resources/
 │ ├── application.properties # Configurações do H2
+
+
+[🧑‍💻 Frontend ou Cliente REST (Postman, Angular, etc.)]
+                     |
+                     ▼
+ [🔐 SensorController (com Auth + HTTP Endpoint)]
+                     |
+                     ▼
+ [🧠 SensorService (Regras de negócio / Encaminhamento)]
+                     |
+                     ▼
+ [💬 SensorResponse DTO (dto/view - Mensagem + Protocolo + SensorData)]
+                     |
+                     ▼
+ [💾 SensorDataRepository (JPA CRUD - Simulado com H2)]
+                     |
+                     ▼
+ [🗃️ Banco de Dados (Simulado - H2, PostgreSQL...)]
+
+          ↙                            ↘
+ [📡 MqttPublisher (Simulado)]   [📨 AmqpPublisher (Simulado)]
+        |                               |
+        ▼                               ▼
+ [📶 Mosquitto Broker (Simulado)]   [🐇 RabbitMQ Broker (Simulado)]
+
+      ↘                               ↙
+[📥 RabbitSimulationController (Mock de Broker)]
+                     |
+                     ▼
+ [🧪 InMemoryRabbitTemplate → InMemoryRabbitListener (Simulação completa)]
+
 ```
 
 ---
