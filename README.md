@@ -51,7 +51,7 @@ Este projeto **não se conecta a um broker real**, e sim simula todo o comportam
 
 ## 🏗️ Arquitetura
 
-📂 O projeto está organizado em pacotes seguindo boas práticas:
+📂 Estrutura do Projeto
 
 ```java
 projeto/
@@ -82,6 +82,11 @@ projeto/
 ├── resources/
 │ ├── application.properties # Configurações do H2
 
+---
+
+## 🧩 Diagrama de Arquitetura
+
+```java
 
 [🧑‍💻 Frontend ou Cliente REST (Postman, Angular, etc.)]
                      |
@@ -125,6 +130,7 @@ projeto/
 - 📬 **RabbitMQ/AMQP (simulado)**
 - 🧵 **Concurrent Collections**
 - 🐘 **Maven**
+- 🗄️ **H2 Database (Banco de Dados em Memória)**
 - 📫 **Postman**
 
 ---
@@ -138,6 +144,8 @@ projeto/
 - 🧩 Arquitetura modular e extensível.
 
 ---
+
+## 🔌 Endpoints Principais:
 
 ## ▶️ Como Executar
 
