@@ -195,15 +195,15 @@ Nenhum corpo necessário.
 📤 Resposta (com alerta):
 ```json
 {
-  "message": "🌡️ Alerta! Temperatura elevada detectada no campo. Verifique as condições da lavoura.\nMQTT >> Enviando dados de temperatura para o sistema de monitoramento da fazenda: 38.6 C",
-  "protocolo": "MQTT >> Enviando dados de temperatura para o sistema de monitoramento da fazenda: 38.6 C",
-  "data": {
-    "id": 34,
-    "sensor": "temperatura",
-    "valor": 38.6,
-    "unidade": "C",
-    "timestamp": "2025-06-07T22:32:15.3342776"
-  }
+    "message": "🌡️ Alerta! Temperatura elevada detectada no campo. Verifique as condições da lavoura.",
+    "data": {
+        "id": 31,
+        "sensor": "temperatura",
+        "valor": 38.6,
+        "unidade": "C",
+        "timestamp": "2025-06-08T13:28:50.3789898"
+    },
+    "protocolo": "MQTT >> Enviando dados de temperatura para o sistema de monitoramento da fazenda: 38.6 C"
 }
 ```
 📥 Exemplo com valor normal:
@@ -216,15 +216,15 @@ Nenhum corpo necessário.
 📤 Resposta:
 ```json
 {
-  "message": "✅ Leitura registrada com sucesso na fazenda.",
-  "protocolo": "MQTT >> Enviando dados de temperatura para o sistema de monitoramento da fazenda: 25.6 C",
-  "data": {
-    "id": 39,
-    "sensor": "temperatura",
-    "valor": 25.6,
-    "unidade": "C",
-    "timestamp": "2025-06-07T22:38:36.9497967"
-  }
+    "message": "✅ Leitura registrada com sucesso na fazenda.",
+    "data": {
+        "id": 32,
+        "sensor": "temperatura",
+        "valor": 25.6,
+        "unidade": "C",
+        "timestamp": "2025-06-08T13:29:41.3520463"
+    },
+    "protocolo": "MQTT >> Enviando dados de temperatura para o sistema de monitoramento da fazenda: 25.6 C"
 }
 ```
 📥 Exemplo com sensor de umidade:
@@ -237,15 +237,15 @@ Nenhum corpo necessário.
 📤 Resposta:
 ```json
 {
-  "message": "✅ Leitura registrada com sucesso na fazenda.",
-  "protocolo": "AMQP >> Umidade do ar monitorada: 25.6 %",
-  "data": {
-    "id": 36,
-    "sensor": "umidade",
-    "valor": 25.6,
-    "unidade": "%",
-    "timestamp": "2025-06-07T22:36:29.2610841"
-  }
+    "message": "✅ Leitura registrada com sucesso na fazenda.",
+    "data": {
+        "id": 33,
+        "sensor": "umidade",
+        "valor": 25.6,
+        "unidade": "%",
+        "timestamp": "2025-06-08T13:30:20.4603612"
+    },
+    "protocolo": "AMQP >> Umidade do ar monitorada: 25.6 %"
 }
 ```
 📥 Exemplo com sensor de luminosidade:
@@ -258,15 +258,15 @@ Nenhum corpo necessário.
 📤 Resposta:
 ```json
 {
-  "message": "✅ Leitura registrada com sucesso na fazenda.",
-  "protocolo": "AMQP >> Nível de luz solar captado: 25.6 lx",
-  "data": {
-    "id": 37,
-    "sensor": "luminosidade",
-    "valor": 25.6,
-    "unidade": "lx",
-    "timestamp": "2025-06-07T22:37:01.0963915"
-  }
+    "message": "✅ Leitura registrada com sucesso na fazenda.",
+    "data": {
+        "id": 34,
+        "sensor": "luminosidade",
+        "valor": 25.6,
+        "unidade": "lx",
+        "timestamp": "2025-06-08T13:30:44.3174017"
+    },
+    "protocolo": "AMQP >> Nível de luz solar captado: 25.6 lx"
 }
 ```
 
