@@ -100,8 +100,8 @@ public class SensorController {
      */
     @PostMapping("/enviar/mqtt")
     public ResponseEntity<String> enviarMqtt(@RequestBody SensorData sensorData) {
-        mqttPublisher.publish(sensorData);
-        return ResponseEntity.ok("📡 Enviado via MQTT com sucesso.");
+        log.info("📥 Recebida solicitação para envio de dados do sensor via MQTT...");
+        return ResponseEntity.ok(mqttPublisher.publish(sensorData));
     }
 
 }

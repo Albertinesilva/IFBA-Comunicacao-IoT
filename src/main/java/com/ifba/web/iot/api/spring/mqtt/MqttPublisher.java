@@ -1,8 +1,12 @@
 package com.ifba.web.iot.api.spring.mqtt;
 
+import java.time.LocalDateTime;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.ifba.web.iot.api.spring.model.SensorData;
+import com.ifba.web.iot.api.spring.repository.SensorDataRepository;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -14,6 +18,9 @@ import lombok.extern.slf4j.Slf4j;
 @Component
 public class MqttPublisher {
 
+    @Autowired
+    private SensorDataRepository sensorDataRepository;
+
     /**
      * Publica os dados do sensor simulando o envio via MQTT.
      *
@@ -22,10 +29,12 @@ public class MqttPublisher {
      * @return Mensagem formatada indicando o envio dos dados.
      */
     public String publish(SensorData data) {
-        String msg = "MQTT >> Enviando dados de " + data.getSensor() +
+        String msg = "📡 MQTT >> Enviando dados de " + data.getSensor() +
                 " para o sistema de monitoramento da fazenda: " +
                 data.getValor() + " " + data.getUnidade();
-        log.info(msg);
+        data.setTimestamp(LocalDateTime.now());
+        sensorDataRepository.save(data);
+        log.info(data.toString() + "\n" + msg);
         return msg;
     }
 }
