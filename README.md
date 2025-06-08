@@ -1,4 +1,4 @@
-<h1 align="center">🌾 Projeto IoT - Monitoramento de Sensores na Agricultura</h1>
+<h1 align="center">🌾 Backend IoT Simulado para Agricultura Inteligente com Spring Boot</h1>
 
 ## 📘 Disciplina: Tópicos Avançados em WEB I
 
@@ -162,7 +162,7 @@ Nenhum corpo necessário.
         "id": 1,
         "sensor": "temperatura",
         "valor": 23.285554905369192,
-        "unidade": "C",
+        "unidade": "°C",
         "timestamp": "2025-06-07T22:30:55.961079"
     },
     {
@@ -200,7 +200,7 @@ Nenhum corpo necessário.
         "id": 31,
         "sensor": "temperatura",
         "valor": 38.6,
-        "unidade": "C",
+        "unidade": "°C",
         "timestamp": "2025-06-08T13:28:50.3789898"
     },
     "protocolo": "MQTT >> Enviando dados de temperatura para o sistema de monitoramento da fazenda: 38.6 C"
@@ -221,7 +221,7 @@ Nenhum corpo necessário.
         "id": 32,
         "sensor": "temperatura",
         "valor": 25.6,
-        "unidade": "C",
+        "unidade": "°C",
         "timestamp": "2025-06-08T13:29:41.3520463"
     },
     "protocolo": "MQTT >> Enviando dados de temperatura para o sistema de monitoramento da fazenda: 25.6 C"
@@ -280,13 +280,13 @@ Nenhum corpo necessário.
 {
   "sensor": "umidade",
   "valor": 27.8,
-  "unidade": "°C"
+  "unidade": "%"
 }
 
 ```
 📤 Resposta:
 ```json
-📡 AMQP >> Umidade do ar monitorada: 27.8 °C
+📡 AMQP >> Umidade do ar monitorada: 27.8 %
 ```
 
 🔆 Luminosidade (lx):
@@ -315,7 +315,6 @@ Nenhum corpo necessário.
 📡 AMQP >> Umidade do ar monitorada: 10.8 %
 ````
 ---
-
 `POST: /api/sensores/enviar/mqtt`, Simula o envio de uma leitura de sensor utilizando o protocolo MQTT diretamente.
 
 📥 Requisição (JSON):
@@ -350,33 +349,60 @@ Nenhum corpo necessário.
 {
   "sensor": "temperatura",
   "valor": 20.2,
-  "unidade": "C"
+  "unidade": "°C"
 }
 ```
 📤 Resposta:
 ```json
-📡 MQTT >> Enviando dados de temperatura para o sistema de monitoramento da fazenda: 20.2 C
+📡 MQTT >> Enviando dados de temperatura para o sistema de monitoramento da fazenda: 20.2 °C
 ```
+---
+`POST: /api/rabbit/send?msg=`, Esta rota simula o envio de uma mensagem através do RabbitMQ (AMQP). A mensagem é armazenada em memória apenas para fins de simulação e demonstração do funcionamento do protocolo de mensagens assíncronas.
 
-POST: /api/rabbit/send?msg=HelloRabbit
+📥 Requisição:
+```json
+POST /api/rabbit/send?msg=HelloRabbit
+```
+📤 Resposta:
+```json
+Mensagem enviada: HelloRabbit
+Mensagem recebida pelo listener: HelloRabbit
+```
+ℹ️ A mensagem é processada por um listener RabbitMQ simulado, que imprime o conteúdo recebido, demonstrando o ciclo de envio e recepção via AMQP.
 
-## ▶️ Como Executar
+---
 
-1. 📂 Clone este repositório:
+## 🔐 Segurança (Simulação)
 
-git clone https:
+Este projeto utiliza uma configuração básica de segurança com Spring Security apenas para fins de simulação e testes locais. As seguintes regras estão aplicadas:
 
-2. ⚙️ Configure Java 17+ e Maven.
+- A autenticação está habilitada nas rotas `/api/rabbit/**` e em todas as demais rotas, **exceto** `/api/sensores`.
+- A autenticação utilizada é do tipo **HTTP Basic**, com um único usuário em memória:
+  - **Usuário:** `usuario`
+  - **Senha:** `senha123`
+- A senha não está criptografada (`{noop}`), já que o foco aqui é apenas a simulação e não a segurança real em produção.
 
-3. 🏃 Execute o projeto:
+### ⚠️ Aviso
 
-4. 🧪 Teste as APIs com Postman:
+> Esta configuração **não deve ser usada em ambientes de produção**.  
+> Em produção, recomenda-se:
+> - Uso de autenticação com JWT ou OAuth2.
+> - Criptografia de senhas com `BCryptPasswordEncoder`.
+> - Proteção CSRF habilitada, especialmente para aplicações web com sessões.
 
-- `POST http://localhost:8080/api/rabbit/send?msg=HelloRabbit`
+### 🔓 Rotas públicas
 
-5. 📄 Verifique os logs para visualizar mensagens recebidas.
+- `GET /api/sensores`
+- `GET /api/sensores/{id}` (ou qualquer subrota de `/api/sensores`)
 
----## 📚 Documentação
+### 🔐 Rotas protegidas
+
+Requerem autenticação com o usuário configurado:
+- `GET/POST/etc /api/rabbit/**`
+- Qualquer outra rota não listada como pública.
+
+---
+
 
 | 🌎 LinkedIn                                                              | 👨‍💻 **Autor**                                                                 |
 | ------------------------------------------------------------------------ | ---------------------------------------------------------------------------- |
