@@ -2,11 +2,15 @@ package com.ifba.web.iot.api.spring.service;
 
 import org.apache.commons.lang3.tuple.Triple;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.ifba.web.iot.api.spring.amqp.AmqpPublisher;
 import com.ifba.web.iot.api.spring.model.SensorData;
 import com.ifba.web.iot.api.spring.mqtt.MqttPublisher;
 import com.ifba.web.iot.api.spring.repository.SensorDataRepository;
+
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -14,7 +18,9 @@ import java.util.List;
 /**
  * Serviço responsável pela lógica de negócios relacionada aos dados dos sensores.
  */
+@Slf4j
 @Service
+@RequiredArgsConstructor
 public class SensorService {
 
     private final SensorDataRepository repository;
@@ -22,23 +28,11 @@ public class SensorService {
     private final AmqpPublisher amqpPublisher;
 
     /**
-     * Construtor da classe SensorService.
-     *
-     * @param repository     Repositório para persistência dos dados dos sensores.
-     * @param mqttPublisher  Publicador MQTT para envio de dados.
-     * @param amqpPublisher  Publicador AMQP para envio de dados.
-     */
-    public SensorService(SensorDataRepository repository, MqttPublisher mqttPublisher, AmqpPublisher amqpPublisher) {
-        this.repository = repository;
-        this.mqttPublisher = mqttPublisher;
-        this.amqpPublisher = amqpPublisher;
-    }
-
-    /**
      * Retorna todos os registros de dados dos sensores.
      *
      * @return Lista de {@link SensorData}
      */
+    @Transactional(readOnly = true)
     public List<SensorData> findAll() {
         return repository.findAll();
     }
@@ -53,34 +47,51 @@ public class SensorService {
      *         - Dados salvos,
      *         - Mensagem de protocolo (retorno do publicador).
      */
+    @Transactional
     public Triple<String, SensorData, String> saveSensorData(SensorData sensorData) {
+        log.info("📥 Iniciando o salvamento dos dados do sensor...");
+
         String sensor = sensorData.getSensor();
         double valor = sensorData.getValor();
         sensorData.setTimestamp(LocalDateTime.now());
 
-        if ("temperatura".equals(sensor)) {
-            sensorData.setUnidade("C");
-        } else if ("umidade".equals(sensor)) {
-            sensorData.setUnidade("%");
-        } else if ("luminosidade".equals(sensor)) {
-            sensorData.setUnidade("lx");
+        // Definindo a unidade com log
+        switch (sensor) {
+            case "temperatura":
+                sensorData.setUnidade("C");
+                break;
+            case "umidade":
+                sensorData.setUnidade("%");
+                break;
+            case "luminosidade":
+                sensorData.setUnidade("lx");
+                break;
+            default:
+                log.warn("⚠️ Tipo de sensor desconhecido: {}", sensor);
         }
+
+        log.debug("📊 Dados recebidos: {}", sensorData);
 
         String alertMessage = null;
         String protocoloMsg = null;
 
         if ("temperatura".equals(sensor) && valor > 30) {
             alertMessage = "🌡️ Alerta! Temperatura elevada detectada no campo. Verifique as condições da lavoura.";
-            System.out.println(alertMessage);
+            log.warn("{} Valor: {} {}", alertMessage, valor, sensorData.getUnidade());
         }
 
         SensorData saved = repository.save(sensorData);
+        log.info("💾 Dados do sensor salvos com sucesso. ID: {}", saved.getId());
 
         if ("temperatura".equals(sensor)) {
             protocoloMsg = mqttPublisher.publish(saved);
+            log.info("📡 Dados de temperatura publicados via MQTT:\n{}", saved);
         } else if ("umidade".equals(sensor) || "luminosidade".equals(sensor)) {
             protocoloMsg = amqpPublisher.publish(saved);
+            log.info("📡 Dados publicados via AMQP:\n{}", saved);
         }
+
+        log.info("✅ Finalizado o processo de salvamento e publicação dos dados do sensor.");
 
         return Triple.of(alertMessage, saved, protocoloMsg);
     }

@@ -4,10 +4,13 @@ import org.springframework.stereotype.Component;
 
 import com.ifba.web.iot.api.spring.model.SensorData;
 
+import lombok.extern.slf4j.Slf4j;
+
 /**
  * Componente responsável por simular o envio de dados de sensores via protocolo
  * MQTT.
  */
+@Slf4j
 @Component
 public class MqttPublisher {
 
@@ -22,7 +25,7 @@ public class MqttPublisher {
         String msg = "MQTT >> Enviando dados de " + data.getSensor() +
                 " para o sistema de monitoramento da fazenda: " +
                 data.getValor() + " " + data.getUnidade();
-        System.out.println(msg);
+        log.info(msg);
         return msg;
     }
 }

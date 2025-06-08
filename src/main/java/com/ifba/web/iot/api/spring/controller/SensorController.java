@@ -11,11 +11,14 @@ import com.ifba.web.iot.api.spring.model.SensorData;
 import com.ifba.web.iot.api.spring.mqtt.MqttPublisher;
 import com.ifba.web.iot.api.spring.service.SensorService;
 
+import lombok.extern.slf4j.Slf4j;
+
 import java.util.List;
 
 /**
  * Controlador REST responsável pelo gerenciamento das leituras de sensores.
  */
+@Slf4j
 @RestController
 @RequestMapping("/api/sensores")
 public class SensorController {
@@ -48,15 +51,31 @@ public class SensorController {
      */
     @PostMapping
     public ResponseEntity<SensorResponse> create(@RequestBody SensorData sensorData) {
+        log.info("📥 Recebida solicitação para criação de dados do sensor...");
+        log.info("📌 Tipo: {} | Valor: {} | Unidade (pré-processamento): {}",
+                sensorData.getSensor(), sensorData.getValor(), sensorData.getUnidade());
+
         Triple<String, SensorData, String> result = service.saveSensorData(sensorData);
 
         String alertMessage = result.getLeft();
         SensorData data = result.getMiddle();
         String protocoloMsg = result.getRight();
 
+        if (alertMessage != null) {
+            log.warn("⚠️ Alerta gerado após análise dos dados: {}", alertMessage);
+        } else {
+            log.info("✅ Nenhum alerta necessário. Dados dentro dos parâmetros normais.");
+        }
+
+        log.info("💾 Dados processados e salvos com sucesso. ID: {}, Unidade: {}, Valor: {}",
+                data.getId(), data.getUnidade(), data.getValor());
+        log.info("📡 Mensagem publicada via protocolo: {}", protocoloMsg);
+
         String finalMessage = (alertMessage != null)
-                ? alertMessage + "\n" + protocoloMsg
+                ? alertMessage
                 : "✅ Leitura registrada com sucesso na fazenda.";
+
+        log.info("📤 Mensagem final de resposta: {}", finalMessage);
 
         return ResponseEntity.ok(new SensorResponse(finalMessage, data, protocoloMsg));
     }

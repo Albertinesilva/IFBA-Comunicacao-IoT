@@ -4,11 +4,14 @@ import org.springframework.stereotype.Component;
 
 import com.ifba.web.iot.api.spring.model.SensorData;
 
+import lombok.extern.slf4j.Slf4j;
+
 /**
  * Componente responsável por simular o envio de dados de sensores 
  * via protocolo AMQP (como RabbitMQ) no contexto de uma aplicação 
  * de agricultura inteligente.
  */
+@Slf4j
 @Component
 public class AmqpPublisher {
 
@@ -38,7 +41,7 @@ public class AmqpPublisher {
                         + data.getUnidade();
         }
 
-        System.out.println(msg);
+        log.info(msg);
         return msg;
     }
 }
