@@ -1,8 +1,8 @@
-<h1 align="center">🌾 Backend IoT Simulado para Agricultura Inteligente com Spring Boot</h1>
+<h2 align="center">🌾Backend IoT Simulado Protocolos para Agricultura Inteligente com Spring Boot</h1>
 
-## 📘 Disciplina: Tópicos Avançados em Web I
+### 📘 Disciplina: Tópicos Avançados em Web I
 
-## 📌 Introdução
+### 📌 Introdução
 <div align="justify">
 
 Este projeto é uma aplicação backend desenvolvida em `Java` com `Spring Boot` para o monitoramento de dados de `sensores` em ambientes agrícolas. A aplicação coleta, armazena e publica informações de sensores como temperatura, umidade e luminosidade, simulando a comunicação via protocolos **AMQP (RabbitMQ)** e **MQTT**.
@@ -11,7 +11,7 @@ Trata-se de uma **simulação educacional** de um sistema IoT (Internet das Cois
 
 ---
 
-## 🎯 Objetivo
+### 🎯 Objetivo
 
 Demonstrar, de forma prática e simplificada, como funcionaria um backend de um sistema IoT para monitoramento de sensores em uma fazenda, com:
 
@@ -43,13 +43,13 @@ Demonstrar, de forma prática e simplificada, como funcionaria um backend de um 
 
 ---
 
-## 🧪 Simulação de Comunicação IoT
+### 🧪 Simulação de Comunicação IoT
 
 Este projeto **não se conecta a um broker real**, e sim simula todo o comportamento do RabbitMQ e MQTT **em memória**, permitindo que estudantes, professores ou curiosos possam entender o funcionamento de um sistema IoT sem a necessidade de infraestrutura adicional.
 
 ---
 
-## 🏗️ Arquitetura do Sistema e Fluxo de Dados
+### 🏗️ Arquitetura do Sistema e Fluxo de Dados
 
 - 📂 Estrutura do Projeto
 
@@ -85,7 +85,7 @@ projeto/
 ```
 ---
 
-## 🧩 Diagrama de Arquitetura
+### 🧩 Diagrama de Arquitetura
 
 ```java
 
@@ -122,7 +122,7 @@ projeto/
 
 ---
 
-## 🛠️ Tecnologias Utilizadas
+### 🛠️ Tecnologias Utilizadas
 
 - ☕ **Java 17+**
 - 🌱 **Spring Boot 3.5.0**
@@ -136,7 +136,7 @@ projeto/
 
 ---
 
-## 🚀 Funcionalidades Principais
+### 🚀 Funcionalidades Principais
 
 - 📥 Envio/recebimento de mensagens via RabbitMQ (em memória).
 - 📤 Publicação de dados via MQTT.
@@ -146,7 +146,7 @@ projeto/
 
 ---
 
-## ▶️ Como Executar o Projeto
+### ▶️ Como Executar o Projeto
 
 1. Clone o repositório:
 ```bash
@@ -166,7 +166,7 @@ http://localhost:8080/api/sensores
 ```
 ---
 
-## 🔌 Endpoints Principais:
+### 🔌 Endpoints Principais:
 
 `GET: /api/sensores`, Lista todas as leituras registradas.
 
@@ -392,7 +392,7 @@ Mensagem recebida pelo listener: HelloRabbit
 
 ---
 
-## 🔐 Segurança (Simulação)
+### 🔐 Segurança (Simulação)
 
 Este projeto utiliza uma configuração básica de segurança com Spring Security apenas para fins de simulação e testes locais. As seguintes regras estão aplicadas:
 
@@ -402,7 +402,7 @@ Este projeto utiliza uma configuração básica de segurança com Spring Securit
   - **Senha:** `senha123`
 - A senha não está criptografada (`{noop}`), já que o foco aqui é apenas a simulação e não a segurança real em produção.
 
-### ⚠️ Aviso
+#### ⚠️ Aviso
 
 > Esta configuração **não deve ser usada em ambientes de produção**.  
 > Em produção, recomenda-se:
@@ -410,12 +410,12 @@ Este projeto utiliza uma configuração básica de segurança com Spring Securit
 > - Criptografia de senhas com `BCryptPasswordEncoder`.
 > - Proteção CSRF habilitada, especialmente para aplicações web com sessões.
 
-### 🔓 Rotas públicas
+#### 🔓 Rotas públicas
 
 - `GET /api/sensores`
 - `GET /api/sensores/{id}` (ou qualquer subrota de `/api/sensores`)
 
-### 🔐 Rotas protegidas
+#### 🔐 Rotas protegidas
 
 Requerem autenticação com o usuário configurado:
 - `GET/POST/etc /api/rabbit/**`
@@ -423,7 +423,7 @@ Requerem autenticação com o usuário configurado:
 
 ---
 
-## ✅ Conclusão:
+### ✅ Conclusão:
 
 Durante o desenvolvimento desta atividade para a disciplina Tópicos Avançados em Web I, foi possível compreender a importância de estruturar um backend simulado (mock) para IoT, criando endpoints que fornecem dados fictícios para facilitar testes sem a necessidade de hardware real. O processo permitiu aprimorar habilidades na comunicação entre cliente e servidor, além da manipulação de dados para aplicações web. Assim, a atividade contribuiu para o entendimento da estruturação de endpoints e da organização dos dados para representar um sistema de agricultura inteligente. Essa experiência auxiliou no domínio de conceitos essenciais para o desenvolvimento de APIs RESTful, tornando mais claro o funcionamento de aplicações que dependem de dados externos.
 
