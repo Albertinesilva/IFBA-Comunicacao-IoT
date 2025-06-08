@@ -148,6 +148,134 @@ projeto/
 
 ## 🔌 Endpoints Principais:
 
+`GET /api/sensores` Lista todas as leituras registradas.
+
+📥 Requisição:
+Nenhum corpo necessário.
+
+📤 Resposta:
+
+```json
+
+[
+    {
+        "id": 1,
+        "sensor": "temperatura",
+        "valor": 23.285554905369192,
+        "unidade": "C",
+        "timestamp": "2025-06-07T22:30:55.961079"
+    },
+    {
+        "id": 2,
+        "sensor": "umidade",
+        "valor": 47.44693101621682,
+        "unidade": "%",
+        "timestamp": "2025-06-07T22:30:56.057646"
+    },
+    {
+        "id": 3,
+        "sensor": "luminosidade",
+        "valor": 308.20383252732455,
+        "unidade": "lx",
+        "timestamp": "2025-06-07T22:30:56.059667"
+    }
+]
+```
+
+`POST /api/sensores` Registra uma nova leitura de sensor. A lógica interna avalia o tipo de sensor e direciona a mensagem ao protocolo adequado (MQTT ou AMQP), podendo emitir alertas.
+
+📥 Requisição (JSON):
+
+```json
+{
+  "sensor": "temperatura",
+  "valor": 38.6
+}
+```
+📤 Resposta (com alerta):
+```json
+{
+  "message": "🌡️ Alerta! Temperatura elevada detectada no campo. Verifique as condições da lavoura.\nMQTT >> Enviando dados de temperatura para o sistema de monitoramento da fazenda: 38.6 C",
+  "protocolo": "MQTT >> Enviando dados de temperatura para o sistema de monitoramento da fazenda: 38.6 C",
+  "data": {
+    "id": 34,
+    "sensor": "temperatura",
+    "valor": 38.6,
+    "unidade": "C",
+    "timestamp": "2025-06-07T22:32:15.3342776"
+  }
+}
+```
+📥 Exemplo com valor normal:
+```json
+{
+  "sensor": "temperatura",
+  "valor": 25.6
+}
+```
+📤 Resposta:
+```json
+{
+  "message": "✅ Leitura registrada com sucesso na fazenda.",
+  "protocolo": "MQTT >> Enviando dados de temperatura para o sistema de monitoramento da fazenda: 25.6 C",
+  "data": {
+    "id": 39,
+    "sensor": "temperatura",
+    "valor": 25.6,
+    "unidade": "C",
+    "timestamp": "2025-06-07T22:38:36.9497967"
+  }
+}
+```
+📥 Exemplo com sensor de umidade:
+```json
+{
+  "sensor": "umidade",
+  "valor": 25.6
+}
+```
+📤 Resposta:
+```json
+{
+  "message": "✅ Leitura registrada com sucesso na fazenda.",
+  "protocolo": "AMQP >> Umidade do ar monitorada: 25.6 %",
+  "data": {
+    "id": 36,
+    "sensor": "umidade",
+    "valor": 25.6,
+    "unidade": "%",
+    "timestamp": "2025-06-07T22:36:29.2610841"
+  }
+}
+```
+📥 Exemplo com sensor de luminosidade:
+```json
+{
+  "sensor": "luminosidade",
+  "valor": 25.6
+}
+```
+📤 Resposta:
+```json
+{
+  "message": "✅ Leitura registrada com sucesso na fazenda.",
+  "protocolo": "AMQP >> Nível de luz solar captado: 25.6 lx",
+  "data": {
+    "id": 37,
+    "sensor": "luminosidade",
+    "valor": 25.6,
+    "unidade": "lx",
+    "timestamp": "2025-06-07T22:37:01.0963915"
+  }
+}
+```
+
+Post localhost:8080/api/sensores/enviar/amqp
+
+Post localhost:8080/api/sensores/enviar/mqtt
+
+Post localhost:8080/api/rabbit/send?msg=HelloRabbit
+
 ## ▶️ Como Executar
 
 1. 📂 Clone este repositório:
