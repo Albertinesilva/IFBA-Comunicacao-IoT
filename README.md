@@ -269,8 +269,51 @@ Nenhum corpo necessário.
     "protocolo": "AMQP >> Nível de luz solar captado: 25.6 lx"
 }
 ```
+---
+`Post/api/sensores/enviar/amqp` Simula o envio de uma leitura de sensor utilizando o protocolo AMQP (RabbitMQ) diretamente.
 
-Post localhost:8080/api/sensores/enviar/amqp
+📥 Requisição (JSON):
+
+🌫️ Umidade (°C):
+
+```json
+{
+  "sensor": "umidade",
+  "valor": 27.8,
+  "unidade": "°C"
+}
+
+```
+📤 Resposta:
+```json
+📡 AMQP >> Umidade do ar monitorada: 27.8 °C
+```
+
+🔆 Luminosidade (lx):
+```json
+{
+  "sensor": "luminosidade",
+  "valor": 30.0,
+  "unidade": "lx"
+}
+```
+📤 Resposta:
+```json
+📡 AMQP >> Nível de luz solar captado: 30.0 lx
+```
+
+🌫️ Umidade (%):
+```json
+{
+  "sensor": "umidade",
+  "valor": 10.8,
+  "unidade": "%"
+}
+```
+📤 Resposta:
+```json
+📡 AMQP >> Umidade do ar monitorada: 10.8 %
+````
 
 Post localhost:8080/api/sensores/enviar/mqtt
 
