@@ -1,6 +1,6 @@
 <h1 align="center">🌾 Backend IoT Simulado para Agricultura Inteligente com Spring Boot</h1>
 
-## 📘 Disciplina: Tópicos Avançados em WEB I
+## 📘 Disciplina: Tópicos Avançados em Web I
 
 ## 📌 Introdução
 <div align="justify">
@@ -43,13 +43,13 @@ Demonstrar, de forma prática e simplificada, como funcionaria um backend de um 
 
 ---
 
-## 🧪 Simulação
+## 🧪 Simulação de Comunicação IoT
 
 Este projeto **não se conecta a um broker real**, e sim simula todo o comportamento do RabbitMQ e MQTT **em memória**, permitindo que estudantes, professores ou curiosos possam entender o funcionamento de um sistema IoT sem a necessidade de infraestrutura adicional.
 
 ---
 
-## 🏗️ Arquitetura
+## 🏗️ Arquitetura do Sistema e Fluxo de Dados
 
 - 📂 Estrutura do Projeto
 
@@ -144,6 +144,26 @@ projeto/
 - 🔐 Segurança com autenticação básica.
 - 🧩 Arquitetura modular e extensível.
 
+---
+
+## ▶️ Como Executar o Projeto
+
+1. Clone o repositório:
+```bash
+git clone https://github.com/Albertinesilva/IFBA-Comunicacao-IoT.git
+```
+2. Navegue até o diretório:
+```bach
+cd nome-do-projeto
+```
+3. Compile e execute com Maven:
+```bash
+ ./mvnw0 spring-boot:run
+```
+4. Acesse a API:
+```bash
+http://localhost:8080/api/sensores
+```
 ---
 
 ## 🔌 Endpoints Principais:
@@ -403,6 +423,10 @@ Requerem autenticação com o usuário configurado:
 
 ---
 
+✅ Conclusão:
+Durante o desenvolvimento desta atividade para a disciplina Tópicos Avançados em Web I, foi possível compreender a importância de estruturar um backend simulado (mock) para IoT, criando endpoints que fornecem dados fictícios para facilitar testes sem a necessidade de hardware real. O processo permitiu aprimorar habilidades na comunicação entre cliente e servidor, além da manipulação de dados para aplicações web. Assim, a atividade contribuiu para o entendimento da estruturação de endpoints e da organização dos dados para representar um sistema de agricultura inteligente. Essa experiência auxiliou no domínio de conceitos essenciais para o desenvolvimento de APIs RESTful, tornando mais claro o funcionamento de aplicações que dependem de dados externos.
+
+---
 
 | 🌎 LinkedIn                                                              | 👨‍💻 **Autor**                                                                 |
 | ------------------------------------------------------------------------ | ---------------------------------------------------------------------------- |
