@@ -88,8 +88,8 @@ public class SensorController {
      */
     @PostMapping("/enviar/amqp")
     public ResponseEntity<String> enviarAmqp(@RequestBody SensorData sensorData) {
-        amqpPublisher.publish(sensorData);
-        return ResponseEntity.ok("📡 Enviado via AMQP com sucesso.");
+        log.info("📥 Recebida solicitação para envio de dados do sensor via AMQP..."); 
+        return ResponseEntity.ok(amqpPublisher.publish(sensorData));
     }
 
     /**
