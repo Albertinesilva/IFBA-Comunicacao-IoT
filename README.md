@@ -148,7 +148,7 @@ projeto/
 
 ## 🔌 Endpoints Principais:
 
-`GET /api/sensores` Lista todas as leituras registradas.
+`GET: /api/sensores`, Lista todas as leituras registradas.
 
 📥 Requisição:
 Nenhum corpo necessário.
@@ -182,7 +182,7 @@ Nenhum corpo necessário.
 ]
 ```
 
-`POST /api/sensores` Registra uma nova leitura de sensor. A lógica interna avalia o tipo de sensor e direciona a mensagem ao protocolo adequado (MQTT ou AMQP), podendo emitir alertas.
+`POST: /api/sensores`, Registra uma nova leitura de sensor. A lógica interna avalia o tipo de sensor e direciona a mensagem ao protocolo adequado (MQTT ou AMQP), podendo emitir alertas.
 
 📥 Requisição (JSON):
 
@@ -270,7 +270,7 @@ Nenhum corpo necessário.
 }
 ```
 ---
-`Post/api/sensores/enviar/amqp` Simula o envio de uma leitura de sensor utilizando o protocolo AMQP (RabbitMQ) diretamente.
+`POST:  /api/sensores/enviar/amqp`, Simula o envio de uma leitura de sensor utilizando o protocolo AMQP (RabbitMQ) diretamente.
 
 📥 Requisição (JSON):
 
@@ -314,10 +314,51 @@ Nenhum corpo necessário.
 ```json
 📡 AMQP >> Umidade do ar monitorada: 10.8 %
 ````
+---
 
-Post localhost:8080/api/sensores/enviar/mqtt
+`POST: /api/sensores/enviar/mqtt`, Simula o envio de uma leitura de sensor utilizando o protocolo MQTT diretamente.
 
-Post localhost:8080/api/rabbit/send?msg=HelloRabbit
+📥 Requisição (JSON):
+
+🌫️ Umidade (%):
+```json
+{
+  "sensor": "Umidade",
+  "valor": 55.2,
+  "unidade": "%"
+}
+```
+📤 Resposta:
+```json
+📡 MQTT >> Enviando dados de Umidade para o sistema de monitoramento da fazenda: 55.2 %
+```
+
+🔆 Luminosidade (lx):
+```json
+{
+  "sensor": "luminosidade",
+  "valor": 20.2,
+  "unidade": "lx"
+}
+```
+📤 Resposta:
+```json
+📡 MQTT >> Enviando dados de luminosidade para o sistema de monitoramento da fazenda: 20.2 lx
+```
+🌡️ Temperatura (C):
+```json
+{
+  "sensor": "temperatura",
+  "valor": 20.2,
+  "unidade": "C"
+}
+```
+📤 Resposta:
+```json
+📡 MQTT >> Enviando dados de temperatura para o sistema de monitoramento da fazenda: 20.2 C
+```
+
+POST: /api/rabbit/send?msg=HelloRabbit
 
 ## ▶️ Como Executar
 
