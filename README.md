@@ -250,7 +250,7 @@ Nenhum corpo necessário.
         "unidade": "°C",
         "timestamp": "2025-06-08T13:28:50.3789898"
     },
-    "protocolo": "MQTT >> Enviando dados de temperatura para o sistema de monitoramento da fazenda: 38.6 C"
+    "protocolo": "MQTT >> Enviando dados de temperatura para o sistema de monitoramento da fazenda: 38.6 °C"
 }
 ```
 📥 Exemplo com valor normal:
@@ -271,7 +271,7 @@ Nenhum corpo necessário.
         "unidade": "°C",
         "timestamp": "2025-06-08T13:29:41.3520463"
     },
-    "protocolo": "MQTT >> Enviando dados de temperatura para o sistema de monitoramento da fazenda: 25.6 C"
+    "protocolo": "MQTT >> Enviando dados de temperatura para o sistema de monitoramento da fazenda: 25.6 °C"
 }
 ```
 📥 Exemplo com sensor de umidade:
