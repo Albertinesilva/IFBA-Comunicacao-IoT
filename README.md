@@ -146,6 +146,33 @@ projeto/
 
 ---
 
+### ⚙️ Configuração do Projeto
+
+O projeto utiliza o banco de dados em memória H2 para facilitar testes sem necessidade de um banco externo. A configuração do datasource é feita da seguinte forma:
+```properties
+spring.datasource.driverClassName=org.h2.Driver
+spring.datasource.url=jdbc:h2:mem:testdb
+spring.datasource.username=sa
+spring.datasource.password=
+```
+Console do H2 está habilitado e disponível em /h2-console:
+```properties
+spring.h2.console.enabled=true
+spring.h2.console.path=/h2-console
+```
+O sistema de logging está configurado para registrar logs importantes em arquivo myapp.log, com limite de tamanho e histórico para rotação dos arquivos:
+```properties
+logging.level.org.springframework=INFO
+logging.level.root=WARN
+logging.level.org.springframework.web=DEBUG
+logging.level.com.ifba.web.iot.api.spring=INFO
+
+logging.file.name=myapp.log
+logging.logback.rollingpolicy.max-file-size=10MB
+logging.logback.rollingpolicy.max-history=10
+```
+---
+
 ### ▶️ Como Executar o Projeto
 
 1. Clone o repositório:
