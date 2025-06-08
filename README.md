@@ -1,4 +1,4 @@
-<h2 align="center">🌾Backend IoT Simulado Protocolos para Agricultura Inteligente com Spring Boot</h1>
+<h2 align="center">🌾Backend IoT Simulado Protocolos para Agricultura Inteligente com Spring Boot</h2>
 
 ### 📘 Disciplina: Tópicos Avançados em Web I
 
