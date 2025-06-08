@@ -52,11 +52,11 @@ public class SensorController {
     @PostMapping
     public ResponseEntity<SensorResponse> create(@RequestBody SensorData sensorData) {
         log.info("📥 Recebida solicitação para criação de dados do sensor...");
-        log.info("📌 Tipo: {} | Valor: {} | Unidade (pré-processamento): {}",
-                sensorData.getSensor(), sensorData.getValor(), sensorData.getUnidade());
 
         Triple<String, SensorData, String> result = service.saveSensorData(sensorData);
-
+        log.info("📌 Tipo: {} | Valor: {} | Unidade (pré-processamento): {}",
+                sensorData.getSensor(), sensorData.getValor(), sensorData.getUnidade());
+                
         String alertMessage = result.getLeft();
         SensorData data = result.getMiddle();
         String protocoloMsg = result.getRight();

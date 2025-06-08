@@ -3,10 +3,12 @@
 ### 📘 Disciplina: Tópicos Avançados em Web I
 
 ### 📌 Introdução
+
 <div align="justify">
 
 Este projeto é uma aplicação backend desenvolvida em `Java` com `Spring Boot` para o monitoramento de dados de `sensores` em ambientes agrícolas. A aplicação coleta, armazena e publica informações de sensores como temperatura, umidade e luminosidade, simulando a comunicação via protocolos **AMQP (RabbitMQ)** e **MQTT**.
 Trata-se de uma **simulação educacional** de um sistema IoT (Internet das Coisas), que representa o envio e recebimento de dados de sensores em uma fazenda inteligente. Os protocolos AMQP (RabbitMQ) e MQTT são amplamente utilizados em aplicações reais para comunicação entre dispositivos IoT e servidores, e aqui são simulados com o objetivo de facilitar o aprendizado e a demonstração do funcionamento desses sistemas sem a necessidade de infraestrutura real.
+
 </div>
 
 ---
@@ -83,6 +85,7 @@ projeto/
 │ ├── application.properties # Configurações do H2
 
 ```
+
 ---
 
 ### 🧩 Diagrama de Arquitetura
@@ -149,18 +152,23 @@ projeto/
 ### ⚙️ Configuração do Projeto
 
 O projeto utiliza o banco de dados em memória H2 para facilitar testes sem necessidade de um banco externo. A configuração do datasource é feita da seguinte forma:
+
 ```properties
 spring.datasource.driverClassName=org.h2.Driver
 spring.datasource.url=jdbc:h2:mem:testdb
 spring.datasource.username=sa
 spring.datasource.password=
 ```
+
 Console do H2 está habilitado e disponível em /h2-console:
+
 ```properties
 spring.h2.console.enabled=true
 spring.h2.console.path=/h2-console
 ```
+
 O sistema de logging está configurado para registrar logs importantes em arquivo myapp.log, com limite de tamanho e histórico para rotação dos arquivos:
+
 ```properties
 logging.level.org.springframework=INFO
 logging.level.root=WARN
@@ -171,26 +179,35 @@ logging.file.name=myapp.log
 logging.logback.rollingpolicy.max-file-size=10MB
 logging.logback.rollingpolicy.max-history=10
 ```
+
 ---
 
 ### ▶️ Como Executar o Projeto
 
 1. Clone o repositório:
+
 ```bash
 git clone https://github.com/Albertinesilva/IFBA-Comunicacao-IoT.git
 ```
+
 2. Navegue até o diretório:
+
 ```bach
 cd nome-do-projeto
 ```
+
 3. Compile e execute com Maven:
+
 ```bash
  ./mvnw0 spring-boot:run
 ```
+
 4. Acesse a API:
+
 ```bash
 http://localhost:8080/api/sensores
 ```
+
 ---
 
 ### 🔌 Endpoints Principais:
@@ -203,29 +220,28 @@ Nenhum corpo necessário.
 📤 Resposta:
 
 ```json
-
 [
-    {
-        "id": 1,
-        "sensor": "temperatura",
-        "valor": 23.285554905369192,
-        "unidade": "°C",
-        "timestamp": "2025-06-07T22:30:55.961079"
-    },
-    {
-        "id": 2,
-        "sensor": "umidade",
-        "valor": 47.44693101621682,
-        "unidade": "%",
-        "timestamp": "2025-06-07T22:30:56.057646"
-    },
-    {
-        "id": 3,
-        "sensor": "luminosidade",
-        "valor": 308.20383252732455,
-        "unidade": "lx",
-        "timestamp": "2025-06-07T22:30:56.059667"
-    }
+  {
+    "id": 1,
+    "sensor": "temperatura",
+    "valor": 23.285554905369192,
+    "unidade": "°C",
+    "timestamp": "2025-06-07T22:30:55.961079"
+  },
+  {
+    "id": 2,
+    "sensor": "umidade",
+    "valor": 47.44693101621682,
+    "unidade": "%",
+    "timestamp": "2025-06-07T22:30:56.057646"
+  },
+  {
+    "id": 3,
+    "sensor": "luminosidade",
+    "valor": 308.20383252732455,
+    "unidade": "lx",
+    "timestamp": "2025-06-07T22:30:56.059667"
+  }
 ]
 ```
 
@@ -239,84 +255,100 @@ Nenhum corpo necessário.
   "valor": 38.6
 }
 ```
+
 📤 Resposta (com alerta):
+
 ```json
 {
-    "message": "🌡️ Alerta! Temperatura elevada detectada no campo. Verifique as condições da lavoura.",
-    "data": {
-        "id": 31,
-        "sensor": "temperatura",
-        "valor": 38.6,
-        "unidade": "°C",
-        "timestamp": "2025-06-08T13:28:50.3789898"
-    },
-    "protocolo": "MQTT >> Enviando dados de temperatura para o sistema de monitoramento da fazenda: 38.6 °C"
+  "message": "🌡️ Alerta! Temperatura elevada detectada no campo. Verifique as condições da lavoura.",
+  "data": {
+    "id": 31,
+    "sensor": "temperatura",
+    "valor": 38.6,
+    "unidade": "°C",
+    "timestamp": "2025-06-08T13:28:50.3789898"
+  },
+  "protocolo": "MQTT >> Enviando dados de temperatura para o sistema de monitoramento da fazenda: 38.6 °C"
 }
 ```
+
 📥 Exemplo com valor normal:
+
 ```json
 {
   "sensor": "temperatura",
   "valor": 25.6
 }
 ```
+
 📤 Resposta:
+
 ```json
 {
-    "message": "✅ Leitura registrada com sucesso na fazenda.",
-    "data": {
-        "id": 32,
-        "sensor": "temperatura",
-        "valor": 25.6,
-        "unidade": "°C",
-        "timestamp": "2025-06-08T13:29:41.3520463"
-    },
-    "protocolo": "MQTT >> Enviando dados de temperatura para o sistema de monitoramento da fazenda: 25.6 °C"
+  "message": "✅ Leitura registrada com sucesso na fazenda.",
+  "data": {
+    "id": 32,
+    "sensor": "temperatura",
+    "valor": 25.6,
+    "unidade": "°C",
+    "timestamp": "2025-06-08T13:29:41.3520463"
+  },
+  "protocolo": "MQTT >> Enviando dados de temperatura para o sistema de monitoramento da fazenda: 25.6 °C"
 }
 ```
+
 📥 Exemplo com sensor de umidade:
+
 ```json
 {
   "sensor": "umidade",
   "valor": 25.6
 }
 ```
+
 📤 Resposta:
+
 ```json
 {
-    "message": "✅ Leitura registrada com sucesso na fazenda.",
-    "data": {
-        "id": 33,
-        "sensor": "umidade",
-        "valor": 25.6,
-        "unidade": "%",
-        "timestamp": "2025-06-08T13:30:20.4603612"
-    },
-    "protocolo": "AMQP >> Umidade do ar monitorada: 25.6 %"
+  "message": "✅ Leitura registrada com sucesso na fazenda.",
+  "data": {
+    "id": 33,
+    "sensor": "umidade",
+    "valor": 25.6,
+    "unidade": "%",
+    "timestamp": "2025-06-08T13:30:20.4603612"
+  },
+  "protocolo": "AMQP >> Umidade do ar monitorada: 25.6 %"
 }
 ```
+
 📥 Exemplo com sensor de luminosidade:
+
 ```json
 {
   "sensor": "luminosidade",
   "valor": 25.6
 }
 ```
+
 📤 Resposta:
+
 ```json
 {
-    "message": "✅ Leitura registrada com sucesso na fazenda.",
-    "data": {
-        "id": 34,
-        "sensor": "luminosidade",
-        "valor": 25.6,
-        "unidade": "lx",
-        "timestamp": "2025-06-08T13:30:44.3174017"
-    },
-    "protocolo": "AMQP >> Nível de luz solar captado: 25.6 lx"
+  "message": "✅ Leitura registrada com sucesso na fazenda.",
+  "data": {
+    "id": 34,
+    "sensor": "luminosidade",
+    "valor": 25.6,
+    "unidade": "lx",
+    "timestamp": "2025-06-08T13:30:44.3174017"
+  },
+  "protocolo": "AMQP >> Nível de luz solar captado: 25.6 lx"
 }
 ```
+
 ---
+
 `POST:  /api/sensores/enviar/amqp`, Simula o envio de uma leitura de sensor utilizando o protocolo AMQP (RabbitMQ) diretamente.
 
 📥 Requisição (JSON):
@@ -329,14 +361,16 @@ Nenhum corpo necessário.
   "valor": 27.8,
   "unidade": "%"
 }
-
 ```
+
 📤 Resposta:
+
 ```json
 📡 AMQP >> Umidade do ar monitorada: 27.8 %
 ```
 
 🔆 Luminosidade (lx):
+
 ```json
 {
   "sensor": "luminosidade",
@@ -344,12 +378,15 @@ Nenhum corpo necessário.
   "unidade": "lx"
 }
 ```
+
 📤 Resposta:
+
 ```json
 📡 AMQP >> Nível de luz solar captado: 30.0 lx
 ```
 
 🌫️ Umidade (%):
+
 ```json
 {
   "sensor": "umidade",
@@ -357,16 +394,21 @@ Nenhum corpo necessário.
   "unidade": "%"
 }
 ```
+
 📤 Resposta:
+
 ```json
 📡 AMQP >> Umidade do ar monitorada: 10.8 %
-````
+```
+
 ---
+
 `POST: /api/sensores/enviar/mqtt`, Simula o envio de uma leitura de sensor utilizando o protocolo MQTT diretamente.
 
 📥 Requisição (JSON):
 
 🌫️ Umidade (%):
+
 ```json
 {
   "sensor": "Umidade",
@@ -374,12 +416,15 @@ Nenhum corpo necessário.
   "unidade": "%"
 }
 ```
+
 📤 Resposta:
+
 ```json
 📡 MQTT >> Enviando dados de Umidade para o sistema de monitoramento da fazenda: 55.2 %
 ```
 
 🔆 Luminosidade (lx):
+
 ```json
 {
   "sensor": "luminosidade",
@@ -387,11 +432,15 @@ Nenhum corpo necessário.
   "unidade": "lx"
 }
 ```
+
 📤 Resposta:
+
 ```json
 📡 MQTT >> Enviando dados de luminosidade para o sistema de monitoramento da fazenda: 20.2 lx
 ```
+
 🌡️ Temperatura (C):
+
 ```json
 {
   "sensor": "temperatura",
@@ -399,22 +448,30 @@ Nenhum corpo necessário.
   "unidade": "°C"
 }
 ```
+
 📤 Resposta:
+
 ```json
 📡 MQTT >> Enviando dados de temperatura para o sistema de monitoramento da fazenda: 20.2 °C
 ```
+
 ---
+
 `POST: /api/rabbit/send?msg=`, Esta rota simula o envio de uma mensagem através do RabbitMQ (AMQP). A mensagem é armazenada em memória apenas para fins de simulação e demonstração do funcionamento do protocolo de mensagens assíncronas.
 
 📥 Requisição:
+
 ```json
 POST /api/rabbit/send?msg=HelloRabbit
 ```
+
 📤 Resposta:
+
 ```json
 Mensagem enviada: HelloRabbit
 Mensagem recebida pelo listener: HelloRabbit
 ```
+
 ℹ️ A mensagem é processada por um listener RabbitMQ simulado, que imprime o conteúdo recebido, demonstrando o ciclo de envio e recepção via AMQP.
 
 ---
@@ -433,6 +490,7 @@ Este projeto utiliza uma configuração básica de segurança com Spring Securit
 
 > Esta configuração **não deve ser usada em ambientes de produção**.  
 > Em produção, recomenda-se:
+>
 > - Uso de autenticação com JWT ou OAuth2.
 > - Criptografia de senhas com `BCryptPasswordEncoder`.
 > - Proteção CSRF habilitada, especialmente para aplicações web com sessões.
@@ -445,6 +503,7 @@ Este projeto utiliza uma configuração básica de segurança com Spring Securit
 #### 🔐 Rotas protegidas
 
 Requerem autenticação com o usuário configurado:
+
 - `GET/POST/etc /api/rabbit/**`
 - Qualquer outra rota não listada como pública.
 
