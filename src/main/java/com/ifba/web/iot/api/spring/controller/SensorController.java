@@ -6,7 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import com.ifba.web.iot.api.spring.amqp.AmqpPublisher;
-import com.ifba.web.iot.api.spring.controller.dto.SensorResponse;
+import com.ifba.web.iot.api.spring.controller.dto.view.SensorResponse;
 import com.ifba.web.iot.api.spring.model.SensorData;
 import com.ifba.web.iot.api.spring.mqtt.MqttPublisher;
 import com.ifba.web.iot.api.spring.service.SensorService;

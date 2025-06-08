@@ -1,4 +1,4 @@
-package com.ifba.web.iot.api.spring.controller.dto;
+package com.ifba.web.iot.api.spring.controller.dto.view;
 
 import com.ifba.web.iot.api.spring.model.SensorData;
 
