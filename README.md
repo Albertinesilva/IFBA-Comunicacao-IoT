@@ -51,7 +51,7 @@ Este projeto **não se conecta a um broker real**, e sim simula todo o comportam
 
 ## 🏗️ Arquitetura
 
-📂 Estrutura do Projeto
+- 📂 Estrutura do Projeto
 
 ```java
 projeto/
@@ -82,6 +82,7 @@ projeto/
 ├── resources/
 │ ├── application.properties # Configurações do H2
 
+```
 ---
 
 ## 🧩 Diagrama de Arquitetura
