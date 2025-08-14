@@ -33,8 +33,11 @@ Confirmação de que os dados foram enviados para a fila RabbitMQ com sucesso.
 ---
 
 ## Consumo pelo serviço, com evidências de cada etapa
+
+### Temperatura acima de 30
 ![Sensor Log](src/main/resources/static/assets/img/rabbit/fila-rabbit.png)
 
 ---
 
+### Temperatura abaixo de 30
 ![Sensor Log](src/main/resources/static/assets/img/rabbit/fila-rabbit-temperatura-abaixo-de-30.png)  
