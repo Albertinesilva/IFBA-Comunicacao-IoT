@@ -29,3 +29,12 @@ Exemplo de envio de dados de alerta via POST /alerta e resposta do servidor.
 Confirmação de que os dados foram enviados para a fila RabbitMQ com sucesso.
 
 ![Sensor Log](src/main/resources/static/assets/img/rabbit/rabbit.png)
+
+---
+
+## Consumo pelo serviço, com evidências de cada etapa
+![Sensor Log](src/main/resources/static/assets/img/rabbit/fila-rabbit.png)
+
+---
+
+![Sensor Log](src/main/resources/static/assets/img/rabbit/fila-rabbit-temperatura-abaixo-de-30.png)  

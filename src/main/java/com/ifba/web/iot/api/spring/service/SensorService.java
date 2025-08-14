@@ -7,6 +7,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.ifba.web.iot.api.spring.amqp.AmqpPublisher;
 import com.ifba.web.iot.api.spring.model.SensorData;
 import com.ifba.web.iot.api.spring.mqtt.MqttPublisher;
+import com.ifba.web.iot.api.spring.mqtt.MqttToAmqpBridge;
 import com.ifba.web.iot.api.spring.repository.SensorDataRepository;
 
 import lombok.RequiredArgsConstructor;
@@ -16,7 +17,8 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 /**
- * Serviço responsável pela lógica de negócios relacionada aos dados dos sensores.
+ * Serviço responsável pela lógica de negócios relacionada aos dados dos
+ * sensores.
  */
 @Slf4j
 @Service
@@ -26,6 +28,7 @@ public class SensorService {
     private final SensorDataRepository repository;
     private final MqttPublisher mqttPublisher;
     private final AmqpPublisher amqpPublisher;
+    private final MqttToAmqpBridge mqttToAmqpBridge; // 🔹 ponte MQTT -> RabbitMQ
 
     /**
      * Retorna todos os registros de dados dos sensores.
@@ -38,8 +41,10 @@ public class SensorService {
     }
 
     /**
-     * Salva os dados de um sensor, define unidade de medida conforme o tipo de sensor,
-     * aplica lógica de alerta para temperatura elevada e publica os dados via MQTT ou AMQP.
+     * Salva os dados de um sensor, define unidade de medida conforme o tipo de
+     * sensor,
+     * aplica lógica de alerta para temperatura elevada e publica os dados via MQTT
+     * ou AMQP.
      *
      * @param sensorData Dados do sensor a serem salvos.
      * @return Triple contendo:
@@ -86,6 +91,9 @@ public class SensorService {
         if ("temperatura".equals(sensor)) {
             protocoloMsg = mqttPublisher.publish(saved);
             log.info("📡 Dados de temperatura publicados via MQTT:\n{}", saved);
+
+            // 🔹 Encaminha automaticamente para a fila RabbitMQ simulada
+            mqttToAmqpBridge.forwardToQueue(saved);
         } else if ("umidade".equals(sensor) || "luminosidade".equals(sensor)) {
             protocoloMsg = amqpPublisher.publish(saved);
             log.info("📡 Dados publicados via AMQP:\n{}", saved);
