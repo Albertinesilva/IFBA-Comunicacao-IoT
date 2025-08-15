@@ -6,7 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import com.ifba.web.iot.api.spring.amqp.AmqpPublisher;
-import com.ifba.web.iot.api.spring.controller.dto.view.SensorResponse;
+import com.ifba.web.iot.api.spring.controller.dto.view.SensorView;
 import com.ifba.web.iot.api.spring.model.SensorData;
 import com.ifba.web.iot.api.spring.mqtt.MqttPublisher;
 import com.ifba.web.iot.api.spring.service.SensorService;
@@ -50,7 +50,7 @@ public class SensorController {
      * @return {@link ResponseEntity} com uma mensagem de resposta e os dados registrados.
      */
     @PostMapping
-    public ResponseEntity<SensorResponse> create(@RequestBody SensorData sensorData) {
+    public ResponseEntity<SensorView> create(@RequestBody SensorData sensorData) {
         log.info("📥 Recebida solicitação para criação de dados do sensor...");
 
         Triple<String, SensorData, String> result = service.saveSensorData(sensorData);
@@ -77,7 +77,7 @@ public class SensorController {
 
         log.info("📤 Mensagem final de resposta: {}", finalMessage);
 
-        return ResponseEntity.ok(new SensorResponse(finalMessage, data, protocoloMsg));
+        return ResponseEntity.ok(new SensorView(finalMessage, data, protocoloMsg));
     }
 
     /**

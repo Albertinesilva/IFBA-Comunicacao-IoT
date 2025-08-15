@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 
 @Data
@@ -12,7 +13,8 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @Entity
 @Table(name = "sensor_data")
-public class SensorData {
+public class SensorData implements Serializable {
+    private static final long serialVersionUID = 1L;
 
     /**
      * Identificador único da leitura do sensor.
@@ -42,7 +44,8 @@ public class SensorData {
     private LocalDateTime timestamp;
 
     /**
-     * Construtor que inicializa o tipo do sensor e o valor, atribuindo o timestamp atual.
+     * Construtor que inicializa o tipo do sensor e o valor, atribuindo o timestamp
+     * atual.
      *
      * @param sensor Tipo do sensor.
      * @param valor  Valor da leitura.

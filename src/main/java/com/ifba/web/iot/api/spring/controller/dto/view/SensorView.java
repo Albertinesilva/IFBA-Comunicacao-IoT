@@ -9,7 +9,7 @@ import lombok.Getter;
  * da criação de uma nova leitura de sensor.
  */
 @Getter
-public class SensorResponse {
+public class SensorView {
 
   /** Mensagem de retorno para o usuário, incluindo alertas ou confirmações. */
   private String message;
@@ -28,7 +28,7 @@ public class SensorResponse {
    * @param data Dados do sensor.
    * @param protocolo Mensagem referente ao protocolo de envio.
    */
-  public SensorResponse(String message, SensorData data, String protocolo) {
+  public SensorView(String message, SensorData data, String protocolo) {
     this.message = message;
     this.data = data;
     this.protocolo = protocolo;

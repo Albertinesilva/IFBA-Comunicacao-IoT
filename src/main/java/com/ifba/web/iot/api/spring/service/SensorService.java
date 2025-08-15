@@ -17,8 +17,16 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 /**
- * Serviço responsável pela lógica de negócios relacionada aos dados dos
- * sensores.
+ * Serviço responsável pelo gerenciamento de dados dos sensores.
+ * <p>
+ * Fornece métodos para:
+ * <ul>
+ * <li>Consulta de todos os registros de sensores</li>
+ * <li>Persistência de dados de sensores</li>
+ * <li>Publicação de dados via MQTT e AMQP</li>
+ * <li>Detecção de alertas (ex.: temperatura elevada)</li>
+ * </ul>
+ * </p>
  */
 @Slf4j
 @Service
@@ -28,12 +36,12 @@ public class SensorService {
     private final SensorDataRepository repository;
     private final MqttPublisher mqttPublisher;
     private final AmqpPublisher amqpPublisher;
-    private final MqttToAmqpBridge mqttToAmqpBridge; // 🔹 ponte MQTT -> RabbitMQ
+    private final MqttToAmqpBridge mqttToAmqpBridge;
 
     /**
      * Retorna todos os registros de dados dos sensores.
      *
-     * @return Lista de {@link SensorData}
+     * @return Lista de {@link SensorData} contendo todos os registros persistidos.
      */
     @Transactional(readOnly = true)
     public List<SensorData> findAll() {
@@ -41,16 +49,18 @@ public class SensorService {
     }
 
     /**
-     * Salva os dados de um sensor, define unidade de medida conforme o tipo de
-     * sensor,
-     * aplica lógica de alerta para temperatura elevada e publica os dados via MQTT
-     * ou AMQP.
+     * Salva os dados de um sensor, define unidade de medida conforme o tipo,
+     * verifica alertas (ex.: temperatura elevada) e publica os dados via MQTT ou
+     * AMQP.
      *
-     * @param sensorData Dados do sensor a serem salvos.
-     * @return Triple contendo:
-     *         - Mensagem de alerta (caso haja),
-     *         - Dados salvos,
-     *         - Mensagem de protocolo (retorno do publicador).
+     * @param sensorData Dados do sensor a serem persistidos.
+     * @return {@link Triple} contendo:
+     *         <ol>
+     *         <li>Mensagem de alerta (caso exista, ou {@code null})</li>
+     *         <li>Objeto {@link SensorData} persistido</li>
+     *         <li>Mensagem de protocolo retornada pelo publicador (MQTT ou
+     *         AMQP)</li>
+     *         </ol>
      */
     @Transactional
     public Triple<String, SensorData, String> saveSensorData(SensorData sensorData) {
@@ -60,7 +70,7 @@ public class SensorService {
         double valor = sensorData.getValor();
         sensorData.setTimestamp(LocalDateTime.now());
 
-        // Definindo a unidade com log
+        // Define unidade de medida conforme tipo de sensor
         switch (sensor) {
             case "temperatura":
                 sensorData.setUnidade("C");
@@ -80,6 +90,7 @@ public class SensorService {
         String alertMessage = null;
         String protocoloMsg = null;
 
+        // Verificação de alerta para temperatura elevada
         if ("temperatura".equals(sensor) && valor > 30) {
             alertMessage = "🌡️ Alerta! Temperatura elevada detectada no campo. Verifique as condições da lavoura.";
             log.warn("{} Valor: {} {}", alertMessage, valor, sensorData.getUnidade());
@@ -88,11 +99,10 @@ public class SensorService {
         SensorData saved = repository.save(sensorData);
         log.info("💾 Dados do sensor salvos com sucesso. ID: {}", saved.getId());
 
+        // Publicação dos dados conforme tipo do sensor
         if ("temperatura".equals(sensor)) {
             protocoloMsg = mqttPublisher.publish(saved);
             log.info("📡 Dados de temperatura publicados via MQTT:\n{}", saved);
-
-            // 🔹 Encaminha automaticamente para a fila RabbitMQ simulada
             mqttToAmqpBridge.forwardToQueue(saved);
         } else if ("umidade".equals(sensor) || "luminosidade".equals(sensor)) {
             protocoloMsg = amqpPublisher.publish(saved);
