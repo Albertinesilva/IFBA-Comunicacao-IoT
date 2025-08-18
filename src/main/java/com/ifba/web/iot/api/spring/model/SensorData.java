@@ -56,6 +56,13 @@ public class SensorData implements Serializable {
         this.timestamp = LocalDateTime.now();
     }
 
+    public SensorData(String sensor, double temperatura, String unidade) {
+        this.sensor = sensor;
+        this.valor = temperatura;
+        this.unidade = unidade;
+        this.timestamp = LocalDateTime.now();
+    }
+
     @Override
     public String toString() {
         return "\n--- SensorData ---" +
