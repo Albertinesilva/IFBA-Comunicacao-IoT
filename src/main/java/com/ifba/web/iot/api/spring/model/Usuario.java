@@ -29,7 +29,7 @@ import java.io.Serializable;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class Cliente implements Serializable {
+public class Usuario implements Serializable {
   private static final long serialVersionUID = 1L;
 
   @Id

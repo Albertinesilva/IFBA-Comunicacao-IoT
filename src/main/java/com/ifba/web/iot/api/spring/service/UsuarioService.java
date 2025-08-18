@@ -12,8 +12,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.ifba.web.iot.api.spring.controller.dto.form.RegisterForm;
 import com.ifba.web.iot.api.spring.controller.dto.view.ClienteView;
-import com.ifba.web.iot.api.spring.model.Cliente;
-import com.ifba.web.iot.api.spring.repository.ClienteRepository;
+import com.ifba.web.iot.api.spring.model.Usuario;
+import com.ifba.web.iot.api.spring.repository.UsuarioRepository;
 
 import lombok.RequiredArgsConstructor;
 
@@ -32,9 +32,9 @@ import lombok.RequiredArgsConstructor;
  */
 @Service
 @RequiredArgsConstructor
-public class ClienteService implements UserDetailsService {
+public class UsuarioService implements UserDetailsService {
 
-  private final ClienteRepository clienteRepository;
+  private final UsuarioRepository clienteRepository;
   private final BCryptPasswordEncoder passwordEncoder;
 
   /**
@@ -46,7 +46,7 @@ public class ClienteService implements UserDetailsService {
    */
   @Override
   public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-    Cliente cliente = clienteRepository.findByEmail(email)
+    Usuario cliente = clienteRepository.findByEmail(email)
         .orElseThrow(() -> new UsernameNotFoundException("Cliente não encontrado"));
     return User.builder()
         .username(cliente.getEmail())
@@ -69,12 +69,12 @@ public class ClienteService implements UserDetailsService {
    */
   @Transactional
   public ClienteView saveCliente(RegisterForm registerForm) {
-    Cliente cliente = new Cliente();
+    Usuario cliente = new Usuario();
     cliente.setNome(registerForm.getNome());
     cliente.setEmail(registerForm.getEmail());
     cliente.setSenha(passwordEncoder.encode(registerForm.getSenha()));
 
-    Cliente savedCliente = clienteRepository.save(cliente);
+    Usuario savedCliente = clienteRepository.save(cliente);
 
     return new ClienteView(
         maskName(savedCliente.getNome()),
@@ -88,18 +88,18 @@ public class ClienteService implements UserDetailsService {
    * @return {@link Optional} contendo o cliente caso encontrado, ou vazio caso
    *         contrário
    */
-  public Optional<Cliente> findByEmail(String email) {
+  public Optional<Usuario> findByEmail(String email) {
     return clienteRepository.findByEmail(email);
   }
 
   /**
-   * Converte um {@link Cliente} para {@link ClienteView}, aplicando mascaramento
+   * Converte um {@link Usuario} para {@link ClienteView}, aplicando mascaramento
    * de nome e email.
    *
    * @param cliente Entidade Cliente
    * @return {@link ClienteView} com dados mascarados
    */
-  public ClienteView toClienteView(Cliente cliente) {
+  public ClienteView toClienteView(Usuario cliente) {
     return new ClienteView(maskName(cliente.getNome()), maskEmail(cliente.getEmail()));
   }
 

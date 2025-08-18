@@ -5,7 +5,7 @@ import com.ifba.web.iot.api.spring.controller.dto.form.RegisterForm;
 import com.ifba.web.iot.api.spring.controller.dto.view.ClienteView;
 import com.ifba.web.iot.api.spring.controller.dto.view.LoginView;
 import com.ifba.web.iot.api.spring.jwt.JwtUtil;
-import com.ifba.web.iot.api.spring.service.ClienteService;
+import com.ifba.web.iot.api.spring.service.UsuarioService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -37,7 +37,7 @@ import jakarta.validation.Valid;
 @RequiredArgsConstructor
 public class AuthController {
 
-  private final ClienteService clienteService;
+  private final UsuarioService clienteService;
   private final JwtUtil jwtUtil;
   private final AuthenticationManager authenticationManager;
 
