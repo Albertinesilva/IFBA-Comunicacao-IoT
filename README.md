@@ -46,6 +46,22 @@ Demonstrar, de forma prática e simplificada, como funcionaria um backend de um 
 
 ---
 
+### ⚙️ Funcionalidades
+
+Visão Geral das Funcionalidades
+
+Este projeto implementa uma solução de monitoramento de sensores IoT para a agricultura, oferecendo as seguintes funcionalidades principais:
+
+Simulação de Sensores: Uma rotina agendada (`Scheduler`) simula a coleta de dados de sensores de temperatura, umidade e luminosidade a cada 10 segundos, injetando leituras realistas no sistema.
+
+Processamento e Publicação de Dados: Cada leitura de sensor é processada e publicada em tempo real, utilizando os protocolos de mensageria `AMQP` e `MQTT` para garantir a comunicação eficiente com outros sistemas.
+
+Detecção de Alertas: O sistema detecta automaticamente anomalias nos dados dos sensores, como temperaturas elevadas, umidade fora da faixa ideal ou baixa luminosidade. Quando uma anomalia é identificada, um alerta é gerado.
+
+Controle Global de Alertas: Os alertas gerados são salvos no banco de dados. Um endpoint `RESTful` (`PUT /api/sensores/alertas/status/{status}`) permite que a funcionalidade de salvamento seja ativada ou desativada globalmente, dando ao usuário o controle total sobre a persistência dos alertas.
+
+---
+
 ### 🧪 Simulação de Comunicação IoT
 
 Este projeto **não se conecta a um broker real**, e sim simula todo o comportamento do RabbitMQ e MQTT **em memória**, permitindo que estudantes, professores ou curiosos possam entender o funcionamento de um sistema IoT sem a necessidade de infraestrutura adicional.
