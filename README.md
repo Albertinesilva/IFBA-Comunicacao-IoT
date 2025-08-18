@@ -48,7 +48,7 @@ Demonstrar, de forma prática e simplificada, como funcionaria um backend de um 
 
 ### ⚙️ Funcionalidades
 
-Visão Geral das Funcionalidades
+Visão Geral das Funcionalidades:
 
 Este projeto implementa uma solução de monitoramento de sensores IoT para a agricultura, oferecendo as seguintes funcionalidades principais:
 
@@ -59,6 +59,16 @@ Processamento e Publicação de Dados: Cada leitura de sensor é processada e pu
 Detecção de Alertas: O sistema detecta automaticamente anomalias nos dados dos sensores, como temperaturas elevadas, umidade fora da faixa ideal ou baixa luminosidade. Quando uma anomalia é identificada, um alerta é gerado.
 
 Controle Global de Alertas: Os alertas gerados são salvos no banco de dados. Um endpoint `RESTful` (`PUT /api/sensores/alertas/status/{status}`) permite que a funcionalidade de salvamento seja ativada ou desativada globalmente, dando ao usuário o controle total sobre a persistência dos alertas.
+
+### 🌐 Protocolos
+
+Justificativa da escolha dos protocolos de comunicação: foram selecionados três protocolos, cada um com um propósito específico:
+
+HTTP REST: Usado para a comunicação cliente-servidor, ideal para interações diretas e pontuais, como a consulta de dados e a alteração de configurações.
+
+MQTT (Message Queuing Telemetry Transport): Escolhido para a comunicação com os dispositivos IoT simulados. Sua leveza e baixa latência o tornam perfeito para o envio de dados em tempo real em redes com largura de banda limitada.
+
+AMQP (Advanced Message Queuing Protocol): Utilizado para a comunicação interna entre os serviços da aplicação, garantindo uma alta confiabilidade na entrega de mensagens críticas, como os alertas gerados pelo sistema.
 
 ---
 
