@@ -11,7 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.ifba.web.iot.api.spring.controller.dto.form.RegisterForm;
-import com.ifba.web.iot.api.spring.controller.dto.view.ClienteView;
+import com.ifba.web.iot.api.spring.controller.dto.view.UsuarioView;
 import com.ifba.web.iot.api.spring.model.Usuario;
 import com.ifba.web.iot.api.spring.repository.UsuarioRepository;
 
@@ -23,7 +23,7 @@ import lombok.RequiredArgsConstructor;
  * Este serviço fornece funcionalidades para:
  * <ul>
  * <li>Cadastro de novos clientes com criptografia de senha.</li>
- * <li>Conversão de entidades Cliente para DTO {@link ClienteView} com dados
+ * <li>Conversão de entidades Cliente para DTO {@link UsuarioView} com dados
  * mascarados.</li>
  * <li>Autenticação de clientes via Spring Security
  * {@link UserDetailsService}.</li>
@@ -59,16 +59,16 @@ public class UsuarioService implements UserDetailsService {
    * Salva um novo cliente no banco de dados a partir de um DTO
    * {@link RegisterForm}.
    * <p>
-   * A senha é criptografada antes de salvar. O retorno é um {@link ClienteView}
+   * A senha é criptografada antes de salvar. O retorno é um {@link UsuarioView}
    * com
    * nome e email mascarados para exibição segura.
    * </p>
    *
    * @param registerForm DTO contendo nome, email e senha do cliente
-   * @return {@link ClienteView} com informações mascaradas do cliente
+   * @return {@link UsuarioView} com informações mascaradas do cliente
    */
   @Transactional
-  public ClienteView saveCliente(RegisterForm registerForm) {
+  public UsuarioView saveCliente(RegisterForm registerForm) {
     Usuario cliente = new Usuario();
     cliente.setNome(registerForm.getNome());
     cliente.setEmail(registerForm.getEmail());
@@ -76,7 +76,7 @@ public class UsuarioService implements UserDetailsService {
 
     Usuario savedCliente = clienteRepository.save(cliente);
 
-    return new ClienteView(
+    return new UsuarioView(
         maskName(savedCliente.getNome()),
         maskEmail(savedCliente.getEmail()));
   }
@@ -93,14 +93,14 @@ public class UsuarioService implements UserDetailsService {
   }
 
   /**
-   * Converte um {@link Usuario} para {@link ClienteView}, aplicando mascaramento
+   * Converte um {@link Usuario} para {@link UsuarioView}, aplicando mascaramento
    * de nome e email.
    *
    * @param cliente Entidade Cliente
-   * @return {@link ClienteView} com dados mascarados
+   * @return {@link UsuarioView} com dados mascarados
    */
-  public ClienteView toClienteView(Usuario cliente) {
-    return new ClienteView(maskName(cliente.getNome()), maskEmail(cliente.getEmail()));
+  public UsuarioView toClienteView(Usuario cliente) {
+    return new UsuarioView(maskName(cliente.getNome()), maskEmail(cliente.getEmail()));
   }
 
   /**

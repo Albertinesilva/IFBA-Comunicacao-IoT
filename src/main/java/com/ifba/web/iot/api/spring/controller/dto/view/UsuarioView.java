@@ -8,7 +8,7 @@ import lombok.Data;
  */
 @Data
 @AllArgsConstructor
-public class ClienteView {
+public class UsuarioView {
 
   private String nomeMascarado;
   private String emailMascarado;
