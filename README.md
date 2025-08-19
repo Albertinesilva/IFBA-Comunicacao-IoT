@@ -619,15 +619,21 @@ Qualquer outra rota que não seja listada em "Rotas de Autenticação (Públicas
 
 Exemplo de requisição protegida:
 
-`GET /api/sensores
-Host: localhost:8443
-Authorization: Bearer <seu-jwt-token-aqui>`
+`GET /api/sensores`
+
+`Host: localhost:8443`
+
+`Authorization: Bearer <seu-jwt-token-aqui>`
 
 ---
 
 ### ✅ Conclusão:
 
-Durante o desenvolvimento desta atividade para a disciplina Tópicos Avançados em Web I, foi possível compreender a importância de estruturar um backend simulado (mock) para IoT, criando endpoints que fornecem dados fictícios para facilitar testes sem a necessidade de hardware real. O processo permitiu aprimorar habilidades na comunicação entre cliente e servidor, além da manipulação de dados para aplicações web. Assim, a atividade contribuiu para o entendimento da estruturação de endpoints e da organização dos dados para representar um sistema de agricultura inteligente. Essa experiência auxiliou no domínio de conceitos essenciais para o desenvolvimento de APIs RESTful, tornando mais claro o funcionamento de aplicações que dependem de dados externos.
+Durante o desenvolvimento desta atividade para a disciplina de Tópicos Avançados em Web I, foi possível consolidar o entendimento da importância estratégica de um backend simulado (mock) para o ecossistema de Internet das Coisas (IoT). A criação de endpoints que fornecem dados fictícios mostrou-se crucial para a fase de testes, eliminando a dependência de hardware físico e agilizando o ciclo de desenvolvimento.
+
+O processo permitiu o aprimoramento de habilidades essenciais em comunicação entre cliente e servidor, modelagem de dados e arquitetura de APIs RESTful. A estruturação dos endpoints e a organização dos dados foram fundamentais para representar de forma eficaz um sistema de agricultura inteligente, tornando tangível o fluxo de informações que viria de sensores reais.
+
+Em última análise, esta experiência contribuiu significativamente para a compreensão dos conceitos que regem o desenvolvimento de aplicações web que interagem com dados externos, fortalecendo a base para a implementação de soluções de software mais complexas e aplicáveis a cenários do mundo real.
 
 ---
 
