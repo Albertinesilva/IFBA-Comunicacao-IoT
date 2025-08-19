@@ -225,7 +225,7 @@ projeto/
 
 ### ⚙️ Configuração do Projeto
 
-O projeto utiliza o banco de dados em memória H2 para facilitar testes sem necessidade de um banco externo. A configuração do datasource é feita da seguinte forma:
+O projeto utiliza o banco de dados em memória `H2` para facilitar testes sem necessidade de um banco externo. A configuração do datasource é feita da seguinte forma:
 
 ```properties
 spring.datasource.driverClassName=org.h2.Driver
@@ -234,14 +234,35 @@ spring.datasource.username=sa
 spring.datasource.password=
 ```
 
-Console do H2 está habilitado e disponível em /h2-console:
+Console do `H2` está habilitado e disponível em `/h2-console`:
 
 ```properties
 spring.h2.console.enabled=true
 spring.h2.console.path=/h2-console
+spring.h2.console.settings.web-allow-others=true
 ```
+Para buscar dados de clima, o projeto se integra com a `API` do `OpenWeatherMap`. A `URL` e a chave de acesso são configuradas, com a chave sendo injetada por uma variável de ambiente:
 
-O sistema de logging está configurado para registrar logs importantes em arquivo myapp.log, com limite de tamanho e histórico para rotação dos arquivos:
+```properties
+openweathermap.api.url=https://api.openweathermap.org/data/2.5/weather
+openweathermap.api.key=${CHAVE_API_WEATHER}
+```
+O servidor está configurado para usar `HTTPS` na porta `8443` para garantir a segurança da comunicação. O certificado `SSL` (`keystore.p12`) é referenciado a partir do classpath do projeto e suas senhas são carregadas de variáveis de ambiente:
+
+```properties
+# Ativar HTTPS
+server.port=8443
+server.ssl.enabled=true
+
+# Caminho para o certificado (JKS ou PKCS12)
+server.ssl.key-store=classpath:keystore.p12
+server.ssl.key-store-password=${SERVER_SSL}
+server.ssl.key-store-type=PKCS12
+
+# Nome comum do certificado
+server.ssl.key-alias=${SERVER_SSL_CERTIFICADO}
+```
+O sistema de `logging` está configurado para registrar logs importantes em arquivo `myapp.log`, com limite de tamanho e histórico para rotação dos arquivos:
 
 ```properties
 logging.level.org.springframework=INFO
@@ -253,7 +274,6 @@ logging.file.name=myapp.log
 logging.logback.rollingpolicy.max-file-size=10MB
 logging.logback.rollingpolicy.max-history=10
 ```
-
 ---
 
 ### ▶️ Como Executar o Projeto
