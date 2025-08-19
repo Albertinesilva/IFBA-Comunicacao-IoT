@@ -6,10 +6,15 @@
 
 <div align="justify">
   
-Este projeto é uma aplicação backend robusta desenvolvida em `Java` com `Spring Boot` para o monitoramento de dados de `sensores` em ambientes agrícolas. A aplicação coleta, armazena e publica informações de sensores como temperatura, umidade e luminosidade, simulando a comunicação via protocolos **AMQP (RabbitMQ)** e **MQTT**.
-Trata-se de uma **simulação educacional** e funcional de um sistema `IoT` (Internet das Coisas), que representa o envio e recebimento de dados de sensores em uma fazenda inteligente. Os protocolos `AMQP` (RabbitMQ) e `MQTT` são amplamente utilizados em aplicações reais para comunicação entre dispositivos IoT e servidores, e aqui são simulados com o objetivo de facilitar o aprendizado e a demonstração do funcionamento desses sistemas sem a necessidade de infraestrutura real.
+Este projeto é uma aplicação backend robusta desenvolvida em `Java` com `Spring Boot` para o monitoramento de dados de sensores em ambientes agrícolas. A aplicação coleta, armazena e publica informações de sensores como temperatura, umidade e luminosidade, simulando a comunicação via protocolos `AMQP (RabbitMQ)` e `MQTT`.
+
+A interação com os dados da `API` é feita por um frontend construído em `JavaScript` que utiliza requisições `fetch` para consumir e exibir as informações em tempo real.
+
+Trata-se de uma simulação educacional e funcional de um sistema `IoT` (Internet das Coisas), que representa o envio e recebimento de dados de sensores em uma fazenda inteligente. Os protocolos `AMQP` e `MQTT` são amplamente utilizados em aplicações reais para comunicação entre dispositivos IoT e servidores, e aqui são simulados com o objetivo de facilitar o aprendizado e a demonstração do funcionamento desses sistemas sem a necessidade de infraestrutura real.
 
 📄 Para ver os resultados e registros do sistema em execução, [clique aqui](https://github.com/Albertinesilva/IFBA-Comunicacao-IoT/blob/main/LOG.md) para ver os logs detalhados do projeto.
+
+🖼️ Para visualizar as telas e a interface do sistema, [clique aqui](https://github.com/Albertinesilva/IFBA-Comunicacao-IoT/blob/main/FRONT-END.md) para ver as capturas de tela do frontend.
 </div>
 
 ---
