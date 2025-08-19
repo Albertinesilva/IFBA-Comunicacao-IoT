@@ -2,10 +2,10 @@ package com.ifba.web.iot.api.spring.controller;
 
 import com.ifba.web.iot.api.spring.controller.dto.form.LoginForm;
 import com.ifba.web.iot.api.spring.controller.dto.form.RegisterForm;
-import com.ifba.web.iot.api.spring.controller.dto.view.ClienteView;
+import com.ifba.web.iot.api.spring.controller.dto.view.UsuarioView;
 import com.ifba.web.iot.api.spring.controller.dto.view.LoginView;
 import com.ifba.web.iot.api.spring.jwt.JwtUtil;
-import com.ifba.web.iot.api.spring.service.ClienteService;
+import com.ifba.web.iot.api.spring.service.UsuarioService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -37,7 +37,7 @@ import jakarta.validation.Valid;
 @RequiredArgsConstructor
 public class AuthController {
 
-  private final ClienteService clienteService;
+  private final UsuarioService clienteService;
   private final JwtUtil jwtUtil;
   private final AuthenticationManager authenticationManager;
 
@@ -45,13 +45,13 @@ public class AuthController {
    * Endpoint para registro de um novo cliente.
    * <p>
    * Recebe os dados do cliente, criptografa a senha e salva no banco.
-   * Retorna os dados do cliente em um DTO {@link ClienteView} com informações
+   * Retorna os dados do cliente em um DTO {@link UsuarioView} com informações
    * sensíveis mascaradas, como nome e email.
    * </p>
    *
    * @param requestBody Objeto {@link RegisterForm} contendo nome, email e senha
    *                    do cliente.
-   * @return {@link ResponseEntity} contendo {@link ClienteView} em caso de
+   * @return {@link ResponseEntity} contendo {@link UsuarioView} em caso de
    *         sucesso
    *         ou mensagem de erro caso o registro falhe.
    */
@@ -60,7 +60,7 @@ public class AuthController {
     log.info("Cadastrando novo cliente com email '{}'", requestBody.getEmail());
 
     try {
-      ClienteView view = clienteService.saveCliente(requestBody);
+      UsuarioView view = clienteService.saveCliente(requestBody);
       log.info("Cliente cadastrado com sucesso: {}", view.getEmailMascarado());
       return ResponseEntity.status(HttpStatus.CREATED).body(view);
     } catch (Exception e) {

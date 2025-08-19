@@ -7,13 +7,17 @@ import org.springframework.web.bind.annotation.*;
 
 import com.ifba.web.iot.api.spring.amqp.AmqpPublisher;
 import com.ifba.web.iot.api.spring.controller.dto.view.SensorView;
+import com.ifba.web.iot.api.spring.model.Alert;
 import com.ifba.web.iot.api.spring.model.SensorData;
 import com.ifba.web.iot.api.spring.mqtt.MqttPublisher;
-import com.ifba.web.iot.api.spring.service.SensorService;
-
+import com.ifba.web.iot.api.spring.service.AlertService;
+import com.ifba.web.iot.api.spring.service.SensorDataService;
 import lombok.extern.slf4j.Slf4j;
 
+import java.text.DecimalFormat;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Controlador REST responsável pelo gerenciamento das leituras de sensores.
@@ -21,16 +25,19 @@ import java.util.List;
 @Slf4j
 @RestController
 @RequestMapping("/api/sensores")
-public class SensorController {
+public class SensorDataController {
 
     @Autowired
-    private SensorService service;
+    private SensorDataService sensorService;
 
     @Autowired
     private AmqpPublisher amqpPublisher;
 
     @Autowired
     private MqttPublisher mqttPublisher;
+
+    @Autowired
+    private AlertService alertService;
 
     /**
      * Retorna todas as leituras de sensores registradas no sistema.
@@ -39,24 +46,58 @@ public class SensorController {
      */
     @GetMapping
     public List<SensorData> getAll() {
-        return service.findAll();
+        return sensorService.findAll();
+    }
+
+    /**
+     * Retorna o histórico de todos os alertas registrados no sistema.
+     * <p>
+     * Este endpoint utiliza o serviço {@link AlertService} para buscar todos
+     * os registros da tabela de alertas.
+     * </p>
+     *
+     * @return Lista de objetos {@link Alert}.
+     */
+    @GetMapping("/alertas")
+    public List<Alert> getAllAlerts() {
+        return alertService.findAll();
+    }
+
+    /**
+     * Define se o salvamento de alertas deve ser ativado ou desativado.
+     * <p>
+     * Este endpoint utiliza um PUT para alterar o estado de salvamento de alertas
+     * para `true` (ativado) ou `false` (desativado).
+     * </p>
+     *
+     * @param status O novo status do salvamento de alertas.
+     * @return {@link ResponseEntity} com uma mensagem de confirmação.
+     */
+    @PutMapping("/alertas/status/{status}")
+    public ResponseEntity<String> setAlertSavingStatus(@PathVariable boolean status) {
+        alertService.setAlertSavingEnabled(status);
+        String message = status ? "✅ Salvamento de alertas ativado." : "🛑 Salvamento de alertas desativado.";
+        log.info(message);
+        return ResponseEntity.ok(message);
     }
 
     /**
      * Cria uma nova leitura de sensor, processa possíveis alertas e envia
      * a leitura via protocolo apropriado (AMQP ou MQTT).
      *
-     * @param sensorData Dados da leitura do sensor recebidos no corpo da requisição.
-     * @return {@link ResponseEntity} com uma mensagem de resposta e os dados registrados.
+     * @param sensorData Dados da leitura do sensor recebidos no corpo da
+     *                   requisição.
+     * @return {@link ResponseEntity} com uma mensagem de resposta e os dados
+     *         registrados.
      */
     @PostMapping
     public ResponseEntity<SensorView> create(@RequestBody SensorData sensorData) {
         log.info("📥 Recebida solicitação para criação de dados do sensor...");
 
-        Triple<String, SensorData, String> result = service.saveSensorData(sensorData);
+        Triple<String, SensorData, String> result = sensorService.saveSensorData(sensorData);
         log.info("📌 Tipo: {} | Valor: {} | Unidade (pré-processamento): {}",
                 sensorData.getSensor(), sensorData.getValor(), sensorData.getUnidade());
-                
+
         String alertMessage = result.getLeft();
         SensorData data = result.getMiddle();
         String protocoloMsg = result.getRight();
@@ -88,7 +129,7 @@ public class SensorController {
      */
     @PostMapping("/enviar/amqp")
     public ResponseEntity<String> enviarAmqp(@RequestBody SensorData sensorData) {
-        log.info("📥 Recebida solicitação para envio de dados do sensor via AMQP..."); 
+        log.info("📥 Recebida solicitação para envio de dados do sensor via AMQP...");
         return ResponseEntity.ok(amqpPublisher.publish(sensorData));
     }
 
@@ -104,4 +145,24 @@ public class SensorController {
         return ResponseEntity.ok(mqttPublisher.publish(sensorData));
     }
 
+    // Endpoint para retornar os últimos dados com alerta
+    @GetMapping("/latest")
+    public Map<String, Object> getLatest() {
+        SensorData latest = sensorService.findLatest();
+        Map<String, Object> response = new HashMap<>();
+        if (latest != null) {
+            String alerta = sensorService.verificarAlerta(latest);
+
+            // Formata o valor para duas casas decimais antes de enviar para o front-end
+            DecimalFormat df = new DecimalFormat("#.##");
+            String valorFormatado = df.format(latest.getValor());
+
+            response.put("sensor", latest.getSensor());
+            response.put("valor", valorFormatado);
+            response.put("unidade", latest.getUnidade());
+            response.put("alertMessage", alerta);
+            response.put("timestamp", latest.getTimestamp());
+        }
+        return response;
+    }
 }

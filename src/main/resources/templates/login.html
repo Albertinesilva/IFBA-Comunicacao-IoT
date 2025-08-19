@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login</title>
+  <!-- Tailwind CSS para um estilo moderno -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: #1a202c;
+      color: #e2e8f0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+    }
+
+    .container {
+      backdrop-filter: blur(10px);
+      background-color: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+  </style>
+</head>
+
+<body class="p-6">
+  <!-- Seção de Login -->
+  <div id="login-container" class="container rounded-2xl p-6 md:p-12 w-full max-w-sm shadow-xl text-center">
+    <h1 class="text-3xl md:text-4xl font-bold text-white mb-6">Acesso ao Painel</h1>
+    <form id="login-form" class="space-y-4">
+      <div>
+        <input id="login-email" type="email" placeholder="Email" required
+          class="w-full p-3 rounded-lg bg-gray-700 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500">
+      </div>
+      <div>
+        <input id="login-password" type="password" placeholder="Senha" required
+          class="w-full p-3 rounded-lg bg-gray-700 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500">
+      </div>
+      <button type="submit"
+        class="w-full py-3 px-4 rounded-lg bg-blue-600 text-white font-semibold hover:bg-blue-700 transition duration-300">
+        Entrar
+      </button>
+      <p id="error-message" class="text-red-400 text-sm hidden">Usuário ou senha inválidos.</p>
+    </form>
+    <p class="mt-4 text-sm text-gray-400">
+      Não tem uma conta?
+      <a href="signup.html" id="show-register-link" class="text-blue-400 hover:underline">Cadastre-se aqui</a>
+    </p>
+  </div>
+
+  <script>
+    const API_AUTH_URL = 'https://localhost:8443/api/auth';
+
+    // Lógica para o formulário de login
+    document.getElementById('login-form').addEventListener('submit', async (event) => {
+      event.preventDefault();
+
+      const email = document.getElementById('login-email').value;
+      const password = document.getElementById('login-password').value;
+      const errorMessage = document.getElementById('error-message');
+
+      try {
+        const response = await fetch(API_AUTH_URL, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            email,
+            senha: password
+          })
+        });
+
+        if (!response.ok) {
+          throw new Error("Credenciais inválidas.");
+        }
+
+        const data = await response.json();
+        const jwtToken = data.token;
+
+        // Armazena o token no localStorage para que a página do painel possa acessá-lo
+        localStorage.setItem('jwtToken', jwtToken);
+
+        errorMessage.classList.add('hidden');
+        // Redireciona para a nova página de escolha
+        window.location.href = 'choice.html';
+
+      } catch (error) {
+        console.error("Erro durante o login:", error);
+        errorMessage.textContent = error.message;
+        errorMessage.classList.remove('hidden');
+      }
+    });
+  </script>
+</body>
+
+</html>

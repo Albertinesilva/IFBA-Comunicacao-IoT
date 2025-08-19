@@ -57,10 +57,12 @@ public class SecurityConfig {
   public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
     http
         .csrf(csrf -> csrf.disable())
+        .cors(cors -> {
+        }) // <-- Ativa CORS
         .authorizeHttpRequests(auth -> auth
             .requestMatchers("/api/auth/**").permitAll()
-            .requestMatchers("/h2-console/**").permitAll() // Libera H2
-            .requestMatchers("/api/sensores**").permitAll()
+            .requestMatchers("/api/clima/**").authenticated()
+            .requestMatchers("/api/sensores/**").authenticated()
             .requestMatchers("/api/rabbit/**").authenticated()
             .anyRequest().authenticated())
         .headers(headers -> headers

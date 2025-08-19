@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Clima das Cidades</title>
+  <!-- Tailwind CSS para um estilo moderno -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: #1a202c;
+      color: #e2e8f0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+    }
+
+    .container {
+      backdrop-filter: blur(10px);
+      background-color: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .city-item {
+      cursor: pointer;
+      transition: background-color 0.2s ease-in-out;
+    }
+
+    .city-item:hover {
+      background-color: rgba(255, 255, 255, 0.1);
+    }
+
+    .skeleton {
+      animation: skeleton-loading 1s linear infinite alternate;
+    }
+
+    @keyframes skeleton-loading {
+      0% {
+        background-color: hsl(210, 5%, 25%);
+      }
+
+      100% {
+        background-color: hsl(210, 5%, 35%);
+      }
+    }
+  </style>
+</head>
+
+<body class="p-6">
+  <!-- Seção de Clima -->
+  <div id="weather-container" class="container rounded-2xl p-6 md:p-12 w-full max-w-3xl shadow-xl">
+    <div class="flex justify-between items-center mb-6">
+      <a href="choice.html"
+        class="py-2 px-4 rounded-lg bg-gray-600 text-white font-semibold hover:bg-gray-700 transition duration-300">
+        Voltar
+      </a>
+      <h1 class="text-3xl md:text-4xl font-bold text-white text-center flex-grow">Clima das Cidades</h1>
+    </div>
+
+    <!-- Nova Seção de Busca por Nome -->
+    <div class="mb-8 flex flex-col md:flex-row items-center space-y-4 md:space-y-0 md:space-x-4">
+      <input type="text" id="city-search" placeholder="Buscar por nome da cidade..."
+        class="w-full md:w-auto flex-grow p-3 rounded-lg bg-gray-700 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-500 transition duration-300">
+      <button id="search-button"
+        class="w-full md:w-auto py-3 px-6 rounded-lg bg-blue-600 text-white font-semibold hover:bg-blue-700 transition duration-300">
+        Buscar
+      </button>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+      <!-- Região Sudeste -->
+      <div>
+        <h2 class="text-xl font-bold mb-4 border-b border-gray-600 pb-2">Região Sudeste</h2>
+        <ul class="space-y-2">
+          <li class="city-item p-3 rounded-lg bg-gray-700" data-city-id="3448439">São Paulo, SP</li>
+          <li class="city-item p-3 rounded-lg bg-gray-700" data-city-id="3451190">Rio de Janeiro, RJ</li>
+          <li class="city-item p-3 rounded-lg bg-gray-700" data-city-id="3470128">Belo Horizonte, MG</li>
+          <li class="city-item p-3 rounded-lg bg-gray-700" data-city-id="3445831">Vitória, ES</li>
+          <li class="city-item p-3 rounded-lg bg-gray-700" data-city-id="3466179">Campinas, SP</li>
+          <li class="city-item p-3 rounded-lg bg-gray-700" data-city-id="3447953">Santos, SP</li>
+          <li class="city-item p-3 rounded-lg bg-gray-700" data-city-id="3445495">Uberlândia, MG</li>
+        </ul>
+      </div>
+      <!-- Região Sul -->
+      <div>
+        <h2 class="text-xl font-bold mb-4 border-b border-gray-600 pb-2">Região Sul</h2>
+        <ul class="space-y-2">
+          <li class="city-item p-3 rounded-lg bg-gray-700" data-city-id="3464903">Curitiba, PR</li>
+          <li class="city-item p-3 rounded-lg bg-gray-700" data-city-id="3452033">Porto Alegre, RS</li>
+          <li class="city-item p-3 rounded-lg bg-gray-700" data-city-id="3463851">Florianópolis, SC</li>
+          <li class="city-item p-3 rounded-lg bg-gray-700" data-city-id="3457008">Joinville, SC</li>
+          <li class="city-item p-3 rounded-lg bg-gray-700" data-city-id="3469956">Blumenau, SC</li>
+          <li class="city-item p-3 rounded-lg bg-gray-700" data-city-id="3462947">Foz do Iguaçu, PR</li>
+        </ul>
+      </div>
+      <!-- Região Nordeste -->
+      <div>
+        <h2 class="text-xl font-bold mb-4 border-b border-gray-600 pb-2">Região Nordeste</h2>
+        <ul class="space-y-2">
+          <li class="city-item p-3 rounded-lg bg-gray-700" data-city-id="3448494">Salvador, BA</li>
+          <li class="city-item p-3 rounded-lg bg-gray-700" data-city-id="3390760">Recife, PE</li>
+          <li class="city-item p-3 rounded-lg bg-gray-700" data-city-id="6320015">Fortaleza, CE</li>
+          <li class="city-item p-3 rounded-lg bg-gray-700" data-city-id="3393915">Natal, RN</li>
+          <li class="city-item p-3 rounded-lg bg-gray-700" data-city-id="3461623">João Pessoa, PB</li>
+          <li class="city-item p-3 rounded-lg bg-gray-700" data-city-id="3395981">Maceió, AL</li>
+          <li class="city-item p-3 rounded-lg bg-gray-700" data-city-id="3388703">Teresina, PI</li>
+        </ul>
+      </div>
+      <!-- Região Centro-Oeste -->
+      <div>
+        <h2 class="text-xl font-bold mb-4 border-b border-gray-600 pb-2">Região Centro-Oeste</h2>
+        <ul class="space-y-2">
+          <li class="city-item p-3 rounded-lg bg-gray-700" data-city-id="3462368">Brasília, DF</li>
+          <li class="city-item p-3 rounded-lg bg-gray-700" data-city-id="3462002">Goiânia, GO</li>
+          <li class="city-item p-3 rounded-lg bg-gray-700" data-city-id="3466826">Campo Grande, MS</li>
+          <li class="city-item p-3 rounded-lg bg-gray-700" data-city-id="3465805">Cuiabá, MT</li>
+        </ul>
+      </div>
+      <!-- Região Norte -->
+      <div>
+        <h2 class="text-xl font-bold mb-4 border-b border-gray-600 pb-2">Região Norte</h2>
+        <ul class="space-y-2">
+          <li class="city-item p-3 rounded-lg bg-gray-700" data-city-id="3394023">Manaus, AM</li>
+          <li class="city-item p-3 rounded-lg bg-gray-700" data-city-id="3405872">Belém, PA</li>
+          <li class="city-item p-3 rounded-lg bg-gray-700" data-city-id="3392415">Porto Velho, RO</li>
+          <li class="city-item p-3 rounded-lg bg-gray-700" data-city-id="3453887">Palmas, TO</li>
+          <li class="city-item p-3 rounded-lg bg-gray-700" data-city-id="3406282">Boa Vista, RR</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Seção de Resultado do Clima -->
+    <div id="weather-result" class="bg-gray-800 rounded-xl p-6 shadow-lg hidden">
+      <h2 class="text-2xl font-bold mb-4">Clima em <span id="city-name" class="skeleton w-36 h-8 inline-block"></span>
+      </h2>
+      <div class="space-y-4">
+        <p>Temperatura: <span id="temperature" class="text-xl font-semibold skeleton w-24 h-6 inline-block"></span></p>
+        <p>Descrição: <span id="description" class="text-lg skeleton w-48 h-6 inline-block"></span></p>
+        <p>Umidade: <span id="humidity" class="text-lg skeleton w-20 h-6 inline-block"></span></p>
+        <p>Velocidade do Vento: <span id="wind" class="text-lg skeleton w-28 h-6 inline-block"></span></p>
+      </div>
+    </div>
+    <p id="error-message" class="text-red-400 text-sm mt-4 hidden"></p>
+  </div>
+
+  <script>
+    const API_WEATHER_URL = 'https://localhost:8443/api/clima';
+
+    // Verificação de autenticação ao carregar a página
+    window.onload = function () {
+      const jwtToken = localStorage.getItem('jwtToken');
+      if (!jwtToken) {
+        window.location.href = 'login.html';
+      }
+    };
+
+    // Adiciona um listener de clique a cada item da lista de cidades
+    document.querySelectorAll('.city-item').forEach(item => {
+      item.addEventListener('click', () => {
+        const cityId = item.getAttribute('data-city-id');
+        const cityName = item.textContent.split(',')[0].trim(); // Pega apenas o nome da cidade
+        fetchWeatherData(cityName, cityId);
+      });
+    });
+
+    // Adiciona um listener de clique ao botão de busca
+    document.getElementById('search-button').addEventListener('click', () => {
+      const cityName = document.getElementById('city-search').value.trim();
+      if (cityName) {
+        fetchWeatherData(cityName);
+      } else {
+        alert("Por favor, digite o nome de uma cidade.");
+      }
+    });
+
+    // Função para simular o estado de carregamento
+    function showLoadingState() {
+      const resultSection = document.getElementById('weather-result');
+      resultSection.classList.remove('hidden');
+
+      document.getElementById('city-name').classList.add('skeleton');
+      document.getElementById('temperature').classList.add('skeleton');
+      document.getElementById('description').classList.add('skeleton');
+      document.getElementById('humidity').classList.add('skeleton');
+      document.getElementById('wind').classList.add('skeleton');
+
+      document.getElementById('city-name').textContent = '';
+      document.getElementById('temperature').textContent = '';
+      document.getElementById('description').textContent = '';
+      document.getElementById('humidity').textContent = '';
+      document.getElementById('wind').textContent = '';
+      document.getElementById('error-message').classList.add('hidden');
+    }
+
+    // Função para remover o estado de carregamento e exibir os dados
+    function hideLoadingState(data) {
+      document.getElementById('city-name').classList.remove('skeleton');
+      document.getElementById('temperature').classList.remove('skeleton');
+      document.getElementById('description').classList.remove('skeleton');
+      document.getElementById('humidity').classList.remove('skeleton');
+      document.getElementById('wind').classList.remove('skeleton');
+
+      document.getElementById('city-name').textContent = data.name;
+      document.getElementById('temperature').textContent = `${data.main.temp}°C`;
+      document.getElementById('description').textContent = data.weather[0].description;
+      document.getElementById('humidity').textContent = `${data.main.humidity}%`;
+      document.getElementById('wind').textContent = `${data.wind.speed} m/s`;
+    }
+
+    // Função principal para buscar dados do clima, agora com suporte para ID e nome
+    async function fetchWeatherData(cityName = null, cityId = null) {
+      const jwtToken = localStorage.getItem('jwtToken');
+      showLoadingState();
+
+      let apiUrl = `${API_WEATHER_URL}`;
+
+      if (cityId) {
+        apiUrl += `?id=${cityId}`;
+      } else if (cityName) {
+        apiUrl += `?city=${encodeURIComponent(cityName)}`;
+      } else {
+        console.error("Nenhum parâmetro de busca foi fornecido.");
+        document.getElementById('weather-result').classList.add('hidden');
+        document.getElementById('error-message').textContent = "Por favor, selecione uma cidade ou use a busca.";
+        document.getElementById('error-message').classList.remove('hidden');
+        return;
+      }
+
+      try {
+        const response = await fetch(apiUrl, {
+          headers: {
+            'Authorization': `Bearer ${jwtToken}`
+          }
+        });
+
+        if (response.status === 401 || response.status === 403) {
+          throw new Error("Sessão expirada. Faça login novamente.");
+        }
+
+        if (!response.ok) {
+          throw new Error(`Não foi possível obter os dados do clima. Status: ${response.status}`);
+        }
+
+        const data = await response.json();
+        hideLoadingState(data);
+      } catch (error) {
+        console.error("Erro ao buscar dados do clima:", error);
+        const errorMessage = document.getElementById('error-message');
+        errorMessage.textContent = `Erro: ${error.message}`;
+        errorMessage.classList.remove('hidden');
+
+        // Oculta a seção de resultados e limpa os campos
+        document.getElementById('weather-result').classList.add('hidden');
+
+        // Redireciona para o login em caso de erro de autenticação ou de rede
+        if (error.message.includes("Sessão expirada")) {
+          localStorage.removeItem('jwtToken');
+          window.location.href = 'login.html';
+        }
+      }
+    }
+  </script>
+</body>
+
+</html>
