@@ -11,11 +11,13 @@ import com.ifba.web.iot.api.spring.model.Alert;
 import com.ifba.web.iot.api.spring.model.SensorData;
 import com.ifba.web.iot.api.spring.mqtt.MqttPublisher;
 import com.ifba.web.iot.api.spring.service.AlertService;
-import com.ifba.web.iot.api.spring.service.SensorService;
-
+import com.ifba.web.iot.api.spring.service.SensorDataService;
 import lombok.extern.slf4j.Slf4j;
 
+import java.text.DecimalFormat;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Controlador REST responsável pelo gerenciamento das leituras de sensores.
@@ -23,10 +25,10 @@ import java.util.List;
 @Slf4j
 @RestController
 @RequestMapping("/api/sensores")
-public class SensorController {
+public class SensorDataController {
 
     @Autowired
-    private SensorService sensorService;
+    private SensorDataService sensorService;
 
     @Autowired
     private AmqpPublisher amqpPublisher;
@@ -35,7 +37,7 @@ public class SensorController {
     private MqttPublisher mqttPublisher;
 
     @Autowired
-    private AlertService alertService; // Injeção do novo repositório de alertas
+    private AlertService alertService;
 
     /**
      * Retorna todas as leituras de sensores registradas no sistema.
@@ -141,5 +143,26 @@ public class SensorController {
     public ResponseEntity<String> enviarMqtt(@RequestBody SensorData sensorData) {
         log.info("📥 Recebida solicitação para envio de dados do sensor via MQTT...");
         return ResponseEntity.ok(mqttPublisher.publish(sensorData));
+    }
+
+    // Endpoint para retornar os últimos dados com alerta
+    @GetMapping("/latest")
+    public Map<String, Object> getLatest() {
+        SensorData latest = sensorService.findLatest();
+        Map<String, Object> response = new HashMap<>();
+        if (latest != null) {
+            String alerta = sensorService.verificarAlerta(latest);
+
+            // Formata o valor para duas casas decimais antes de enviar para o front-end
+            DecimalFormat df = new DecimalFormat("#.##");
+            String valorFormatado = df.format(latest.getValor());
+
+            response.put("sensor", latest.getSensor());
+            response.put("valor", valorFormatado);
+            response.put("unidade", latest.getUnidade());
+            response.put("alertMessage", alerta);
+            response.put("timestamp", latest.getTimestamp());
+        }
+        return response;
     }
 }

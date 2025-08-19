@@ -5,7 +5,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import com.ifba.web.iot.api.spring.model.SensorData;
-import com.ifba.web.iot.api.spring.service.SensorService;
+import com.ifba.web.iot.api.spring.service.SensorDataService;
 
 import java.util.Random;
 
@@ -26,7 +26,7 @@ public class DataInitializer {
    * @return CommandLineRunner que executa a carga de dados ao iniciar a aplicação.
    */
   @Bean
-  public CommandLineRunner loadData(SensorService sensorService) {
+  public CommandLineRunner loadData(SensorDataService sensorService) {
     return args -> {
       Random random = new Random();
 

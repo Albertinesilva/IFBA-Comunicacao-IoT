@@ -20,7 +20,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 @Component
 public class SensorScheduler {
 
-  private final SensorService sensorService;
+  private final SensorDataService sensorService;
   private final Random random = new Random();
 
   // Lista de tipos de sensores que serão gerados em ordem
@@ -30,7 +30,7 @@ public class SensorScheduler {
   // multi-thread
   private final AtomicInteger sensorIndex = new AtomicInteger(0);
 
-  public SensorScheduler(SensorService sensorService) {
+  public SensorScheduler(SensorDataService sensorService) {
     this.sensorService = sensorService;
   }
 
@@ -39,7 +39,7 @@ public class SensorScheduler {
    * seguindo uma ordem alternada (temperatura, umidade, luminosidade, etc.).
    * <p>
    * A cada execução, um novo valor aleatório é gerado para o sensor da vez
-   * e o {@link SensorService} é chamado para processá-lo e salvá-lo.
+   * e o {@link SensorDataService} é chamado para processá-lo e salvá-lo.
    * </p>
    */
   @Scheduled(fixedRate = 10000) // 10 segundos

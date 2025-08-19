@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Painel IoT Simples</title>
+  <!-- Tailwind CSS CDN para um estilo moderno -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: #1a202c;
+      color: #e2e8f0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+    }
+
+    .container {
+      backdrop-filter: blur(10px);
+      background-color: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .badge {
+      font-size: 0.75rem;
+      padding: 0.25rem 0.5rem;
+      border-radius: 9999px;
+      font-weight: 600;
+    }
+
+    .source-local {
+      background-color: #48bb78;
+      color: #fff;
+    }
+
+    .source-external {
+      background-color: #f6ad55;
+      color: #fff;
+    }
+
+    .animate-pulse {
+      animation: pulse 1s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+    }
+
+    @keyframes pulse {
+
+      0%,
+      100% {
+        opacity: 1;
+      }
+
+      50% {
+        opacity: 0.5;
+      }
+    }
+  </style>
+</head>
+
+<body class="p-6">
+  <div class="container rounded-2xl p-6 md:p-12 w-full max-w-xl shadow-xl text-center">
+    <h1 class="text-4xl md:text-5xl font-bold text-white mb-8">Painel IoT Simples</h1>
+
+    <!-- Seção de Alertas Visuais -->
+    <div id="alert-section" class="mb-8 hidden">
+      <div class="bg-red-600 rounded-lg p-4 text-white font-bold text-lg animate-pulse">
+        <span id="alert-message"></span>
+      </div>
+    </div>
+
+    <!-- Dados em tempo real com tags de origem -->
+    <div class="bg-gray-800 rounded-xl p-6 shadow-lg">
+      <h2 class="text-2xl font-semibold mb-6">Monitoramento de Sensores</h2>
+      <div class="grid grid-cols-1 gap-6">
+        <!-- Card de Dados do Sensor Local -->
+        <div class="bg-gray-700 rounded-lg p-5 flex flex-col items-center shadow-md">
+          <div class="badge source-local mb-2">Última Leitura</div>
+          <h3 class="text-xl font-bold mb-2">
+            <span id="local-sensor-name">Sensor</span>:
+            <span id="local-temp" class="font-normal text-xl">--</span>
+            <span id="local-temp-unit">--</span>
+          </h3>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // URL da sua API. Agora aponta para o endpoint `/latest`.
+    const API_URL = 'http://localhost:8080/api/sensores/latest';
+
+    /**
+     * Realiza uma chamada assíncrona para a API e retorna os dados.
+     * @returns {Promise<{sensor: string, valor: number, unidade: string, alertMessage: string}>} Os dados do sensor.
+     */
+    async function fetchData() {
+      try {
+        const response = await fetch(API_URL);
+        if (!response.ok) {
+          throw new Error(`Erro na rede: ${response.statusText}`);
+        }
+        const data = await response.json();
+        // Verifique se os dados são um objeto e não uma string vazia
+        if (Object.keys(data).length === 0) {
+          throw new Error("Resposta da API vazia.");
+        }
+        return data;
+      } catch (error) {
+        console.error("Erro ao buscar dados da API:", error);
+        // Retorna valores padrão em caso de erro para não travar a aplicação.
+        return {
+          sensor: 'Erro',
+          valor: '--',
+          unidade: '--',
+          alertMessage: 'Não foi possível conectar ao backend.'
+        };
+      }
+    }
+
+    /**
+     * Atualiza o painel com os dados mais recentes da API.
+     */
+    async function updateDashboard() {
+      // Exibe o estado de "Carregando..." enquanto os dados são buscados.
+      document.getElementById('local-temp').textContent = '...';
+
+      const data = await fetchData();
+      const alertSection = document.getElementById('alert-section');
+      const alertMessage = document.getElementById('alert-message');
+
+      // Atualiza os valores na interface com os dados da API
+      document.getElementById('local-sensor-name').textContent = data.sensor;
+      document.getElementById('local-temp').textContent = data.valor;
+      document.getElementById('local-temp-unit').textContent = data.unidade;
+
+      // Lógica para Alerta Visual
+      if (data.alertMessage) {
+        alertMessage.textContent = data.alertMessage;
+        alertSection.classList.remove('hidden');
+      } else {
+        alertSection.classList.add('hidden');
+      }
+    }
+
+    // Inicia a primeira atualização e agenda as próximas a cada 5 segundos
+    updateDashboard();
+    setInterval(updateDashboard, 5000);
+  </script>
+</body>
+
+</html>

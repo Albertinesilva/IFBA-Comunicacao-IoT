@@ -33,7 +33,7 @@ import java.util.Objects;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class SensorService {
+public class SensorDataService {
 
     private final SensorDataRepository sensorDatarepository;
     private final AlertService alertService;
@@ -100,7 +100,8 @@ public class SensorService {
             alertMessage = "💡 Alerta! Baixo nível de luminosidade detectado. Acione as luzes auxiliares.";
         }
 
-        // Salvar alerta no banco de dados, se houver e se a funcionalidade estiver ativada
+        // Salvar alerta no banco de dados, se houver e se a funcionalidade estiver
+        // ativada
         if (alertMessage != null) {
             log.warn("⚠️ Alerta gerado: {}", alertMessage);
             if (alertService.isAlertSavingEnabled()) {
@@ -132,4 +133,32 @@ public class SensorService {
         log.info("✅ Finalizado o processo de salvamento e publicação dos dados do sensor.");
         return Triple.of(alertMessage, saved, protocoloMsg);
     }
+
+    /**
+     * Busca o último registro de dados do sensor com base no timestamp.
+     * <p>
+     * Este método utiliza o repositório de dados do sensor para buscar o
+     * registro mais recente no banco de dados.
+     * </p>
+     *
+     * @return O objeto SensorData mais recente, ou null se nenhum dado for
+     *         encontrado.
+     */
+    public SensorData findLatest() {
+        return sensorDatarepository.findFirstByOrderByTimestampDesc().orElse(null);
+    }
+
+    public String verificarAlerta(SensorData data) {
+        String alertMessage = null;
+
+        if ("temperatura".equals(data.getSensor()) && data.getValor() > 30) {
+            alertMessage = "🌡️ Alerta! Temperatura elevada detectada.";
+        } else if ("umidade".equals(data.getSensor()) && (data.getValor() < 20 || data.getValor() > 80)) {
+            alertMessage = "💧 Alerta! Umidade baixa detectada.";
+        } else if ("luminosidade".equals(data.getSensor()) && data.getValor() < 200) {
+            alertMessage = "💡 Alerta! Baixo nível de luminosidade detectado. Acione as luzes auxiliares.";
+        }
+        return alertMessage;
+    }
+
 }
