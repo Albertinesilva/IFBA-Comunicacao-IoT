@@ -149,35 +149,51 @@ projeto/
 ### 🧩 Diagrama de Arquitetura
 
 ```java
-
 [🧑‍💻 Frontend ou Cliente REST (Postman, Angular, etc.)]
-                     |
-                     ▼
- [🔐 SensorController (com Auth + HTTP Endpoint)]
-                     |
-                     ▼
- [🧠 SensorService (Regras de negócio / Encaminhamento)]
-                     |
-                     ▼
- [💬 SensorResponse DTO (dto/view - Mensagem + Protocolo + SensorData)]
-                     |
-                     ▼
- [💾 SensorDataRepository (JPA CRUD - Simulado com H2)]
-                     |
-                     ▼
- [🗃️ Banco de Dados (Simulado - H2, PostgreSQL...)]
-
-          ↙                            ↘
- [📡 MqttPublisher (Simulado)]   [📨 AmqpPublisher (Simulado)]
-        |                               |
-        ▼                               ▼
- [📶 Mosquitto Broker (Simulado)]   [🐇 RabbitMQ Broker (Simulado)]
-
-      ↘                               ↙
-[📥 RabbitSimulationController (Mock de Broker)]
-                     |
-                     ▼
- [🧪 InMemoryRabbitTemplate → InMemoryRabbitListener (Simulação completa)]
+             | (Requisições HTTP)
+             ▼
+[🔐 Spring Security / Filtro JWT (Autenticação)]
+             | (JWT Bearer Token)
+             ▼
+[🌐 Controller (AuthController, SensorDataController, etc.)]
+             | (Validação e Roteamento)
+             ▼
+[🧠 Service (UsuarioService, SensorDataService, etc.)]
+             | (Lógica de Negócio)
+             |
+             |───────┐ (Chamadas Assíncronas)
+             |       |
+             ▼       ▼
+[💾 Repository (UsuarioRepository, SensorDataRepository, etc.)]
+|            |
+|            ▼
+|───────>[🗃️ Banco de Dados (Simulado H2)]
+|
+| (Outras chamadas de serviço)
+|
+|───────┐ (Simulação de Mensagens)
+|       |
+|       ▼
+|  [📡 MqttPublisher]
+|       |
+|       ▼
+|  [📨 AmqpPublisher]
+|
+|───────┐ (Simulação de Broker)
+|       |
+|       ▼
+|  [📥 RabbitSimulationController]
+|       |
+|       ▼
+|  [🧪 InMemoryRabbitTemplate]
+|       |
+|       ▼
+|  [👂 InMemoryRabbitListener]
+|
+|───────┐ (Scheduler)
+|       |
+|       ▼
+[⏰ SensorScheduler (Simulação de Coleta de Dados)]
 
 ```
 
