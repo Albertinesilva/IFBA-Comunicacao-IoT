@@ -58,13 +58,14 @@ Visão Geral das Funcionalidades:
 
 Este projeto implementa uma solução de monitoramento de sensores IoT para a agricultura, oferecendo as seguintes funcionalidades principais:
 
-- **Simulação de Sensores (Camada Edge):** Uma rotina agendada (`Scheduler`) simula a coleta de dados de sensores de temperatura, umidade e luminosidade a cada 10 segundos, injetando leituras realistas no sistema.
+-  **Simulação de Sensores (Camada Edge):** Uma rotina agendada (`Scheduler`) simula a coleta de dados de sensores de temperatura, umidade e luminosidade a cada 10 segundos, injetando leituras realistas no sistema.
 
-- **Processamento e Publicação de Dados (Camada Fog):** Cada leitura de sensor é processada e publicada em tempo real, utilizando os protocolos de mensageria `AMQP` e `MQTT` para garantir a comunicação eficiente com outros sistemas.
+-  **Processamento e Publicação de Dados (Camada Fog):** Cada leitura de sensor é processada e publicada em tempo real, utilizando os protocolos de mensageria `AMQP` e `MQTT` para garantir a comunicação eficiente com outros sistemas.
 
-- **Detecção de Alertas em Tempo Real:** O sistema detecta automaticamente anomalias nos dados dos sensores, como temperaturas elevadas, umidade fora da faixa ideal ou baixa luminosidade. Quando uma anomalia é identificada, um alerta é gerado e, opcionalmente, salvo no banco de dados.
+-  **Detecção de Alertas em Tempo Real:** O sistema detecta automaticamente anomalias nos dados dos sensores, como temperaturas elevadas, umidade fora da faixa ideal ou baixa luminosidade. Quando uma anomalia é identificada, um alerta é gerado e, opcionalmente, salvo no banco de dados.
 
-- **Controle Global de Alertas:** Os alertas gerados são salvos no banco de dados. Um endpoint `RESTful` (`PUT /api/sensores/alertas/status/{status}`) permite que a funcionalidade de salvamento seja ativada ou desativada globalmente, dando ao usuário o controle total sobre a persistência dos alertas.
+-  **Controle Global de Alertas:** Os alertas gerados são salvos no banco de dados. Um endpoint `RESTful` (`PUT /api/sensores/alertas/status/{status}`) permite que a funcionalidade de salvamento seja ativada ou desativada globalmente, dando ao usuário o controle total sobre a persistência dos alertas.
+---
 
 ### 🌐 Protocolos
 
