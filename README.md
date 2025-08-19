@@ -102,34 +102,48 @@ A arquitetura do projeto simula a distribuição do processamento, uma caracter�
 ```java
 projeto/
 ├── amqp/
-│ └── AmqpPublisher.java # Publicador AMQP
+│ └── AmqpPublisher.java         // Gerencia o envio de mensagens via AMQP
 ├── config/
-│ └── DataInitializer.java # Inicialização de dados
+│ └── CorsConfig.java            // Configuração de CORS para a API
 ├── controller/
-│ ├── dto/
-│ │ └── SensorResponse.java # DTO de resposta dos sensores
-│ ├── RabbitSimulationController.java # Controlador para simulação RabbitMQ
-│ └── SensorController.java # Controlador de sensores
+│ ├── dto/                       // Data Transfer Objects (DTOs) para a API
+│ ├── form/                      // Formulários de entrada para a API
+│ ├── view/                      // Visualizações de resposta
+│ ├── AuthController.java        // Controlador para autenticação e registro de usuários
+│ ├── RabbitSimulationController.java // Controlador para simular mensagens RabbitMQ
+│ ├── SensorDataController.java    // Controlador para gerenciar dados de sensores
+│ └── WeatherController.java     // Controlador para dados de clima de API externa
+├── jwt/
+│ ├── JwtAuthenticationFilter.java // Filtro de autenticação JWT
+│ └── JwtUtil.java               // Utilitário para manipulação de tokens JWT
 ├── model/
-│ └── SensorData.java # Modelo dos dados de sensores
+│ ├── Alert.java                 // Modelo de dados para alertas
+│ ├── SensorData.java            // Modelo de dados para leituras de sensores
+│ └── Usuario.java               // Modelo de dados para usuários
 ├── mqtt/
-│ └── MqttPublisher.java # Publicador MQTT
+│ ├── MqttPublisher.java         // Gerencia o envio de mensagens via MQTT
+│ └── MqttToAmqpBridge.java      // Ponte que retransmite mensagens de MQTT para AMQP
 ├── rabbitmq/
 │ └── simulation/
-│ ├── InMemoryRabbitListener.java # Listener RabbitMQ simulado
-│ └── InMemoryRabbitTemplate.java # Template RabbitMQ simulado
+│ ├── InMemoryRabbitListener.java // Listener simulado para o RabbitMQ
+│ └── InMemoryRabbitTemplate.java // Template simulado para o RabbitMQ
 ├── repository/
-│ └── SensorDataRepository.java # Repositório para acesso a dados
+│ ├── AlertRepository.java       // Repositório para acesso a dados de alertas
+│ ├── SensorDataRepository.java  // Repositório para acesso a dados de sensores
+│ └── UsuarioRepository.java     // Repositório para acesso a dados de usuários
 ├── security/
-│ └── SecurityConfig.java # Configuração de segurança
+│ └── SecurityConfig.java        // Configuração principal de segurança
 ├── service/
-│ └── SensorService.java # Regras de negócio para sensores
-└── IoTApplication.java # Classe principal de inicialização
+│ ├── AlertService.java          // Lógica de negócio para alertas
+│ ├── SensorDataService.java     // Lógica de negócio para dados de sensores
+│ ├── SensorScheduler.java       // Simulação da coleta de dados em tempo real (Scheduler)
+│ ├── UsuarioService.java        // Lógica de negócio para usuários
+│ └── WeatherService.java        // Lógica de negócio para a API de clima
+└── IoTApplication.java          // Classe principal da aplicação
 ├── resources/
 │ ├── application.properties # Configurações do H2
 
 ```
-
 ---
 
 ### 🧩 Diagrama de Arquitetura
