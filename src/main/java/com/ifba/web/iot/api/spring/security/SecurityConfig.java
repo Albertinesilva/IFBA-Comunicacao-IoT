@@ -62,7 +62,7 @@ public class SecurityConfig {
         .authorizeHttpRequests(auth -> auth
             .requestMatchers("/api/auth/**").permitAll()
             .requestMatchers("/api/clima/**").authenticated()
-            .requestMatchers("/api/sensores/**").permitAll()
+            .requestMatchers("/api/sensores/**").authenticated()
             .requestMatchers("/api/rabbit/**").authenticated()
             .anyRequest().authenticated())
         .headers(headers -> headers
