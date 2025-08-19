@@ -228,7 +228,7 @@ projeto/
 
 ### ⚙️ Configuração do Projeto
 
-O projeto utiliza o banco de dados em memória H2 para facilitar testes sem necessidade de um banco externo. A configuração do datasource é feita da seguinte forma:
+O projeto utiliza o banco de dados em memória `H2` para facilitar testes sem necessidade de um banco externo. A configuração do datasource é feita da seguinte forma:
 
 ```properties
 spring.datasource.driverClassName=org.h2.Driver
@@ -237,14 +237,38 @@ spring.datasource.username=sa
 spring.datasource.password=
 ```
 
-Console do H2 está habilitado e disponível em /h2-console:
+Console do `H2` está habilitado e disponível em `/h2-console`:
 
 ```properties
 spring.h2.console.enabled=true
 spring.h2.console.path=/h2-console
+spring.h2.console.settings.web-allow-others=true
 ```
 
-O sistema de logging está configurado para registrar logs importantes em arquivo myapp.log, com limite de tamanho e histórico para rotação dos arquivos:
+Para buscar dados de clima, o projeto se integra com a `API` do `OpenWeatherMap`. A `URL` e a chave de acesso são configuradas, com a chave sendo injetada por uma variável de ambiente:
+
+```properties
+openweathermap.api.url=https://api.openweathermap.org/data/2.5/weather
+openweathermap.api.key=${CHAVE_API_WEATHER}
+```
+
+O servidor está configurado para usar `HTTPS` na porta `8443` para garantir a segurança da comunicação. O certificado `SSL` (`keystore.p12`) é referenciado a partir do classpath do projeto e suas senhas são carregadas de variáveis de ambiente:
+
+```properties
+# Ativar HTTPS
+server.port=8443
+server.ssl.enabled=true
+
+# Caminho para o certificado (JKS ou PKCS12)
+server.ssl.key-store=classpath:keystore.p12
+server.ssl.key-store-password=${SERVER_SSL}
+server.ssl.key-store-type=PKCS12
+
+# Nome comum do certificado
+server.ssl.key-alias=${SERVER_SSL_CERTIFICADO}
+```
+
+O sistema de `logging` está configurado para registrar logs importantes em arquivo `myapp.log`, com limite de tamanho e histórico para rotação dos arquivos:
 
 ```properties
 logging.level.org.springframework=INFO
@@ -553,42 +577,70 @@ Mensagem recebida pelo listener: HelloRabbit
 
 ---
 
-### 🔐 Segurança (Simulação)
+### 🔐 Segurança (Spring Security e JWT)
 
-Este projeto utiliza uma configuração básica de segurança com Spring Security apenas para fins de simulação e testes locais. As seguintes regras estão aplicadas:
+Este projeto implementa um esquema de segurança mais robusto utilizando `Spring Security` com `JSON Web Tokens` (JWT) para autenticação e autorização, garantindo que apenas usuários autenticados possam acessar as funcionalidades principais da `API`.
 
-- A autenticação está habilitada nas rotas `/api/rabbit/**` e em todas as demais rotas, **exceto** `/api/sensores`.
-- A autenticação utilizada é do tipo **HTTP Basic**, com um único usuário em memória:
-  - **Usuário:** `usuario`
-  - **Senha:** `senha123`
-- A senha não está criptografada (`{noop}`), já que o foco aqui é apenas a simulação e não a segurança real em produção.
+📊 Visão Geral
 
-#### ⚠️ Aviso
+A arquitetura de segurança segue o fluxo padrão de JWT:
 
-> Esta configuração **não deve ser usada em ambientes de produção**.  
-> Em produção, recomenda-se:
->
-> - Uso de autenticação com JWT ou OAuth2.
-> - Criptografia de senhas com `BCryptPasswordEncoder`.
-> - Proteção CSRF habilitada, especialmente para aplicações web com sessões.
+1. Um usuário envia credenciais (usuário e senha) para uma rota de login.
+
+2. Em caso de sucesso, o servidor gera um `JWT` (Bearer Token) e o retorna ao cliente.
+
+3. Para acessar rotas protegidas, o cliente deve incluir este `token` no cabeçalho `Authorization` de todas as requisições subsequentes.
+
+4. O `JwtAuthenticationFilter` intercepta as requisições, valida o `token` e autentica o usuário para que o acesso à rota seja permitido.
+
+A senha do usuário, por ser um dado sensível, é `criptografada` usando `BCrypt` antes de ser armazenada no banco de dados, o que é uma prática essencial para ambientes de produção.
+
+### 🔓 Rotas de Autenticação (Públicas)
+
+A única rota pública do projeto, que não exige `autenticação`, é a de autenticação. Isso permite que novos usuários se registrem e que usuários existentes façam `login` para obter um `token`.
+
+- `POST /api/auth/register` (Registro de novo usuário)
+
+- `POST /api/auth/login` (Obtenção do JWT)
 
 #### 🔓 Rotas públicas
 
 - `GET /api/sensores`
 - `GET /api/sensores/{id}` (ou qualquer subrota de `/api/sensores`)
 
-#### 🔐 Rotas protegidas
+#### 🔐 Rotas Protegidas
 
-Requerem autenticação com o usuário configurado:
+Todas as demais rotas da aplicação estão protegidas e exigem um `JWT` válido no cabeçalho `Authorization` para serem acessadas.
 
-- `GET/POST/etc /api/rabbit/**`
-- Qualquer outra rota não listada como pública.
+- GET /api/sensores/\*\*
+
+- POST /api/sensores/
+
+- GET/POST /api/rabbit/\*\*
+
+- GET/POST /api/mqtt/\*\*
+
+- GET /api/weather/\*\*
+
+Qualquer outra rota que não seja listada em "Rotas de Autenticação (Públicas)".
+
+Exemplo de requisição protegida:
+
+`GET /api/sensores`
+
+`Host: localhost:8443`
+
+`Authorization: Bearer <seu-jwt-token-aqui>`
 
 ---
 
 ### ✅ Conclusão:
 
-Durante o desenvolvimento desta atividade para a disciplina Tópicos Avançados em Web I, foi possível compreender a importância de estruturar um backend simulado (mock) para IoT, criando endpoints que fornecem dados fictícios para facilitar testes sem a necessidade de hardware real. O processo permitiu aprimorar habilidades na comunicação entre cliente e servidor, além da manipulação de dados para aplicações web. Assim, a atividade contribuiu para o entendimento da estruturação de endpoints e da organização dos dados para representar um sistema de agricultura inteligente. Essa experiência auxiliou no domínio de conceitos essenciais para o desenvolvimento de APIs RESTful, tornando mais claro o funcionamento de aplicações que dependem de dados externos.
+Durante o desenvolvimento desta atividade para a disciplina de Tópicos Avançados em Web I, foi possível consolidar o entendimento da importância estratégica de um backend simulado (mock) para o ecossistema de Internet das Coisas (IoT). A criação de endpoints que fornecem dados fictícios mostrou-se crucial para a fase de testes, eliminando a dependência de hardware físico e agilizando o ciclo de desenvolvimento.
+
+O processo permitiu o aprimoramento de habilidades essenciais em comunicação entre cliente e servidor, modelagem de dados e arquitetura de APIs RESTful. A estruturação dos endpoints e a organização dos dados foram fundamentais para representar de forma eficaz um sistema de agricultura inteligente, tornando tangível o fluxo de informações que viria de sensores reais.
+
+Em última análise, esta experiência contribuiu significativamente para a compreensão dos conceitos que regem o desenvolvimento de aplicações web que interagem com dados externos, fortalecendo a base para a implementação de soluções de software mais complexas e aplicáveis a cenários do mundo real.
 
 ---
 
