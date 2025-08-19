@@ -570,36 +570,58 @@ Mensagem recebida pelo listener: HelloRabbit
 
 ---
 
-### 🔐 Segurança (Simulação)
+### 🔐 Segurança (Spring Security e JWT)
 
-Este projeto utiliza uma configuração básica de segurança com Spring Security apenas para fins de simulação e testes locais. As seguintes regras estão aplicadas:
+Este projeto implementa um esquema de segurança mais robusto utilizando `Spring Security` com `JSON Web Tokens` (JWT) para autenticação e autorização, garantindo que apenas usuários autenticados possam acessar as funcionalidades principais da `API`.
 
-- A autenticação está habilitada nas rotas `/api/rabbit/**` e em todas as demais rotas, **exceto** `/api/sensores`.
-- A autenticação utilizada é do tipo **HTTP Basic**, com um único usuário em memória:
-  - **Usuário:** `usuario`
-  - **Senha:** `senha123`
-- A senha não está criptografada (`{noop}`), já que o foco aqui é apenas a simulação e não a segurança real em produção.
+📊 Visão Geral
 
-#### ⚠️ Aviso
+A arquitetura de segurança segue o fluxo padrão de JWT:
 
-> Esta configuração **não deve ser usada em ambientes de produção**.  
-> Em produção, recomenda-se:
->
-> - Uso de autenticação com JWT ou OAuth2.
-> - Criptografia de senhas com `BCryptPasswordEncoder`.
-> - Proteção CSRF habilitada, especialmente para aplicações web com sessões.
+1. Um usuário envia credenciais (usuário e senha) para uma rota de login.
+
+2. Em caso de sucesso, o servidor gera um `JWT` (Bearer Token) e o retorna ao cliente.
+
+3. Para acessar rotas protegidas, o cliente deve incluir este `token` no cabeçalho `Authorization` de todas as requisições subsequentes.
+
+4. O `JwtAuthenticationFilter` intercepta as requisições, valida o `token` e autentica o usuário para que o acesso à rota seja permitido.
+
+A senha do usuário, por ser um dado sensível, é `criptografada` usando `BCrypt` antes de ser armazenada no banco de dados, o que é uma prática essencial para ambientes de produção.
+
+### 🔓 Rotas de Autenticação (Públicas)
+
+A única rota pública do projeto, que não exige `autenticação`, é a de autenticação. Isso permite que novos usuários se registrem e que usuários existentes façam `login` para obter um `token`.
+
+- `POST /api/auth/register` (Registro de novo usuário)
+
+- `POST /api/auth/login` (Obtenção do JWT)
 
 #### 🔓 Rotas públicas
 
 - `GET /api/sensores`
 - `GET /api/sensores/{id}` (ou qualquer subrota de `/api/sensores`)
 
-#### 🔐 Rotas protegidas
+#### 🔐 Rotas Protegidas
 
-Requerem autenticação com o usuário configurado:
+Todas as demais rotas da aplicação estão protegidas e exigem um `JWT` válido no cabeçalho `Authorization` para serem acessadas.
 
-- `GET/POST/etc /api/rabbit/**`
-- Qualquer outra rota não listada como pública.
+- GET /api/sensores/**
+
+- POST /api/sensores/
+
+- GET/POST /api/rabbit/**
+
+- GET/POST /api/mqtt/**
+
+- GET /api/weather/**
+
+Qualquer outra rota que não seja listada em "Rotas de Autenticação (Públicas)".
+
+Exemplo de requisição protegida:
+
+`GET /api/sensores
+Host: localhost:8443
+Authorization: Bearer <seu-jwt-token-aqui>`
 
 ---
 
