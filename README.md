@@ -15,6 +15,16 @@ Trata-se de uma simulação educacional e funcional de um sistema `IoT` (Interne
 📄 Para ver os resultados e registros do sistema em execução, [clique aqui](https://github.com/Albertinesilva/IFBA-Comunicacao-IoT/blob/main/LOG.md) para ver os logs detalhados do projeto.
 
 🖼️ Para visualizar as telas e a interface do sistema, [clique aqui](https://github.com/Albertinesilva/IFBA-Comunicacao-IoT/blob/main/FRONT-END.md) para ver as capturas de tela do frontend.
+
+📚 Para acessar a documentação técnica completa do backend gerada com JavaDocs, basta rodar o comando:
+```java
+mvn javadoc:javadoc
+```
+Os arquivos serão gerados em:
+```java
+/target/site/apidocs/index.html
+```
+
 </div>
 
 ---
