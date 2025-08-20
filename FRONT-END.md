@@ -21,25 +21,23 @@ O **Live Server** irá iniciar um servidor local e abrir a página no seu navega
 
 ### Telas do Sistema
 
-Visão Geral das Principais Telas
-Aqui estão as telas Home, a página de Login e a de Cadastro.
+Telas `Home`, `Cadastro` e `Login`.
 
-<div style="display: flex; flex-direction: row; justify-content: space-around; gap: 1rem;">
+<div style="display: flex; align-items: center; justify-content: center; gap: 16px;">
+  <img src="src/main/resources/static/assets/img/frontend/Home.png" alt="Tela inicial (Home)" width="30%" height="300">
 
-<div style="flex-basis: 30%;">
-<img src="src/main/resources/static/assets/img/frontend/Home.png" alt="Tela inicial (Home)" width="200">
-<p style="text-align: center; font-style: italic; color: #555;">Tela Home</p>
+  <img src="https://github.githubassets.com/images/icons/emoji/octocat.png" alt="Octocat" width="30px">
+
+  <img src="src/main/resources/static/assets/img/frontend/Signup.png" alt="Tela de Cadastro" width="30%" height="280">
+
+  <img src="https://github.githubassets.com/images/icons/emoji/octocat.png" alt="Octocat" width="30px">
+
+  <img src="src/main/resources/static/assets/img/frontend/Login.png" alt="Tela de Login" width="30%" height="280">
 </div>
 
-<div style="flex-basis: 30%;">
-<img src="src/main/resources/static/assets/img/frontend/Login.png" alt="Tela de Login" width="200">
-<p style="text-align: center; font-style: italic; color: #555;">Tela de Login</p>
-</div>
+---
+Tela de `Escolha`
 
-<div style="flex-basis: 30%;">
-<img src="src/main/resources/static/assets/img/frontend/Signup.png" alt="Tela de Cadastro (Signup)" width="200">
-<p style="text-align: center; font-style: italic; color: #555;">Tela de Cadastro</p>
-</div>
+A tela de escolha é o ponto de partida. Ela permite para onde ir dentro do aplicativo.
 
-</div>
-
+<img src="src/main/resources/static/assets/img/frontend/Choice.png" alt="Tela de Login" width="50%" height="450">
