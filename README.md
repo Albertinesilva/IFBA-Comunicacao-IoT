@@ -425,6 +425,10 @@ Obtém dados de clima de uma cidade pelo nome, sigla ou ID.
 
 📤 Resposta de Erro (404 Not Found):
 
+❌ Erro ao buscar dados de clima da API do OpenWeather: 404 Not Found on GET request for "https://api.openweathermap.org/data/2.5/weather": "{"cod":"404","message":"city not found"}"
+
+❌ Não foi possível obter os dados de clima para a cidade: Porto Alegre
+
 ---
 
 `GET: /api/sensores`, Lista todas as leituras registradas.
