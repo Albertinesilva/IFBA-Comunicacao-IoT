@@ -21,7 +21,7 @@ O **Live Server** irá iniciar um servidor local e abrir a página no seu navega
 
 ### Telas do Sistema
 
-Telas `Home`, `Cadastro` e `Login`.
+#### Telas `Home`, `Cadastro` e `Login`.
 
 <div style="display: flex; align-items: center; justify-content: center; gap: 16px;">
   <img src="src/main/resources/static/assets/img/frontend/Home.png" alt="Tela inicial (Home)" width="30%" height="300">
@@ -36,8 +36,21 @@ Telas `Home`, `Cadastro` e `Login`.
 </div>
 
 ---
-Tela de `Escolha`
+#### Tela de `Escolha`.
 
 A tela de escolha é o ponto de partida. Ela permite para onde ir dentro do aplicativo.
 
-<img src="src/main/resources/static/assets/img/frontend/Choice.png" alt="Tela de Login" width="50%" height="450">
+<img src="src/main/resources/static/assets/img/frontend/Choice.png" alt="Tela de Escolha" width="50%" height="450">
+
+---
+#### Telas de alertas de `Temperatura`, `Umidade` e `Luminosidade`.
+
+🌡️ `Temperatura Acima de 30 ºC`
+
+<img src="src/main/resources/static/assets/img/frontend/Alert-Temperatura.png" alt="Tela de Alert de Temperatura" width="100%" height="100%">
+
+---
+
+💧 `Umidade Abaixo de 100,00 %`
+
+<img src="src/main/resources/static/assets/img/frontend/Alert-Umidade.png" alt="Tela de Alert de Umidade" width="100%" height="100%">
