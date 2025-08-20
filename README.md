@@ -329,12 +329,31 @@ https://localhost:8443/api/**
 }
 ```
 
+`Post: /api/auth`, Login no sistema
+
+📥 Requisição (JSON):
+
+```json
+{
+    "email": "iot@ifba.edu.br",
+    "senha": "123456"
+}
+```
+
+📤 Resposta, (Bearer Token):
+
+```json
+{
+    "token": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhbGJlcnRpbmVzaWx2YUBnbWFpbC5jb20iLCJpYXQiOjE3NTU3MDQwNjIsImV4cCI6MTc1NTcwNzY2Mn0.xghotnVpGEK1Z6_GWQveaEXoVmxg4jGmRWku5RZRrhg"
+}
+```
+
 `GET: /api/sensores`, Lista todas as leituras registradas.
 
 📥 Requisição:
 Nenhum corpo necessário.
 
-📤 Resposta:
+📤 Resposta (Lista de leituras):
 
 ```json
 [
