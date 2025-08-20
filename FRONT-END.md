@@ -60,3 +60,10 @@ A tela de escolha é o ponto de partida. Ela permite para onde ir dentro do apli
 <img src="src/main/resources/static/assets/img/frontend/Alert-Luminosidade.png" alt="Tela de Alert de Luminosidade" width="100%" height="100%">
 
 ---
+### Tela de Gráfico
+
+Visualização de Dados com `Gráficos`
+
+<img src="src/main/resources/static/assets/img/frontend/Chart-View.png" alt="Tela de Graficos" width="100%" height="100%">
+
+---
