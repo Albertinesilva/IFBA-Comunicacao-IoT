@@ -232,19 +232,16 @@ projeto/
 
 O projeto utiliza o banco de dados em memória `H2` para facilitar testes sem necessidade de um banco externo. A configuração do datasource é feita da seguinte forma:
 
+Console do `H2` está habilitado e disponível em `/h2-console`:
+
 ```properties
 spring.datasource.driverClassName=org.h2.Driver
 spring.datasource.url=jdbc:h2:mem:testdb
 spring.datasource.username=sa
 spring.datasource.password=
-```
 
-Console do `H2` está habilitado e disponível em `/h2-console`:
-
-```properties
 spring.h2.console.enabled=true
 spring.h2.console.path=/h2-console
-spring.h2.console.settings.web-allow-others=true
 ```
 Para buscar dados de clima, o projeto se integra com a `API` do `OpenWeatherMap`. A `URL` e a chave de acesso são configuradas, com a chave sendo injetada por uma variável de ambiente:
 
@@ -304,12 +301,33 @@ cd nome-do-projeto
 4. Acesse a API:
 
 ```bash
-http://localhost:8080/api/sensores
+https://localhost:8443/api/**
 ```
 
 ---
 
 ### 🔌 Endpoints Principais:
+
+`Post: /api/auth/register`, Cadastra um novo usuário no sistema.
+
+📥 Requisição (JSON):
+
+```json
+{
+    "nome": "nome",
+    "email": "iot@ifba.edu.br",
+    "senha": "123456"
+}
+```
+
+📤 Resposta, (DTO com dados mascarados):
+
+```json
+{
+    "nomeMascarado": "n**e",
+    "emailMascarado": "i***ifba.edu.br"
+}
+```
 
 `GET: /api/sensores`, Lista todas as leituras registradas.
 
