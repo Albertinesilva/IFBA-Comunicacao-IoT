@@ -329,6 +329,8 @@ https://localhost:8443/api/**
 }
 ```
 
+---
+
 `Post: /api/auth`, Login no sistema
 
 📥 Requisição (JSON):
@@ -347,6 +349,8 @@ https://localhost:8443/api/**
     "token": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhbGJlcnRpbmVzaWx2YUBnbWFpbC5jb20iLCJpYXQiOjE3NTU3MDQwNjIsImV4cCI6MTc1NTcwNzY2Mn0.xghotnVpGEK1Z6_GWQveaEXoVmxg4jGmRWku5RZRrhg"
 }
 ```
+
+---
 
 GET /api/clima
 Obtém dados de clima de uma cidade pelo nome, sigla ou ID.
@@ -421,6 +425,8 @@ Obtém dados de clima de uma cidade pelo nome, sigla ou ID.
 
 📤 Resposta de Erro (404 Not Found):
 
+---
+
 `GET: /api/sensores`, Lista todas as leituras registradas.
 
 📥 Requisição:
@@ -454,6 +460,33 @@ Nenhum corpo necessário.
 ]
 ```
 
+---
+
+`Put /api/sensores/alertas/status/false`, Desabilita o salvamento no banco.
+
+📥 Requisição:
+Nenhum corpo necessário.
+
+📤 Resposta (com alerta):
+```json
+🛑 Salvamento de alertas desativado.
+```
+
+---
+
+`Put /api/sensores/alertas/status/true`, Habilita o salvamento no banco.
+
+📥 Requisição:
+Nenhum corpo necessário.
+
+📤 Resposta (com alerta):
+
+```json
+✅ Salvamento de alertas ativado.
+```
+
+---
+
 `POST: /api/sensores`, Registra uma nova leitura de sensor. A lógica interna avalia o tipo de sensor e direciona a mensagem ao protocolo adequado (MQTT ou AMQP), podendo emitir alertas.
 
 📥 Requisição (JSON):
@@ -481,6 +514,8 @@ Nenhum corpo necessário.
 }
 ```
 
+---
+
 📥 Exemplo com valor normal:
 
 ```json
@@ -506,6 +541,8 @@ Nenhum corpo necessário.
 }
 ```
 
+---
+
 📥 Exemplo com sensor de umidade:
 
 ```json
@@ -530,6 +567,8 @@ Nenhum corpo necessário.
   "protocolo": "AMQP >> Umidade do ar monitorada: 25.6 %"
 }
 ```
+
+---
 
 📥 Exemplo com sensor de luminosidade:
 
@@ -578,6 +617,8 @@ Nenhum corpo necessário.
 📡 AMQP >> Umidade do ar monitorada: 27.8 %
 ```
 
+---
+
 🔆 Luminosidade (lx):
 
 ```json
@@ -593,6 +634,8 @@ Nenhum corpo necessário.
 ```json
 📡 AMQP >> Nível de luz solar captado: 30.0 lx
 ```
+
+---
 
 🌫️ Umidade (%):
 
@@ -632,6 +675,8 @@ Nenhum corpo necessário.
 📡 MQTT >> Enviando dados de Umidade para o sistema de monitoramento da fazenda: 55.2 %
 ```
 
+---
+
 🔆 Luminosidade (lx):
 
 ```json
@@ -647,6 +692,8 @@ Nenhum corpo necessário.
 ```json
 📡 MQTT >> Enviando dados de luminosidade para o sistema de monitoramento da fazenda: 20.2 lx
 ```
+
+---
 
 🌡️ Temperatura (C):
 
@@ -711,24 +758,15 @@ A única rota pública do projeto, que não exige `autenticação`, é a de aute
 
 - `POST /api/auth/login` (Obtenção do JWT)
 
-#### 🔓 Rotas públicas
-
-- `GET /api/sensores`
-- `GET /api/sensores/{id}` (ou qualquer subrota de `/api/sensores`)
-
 #### 🔐 Rotas Protegidas
 
 Todas as demais rotas da aplicação estão protegidas e exigem um `JWT` válido no cabeçalho `Authorization` para serem acessadas.
 
-- GET /api/sensores/**
+- /api/sensores/**
 
-- POST /api/sensores/
+- /api/rabbit/**
 
-- GET/POST /api/rabbit/**
-
-- GET/POST /api/mqtt/**
-
-- GET /api/weather/**
+- /api/clima/**
 
 Qualquer outra rota que não seja listada em "Rotas de Autenticação (Públicas)".
 
