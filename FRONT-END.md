@@ -50,7 +50,13 @@ A tela de escolha é o ponto de partida. Ela permite para onde ir dentro do apli
 <img src="src/main/resources/static/assets/img/frontend/Alert-Temperatura.png" alt="Tela de Alert de Temperatura" width="100%" height="100%">
 
 ---
-
 💧 `Umidade Abaixo de 100,00 %`
 
 <img src="src/main/resources/static/assets/img/frontend/Alert-Umidade.png" alt="Tela de Alert de Umidade" width="100%" height="100%">
+
+---
+💡 `Luminosidade Abaixo de 200,00 Lux`
+
+<img src="src/main/resources/static/assets/img/frontend/Alert-Luminosidade.png" alt="Tela de Alert de Luminosidade" width="100%" height="100%">
+
+---
