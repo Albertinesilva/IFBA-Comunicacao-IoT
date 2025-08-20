@@ -154,7 +154,7 @@ projeto/
 ### 🧩 Diagrama de Arquitetura
 
 ```java
-[🧑‍💻 Frontend ou Cliente REST (Postman, Angular, etc.)]
+[🧑‍💻 Frontend ou Cliente REST (Postman, JavaScript API fetch, Angular, etc.)]
              | (Requisições HTTP)
              ▼
 [🔐 Spring Security / Filtro JWT (Autenticação)]
