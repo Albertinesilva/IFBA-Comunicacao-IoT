@@ -19,3 +19,27 @@ O **Live Server** irá iniciar um servidor local e abrir a página no seu navega
 
 ---
 
+### Telas do Sistema
+
+Visão Geral das Principais Telas
+Aqui estão as telas Home, a página de Login e a de Cadastro.
+
+<div style="display: flex; flex-direction: row; justify-content: space-around; gap: 1rem;">
+
+<div style="flex-basis: 30%;">
+<img src="src/main/resources/static/assets/img/frontend/Home.png" alt="Tela inicial (Home)" width="200">
+<p style="text-align: center; font-style: italic; color: #555;">Tela Home</p>
+</div>
+
+<div style="flex-basis: 30%;">
+<img src="src/main/resources/static/assets/img/frontend/Login.png" alt="Tela de Login" width="200">
+<p style="text-align: center; font-style: italic; color: #555;">Tela de Login</p>
+</div>
+
+<div style="flex-basis: 30%;">
+<img src="src/main/resources/static/assets/img/frontend/Signup.png" alt="Tela de Cadastro (Signup)" width="200">
+<p style="text-align: center; font-style: italic; color: #555;">Tela de Cadastro</p>
+</div>
+
+</div>
+
