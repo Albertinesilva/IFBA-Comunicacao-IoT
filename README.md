@@ -349,7 +349,7 @@ https://localhost:8443/api/**
 ```
 
 GET /api/clima
-Obtém dados de clima de uma cidade pelo nome ou ID.
+Obtém dados de clima de uma cidade pelo nome, sigla ou ID.
 
 📥 Requisição (Parâmetros de Query):
 
@@ -364,6 +364,7 @@ Obtém dados de clima de uma cidade pelo nome ou ID.
 
 📤 Resposta de Sucesso (200 OK):
 
+**Nome do Estado**: `Bahia` ou `BA`
 ```json
 {
     "main": {
@@ -381,7 +382,7 @@ Obtém dados de clima de uma cidade pelo nome ou ID.
     "name": "Estado de Bahia"
 }
 ```
-
+**Nome da cidade**: `Recife`
 ```json
 {
     "main": {
@@ -399,7 +400,7 @@ Obtém dados de clima de uma cidade pelo nome ou ID.
     "name": "Recife"
 }
 ```
-
+**Pelo `ID`**: `3451190`
 ```json
 {
     "main": {
