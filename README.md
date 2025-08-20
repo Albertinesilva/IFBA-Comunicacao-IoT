@@ -348,6 +348,78 @@ https://localhost:8443/api/**
 }
 ```
 
+GET /api/clima
+Obtém dados de clima de uma cidade pelo nome ou ID.
+
+📥 Requisição (Parâmetros de Query):
+
+- Por nome de Estado ou Sigla:
+- ?city=Bahia
+- ?cyti=BA
+
+- Por nome da cidade:
+- ?city=Recife
+
+- Por ID da cidade (Rio de Janeiro): ?id=3451190
+
+📤 Resposta de Sucesso (200 OK):
+
+```json
+{
+    "main": {
+        "temp": 27.42,
+        "humidity": 26
+    },
+    "weather": [
+        {
+            "description": "nuvens dispersas"
+        }
+    ],
+    "wind": {
+        "speed": 3.66
+    },
+    "name": "Estado de Bahia"
+}
+```
+
+```json
+{
+    "main": {
+        "temp": 28.02,
+        "humidity": 78
+    },
+    "weather": [
+        {
+            "description": "nuvens dispersas"
+        }
+    ],
+    "wind": {
+        "speed": 6.69
+    },
+    "name": "Recife"
+}
+```
+
+```json
+{
+    "main": {
+        "temp": 30.39,
+        "humidity": 41
+    },
+    "weather": [
+        {
+            "description": "céu limpo"
+        }
+    ],
+    "wind": {
+        "speed": 4.63
+    },
+    "name": "Rio de Janeiro"
+}
+```
+
+📤 Resposta de Erro (404 Not Found):
+
 `GET: /api/sensores`, Lista todas as leituras registradas.
 
 📥 Requisição:
