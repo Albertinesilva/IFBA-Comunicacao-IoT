@@ -274,6 +274,25 @@ server.ssl.key-store-type=PKCS12
 # Nome comum do certificado
 server.ssl.key-alias=${SERVER_SSL_CERTIFICADO}
 ```
+
+📡 Configurações de Mensageria `(MQTT e AMQP)`
+
+Este bloco define as variáveis de ambiente utilizadas para a comunicação do sistema com `brokers` de mensagens.
+
+- `MQTT`: protocolo leve usado principalmente para dispositivos `IoT`, configurado com `URL`, credenciais e tópico de `publicação/assinatura`.
+
+- `AMQP`: protocolo robusto usado para filas de mensagens, configurado com `exchange` e `routing key` para roteamento das mensagens.
+
+```properties
+mqtt.url=${MQTT_URL}
+mqtt.username=${MQTT_USER}
+mqtt.password=${MQTT_PASS}
+mqtt.topic=${MQTT_TOPIC}
+
+amqp.exchange=${AMQP_EXCHANGE}
+amqp.routing.key=${AMQP_ROUTING_KEY}
+```
+
 O sistema de `logging` está configurado para registrar logs importantes em arquivo `myapp.log`, com limite de tamanho e histórico para rotação dos arquivos:
 
 ```properties
