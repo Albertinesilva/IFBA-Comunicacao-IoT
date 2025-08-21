@@ -240,9 +240,9 @@ projeto/
 
 ### ⚙️ Configuração do Projeto
 
-O projeto utiliza o banco de dados em memória `H2` para facilitar testes sem necessidade de um banco externo. A configuração do datasource é feita da seguinte forma:
+💾 Banco de Dados (H2)
 
-Console do `H2` está habilitado e disponível em `/h2-console`:
+O projeto utiliza o banco de dados em memória `H2` para facilitar testes sem necessidade de um banco externo. A configuração do datasource é feita da seguinte forma:
 
 ```properties
 spring.datasource.driverClassName=org.h2.Driver
@@ -253,12 +253,16 @@ spring.datasource.password=
 spring.h2.console.enabled=true
 spring.h2.console.path=/h2-console
 ```
+🌦️ Integração com OpenWeatherMap
+
 Para buscar dados de clima, o projeto se integra com a `API` do `OpenWeatherMap`. A `URL` e a chave de acesso são configuradas, com a chave sendo injetada por uma variável de ambiente:
 
 ```properties
 openweathermap.api.url=https://api.openweathermap.org/data/2.5/weather
 openweathermap.api.key=${CHAVE_API_WEATHER}
 ```
+🔒 Segurança (HTTPS/SSL)
+
 O servidor está configurado para usar `HTTPS` na porta `8443` para garantir a segurança da comunicação. O certificado `SSL` (`keystore.p12`) é referenciado a partir do classpath do projeto e suas senhas são carregadas de variáveis de ambiente:
 
 ```properties
@@ -292,6 +296,7 @@ mqtt.topic=${MQTT_TOPIC}
 amqp.exchange=${AMQP_EXCHANGE}
 amqp.routing.key=${AMQP_ROUTING_KEY}
 ```
+📝 Logging
 
 O sistema de `logging` está configurado para registrar logs importantes em arquivo `myapp.log`, com limite de tamanho e histórico para rotação dos arquivos:
 
