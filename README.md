@@ -91,9 +91,9 @@ Visão Geral das Funcionalidades:
 
 Este projeto implementa uma solução de monitoramento de sensores IoT para a agricultura, oferecendo as seguintes funcionalidades principais:
 
--  **Simulação de Sensores (Camada Edge):** Uma rotina agendada (`Scheduler`) simula a coleta de dados de sensores de temperatura, umidade e luminosidade a cada 10 segundos, injetando leituras realistas no sistema.
+-  **Simulação e Coleta de Dados de Sensores (Camada Edge):** Uma rotina agendada (`Scheduler`) simula a coleta de dados de sensores de temperatura, umidade e luminosidade a cada 10 segundos, injetando leituras realistas no sistema. Este módulo pode operar tanto em modo de simulação, quanto recebendo dados de `brokers` de mensagens reais.
 
--  **Processamento e Publicação de Dados (Camada Fog):** Cada leitura de sensor é processada e publicada em tempo real, utilizando os protocolos de mensageria `AMQP` e `MQTT` para garantir a comunicação eficiente com outros sistemas.
+-  **Processamento e Publicação de Dados (Camada Fog):** Cada leitura de sensor é processada e publicada em tempo real. O sistema agora suporta tanto a simulação da mensageria quanto a integração real utilizando os protocolos `AMQP` (`RabbitMQ`) e `MQTT`. Isso garante uma comunicação eficiente com outros sistemas e reflete um cenário de produção.
 
 -  **Detecção de Alertas em Tempo Real:** O sistema detecta automaticamente anomalias nos dados dos sensores, como temperaturas elevadas, umidade fora da faixa ideal ou baixa luminosidade. Quando uma anomalia é identificada, um alerta é gerado e, opcionalmente, salvo no banco de dados.
 
@@ -112,9 +112,11 @@ Justificativa da escolha dos protocolos de comunicação: foram selecionados tr�
 
 ---
 
-### 🧪 Simulação de Comunicação IoT
+### 🧪 Simulação e 🔗 Integração de Comunicação IoT
 
-Este projeto **não se conecta a um broker real**, e sim simula todo o comportamento do `RabbitMQ` e `MQTT` **em memória**, permitindo que estudantes, professores ou curiosos possam entender o funcionamento de um sistema IoT sem a necessidade de infraestrutura adicional.
+Este projeto oferece um Modo de Simulação que replica o comportamento dos protocolos `RabbitMQ` e `MQTT` em memória. Essa funcionalidade é ideal para fins de aprendizado, permitindo que estudantes e entusiastas compreendam a arquitetura `IoT` sem a necessidade de infraestrutura adicional.
+
+Além disso, o projeto conta com um Modo de Integração Real, que se conecta a `brokers` de mensageria externos, demonstrando um cenário de produção completo.
 
 ---
 
@@ -133,49 +135,74 @@ A arquitetura do projeto simula a distribuição do processamento, uma caracter�
 - 📂 Estrutura do Projeto
 
 ```java
-projeto/
-├── amqp/
-│ └── AmqpPublisher.java         // Gerencia o envio de mensagens via AMQP
-├── config/
-│ └── CorsConfig.java            // Configuração de CORS para a API
-├── controller/
-│ ├── dto/                       // Data Transfer Objects (DTOs) para a API
-│ ├── form/                      // Formulários de entrada para a API
-│ ├── view/                      // Visualizações de resposta
-│ ├── AuthController.java        // Controlador para autenticação e registro de usuários
-│ ├── RabbitSimulationController.java // Controlador para simular mensagens RabbitMQ
-│ ├── SensorDataController.java    // Controlador para gerenciar dados de sensores
-│ └── WeatherController.java     // Controlador para dados de clima de API externa
-├── jwt/
-│ ├── JwtAuthenticationFilter.java // Filtro de autenticação JWT
-│ └── JwtUtil.java               // Utilitário para manipulação de tokens JWT
-├── model/
-│ ├── Alert.java                 // Modelo de dados para alertas
-│ ├── SensorData.java            // Modelo de dados para leituras de sensores
-│ └── Usuario.java               // Modelo de dados para usuários
-├── mqtt/
-│ ├── MqttPublisher.java         // Gerencia o envio de mensagens via MQTT
-│ └── MqttToAmqpBridge.java      // Ponte que retransmite mensagens de MQTT para AMQP
-├── rabbitmq/
-│ └── simulation/
-│ ├── InMemoryRabbitListener.java // Listener simulado para o RabbitMQ
-│ └── InMemoryRabbitTemplate.java // Template simulado para o RabbitMQ
-├── repository/
-│ ├── AlertRepository.java       // Repositório para acesso a dados de alertas
-│ ├── SensorDataRepository.java  // Repositório para acesso a dados de sensores
-│ └── UsuarioRepository.java     // Repositório para acesso a dados de usuários
-├── security/
-│ └── SecurityConfig.java        // Configuração principal de segurança
-├── service/
-│ ├── AlertService.java          // Lógica de negócio para alertas
-│ ├── SensorDataService.java     // Lógica de negócio para dados de sensores
-│ ├── SensorScheduler.java       // Simulação da coleta de dados em tempo real (Scheduler)
-│ ├── UsuarioService.java        // Lógica de negócio para usuários
-│ └── WeatherService.java        // Lógica de negócio para a API de clima
-└── IoTApplication.java          // Classe principal da aplicação
-├── resources/
-│ ├── application.properties # Configurações do H2
-
+src/main/java/com/ifba/web/iot/api/spring
+├── amqp/                   // Aspectos (AOP) para lidar com funcionalidades cruzadas, como log ou segurança.
+│   └── AnqpPublisher.java // Publica mensagens ANQP, um aspecto para comunicação.
+│
+├── config/                // Configurações da aplicação e de terceiros.
+│   ├── CorsConfig.java    // Configurações para o CORS (Cross-Origin Resource Sharing).
+│   ├── MqttAnqpConfig.java// Configurações específicas para o cliente MQTT.
+│   └── RabbitMqpConfig.java// Configurações específicas para o cliente RabbitMQ.
+│
+├── controller/            // Camada de apresentação que lida com as requisições HTTP e roteia para os serviços.
+│   ├── dto/               // Objetos de Transferência de Dados (Data Transfer Objects).
+│   │   ├── form/          // Formulários para entrada de dados.
+│   │   │   ├── LoginForm.java  // Formulário para o login do usuário.
+│   │   │   └── RegisterForm.java // Formulário para o registro de novos usuários.
+│   │   └── view/          // Objetos para representar dados na camada de visualização.
+│   │       ├── LoginView.java   // Visão para os dados de login.
+│   │       ├── SensorView.java  // Visão para os dados do sensor.
+│   │       ├── UsuarioView.java // Visão para os dados do usuário.
+│   │       └── WeatherView.java // Visão para os dados meteorológicos.
+│   ├── AuthController.java// Lida com requisições de autenticação e autorização.
+│   ├── RabbitDataController.java// Gerencia o fluxo de dados via RabbitMQ.
+│   ├── SensorDataController.java// Gerencia o fluxo de dados do sensor.
+│   └── WeatherController.java // Lida com requisições relacionadas a dados meteorológicos.
+│
+├── jwt/                   // Classes relacionadas à segurança e tokens JWT.
+│   ├── JwtAuthenticationFilter.java // Filtro para interceptar requisições e validar o token JWT.
+│   └── JwtUtil.java       // Utilitário para gerar e validar tokens JWT.
+│
+├── model/                 // Camada de domínio que representa os dados da aplicação.
+│   ├── Alert.java         // Representa um alerta gerado por um sensor.
+│   ├── SensorData.java    // Representa os dados coletados por um sensor.
+│   └── Usuario.java       // Representa a entidade de usuário.
+│
+├── mqtt/                  // Classes relacionadas ao protocolo de comunicação MQTT.
+│   ├── MqttPublisher.java // Publica mensagens para um broker MQTT.
+│   └── MqttToAnqpBridge.java// Ponte entre o MQTT e o ANQP.
+│
+├── rabbitmq/              // Classes relacionadas ao protocolo de comunicação RabbitMQ.
+│   └── simulation/        // Simulação do ambiente RabbitMQ.
+│       ├── InMemoryRabbitListener.java // Simula um listener de mensagens em memória.
+│       └── InMemoryRabbitTemplate.java // Simula um template de envio de mensagens em memória.
+│
+├── repository/            // Camada de persistência que lida com o acesso aos dados.
+│   ├── AlertRepository.java// Interface de repositório para a entidade Alert.
+│   ├── SensorDataRepository.java// Interface de repositório para a entidade SensorData.
+│   └── UsuarioRepository.java// Interface de repositório para a entidade Usuario.
+│
+├── security/              // Configurações e classes de segurança.
+│   └── SecurityConfig.java// Configurações globais de segurança da aplicação.
+│
+└── service/               // Camada de negócios que contém a lógica da aplicação.
+    ├── AlertService.java  // Lógica para lidar com alertas.
+    ├── AnqpConsumerService.java// Consumidor de mensagens ANQP.
+    ├── AnqpProducerService.java// Produtor de mensagens ANQP.
+    ├── MqttBridgeService.java// Serviço de ponte para MQTT.
+    ├── SensorDataService.java// Lógica para lidar com os dados do sensor.
+    ├── SensorScheduler.java // Serviço para agendamento de tarefas de coleta de dados.
+    ├── UsuarioService.java  // Lógica de negócio para a entidade de usuário.
+    └── WeatherService.java  // Lógica para lidar com dados meteorológicos.
+Application.java           // Classe principal da aplicação, ponto de entrada.
+├── resources/        // Diretório para arquivos de configuração, templates e arquivos estáticos.
+├── static/                // Arquivos estáticos (CSS, JavaScript, imagens, etc.).
+├── templates/             // Templates de páginas web (ex: HTML, Thymeleaf).
+├── application-dev.properties // Propriedades de configuração para o ambiente de desenvolvimento.
+├── application-prod.properties// Propriedades de configuração para o ambiente de produção.
+├── application-test.properties// Propriedades de configuração para o ambiente de teste.
+├── application.properties // Propriedades gerais da aplicação.
+└── keystore.p12  // Arquivo de chave para segurança e criptografia.
 ```
 ---
 
