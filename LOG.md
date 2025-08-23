@@ -24,7 +24,7 @@ Este log detalha o ciclo completo de uma mensagem, desde a sua origem até a ten
 
 📦 Fluxo de Mensagens Completo (Simulado)
 
-## ![Sensor Log](src/main/resources/static/assets/img/mqtt-amqp/Fluxo-de-Messagens.png)
+## ![Sensor Log](src/main/resources/static/assets/img/mqtt-amqp/Fluxo-de-Mensagens.png)
 
 ## 📋 Listagem de Sensores
 
