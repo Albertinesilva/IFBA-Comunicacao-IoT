@@ -20,7 +20,7 @@ Este log detalha o ciclo completo de uma mensagem, desde a sua origem até a ten
 
 - **Validação da Comunicação:** O log comprova que a arquitetura de comunicação entre `MQTT` e `RabbitMQ` está funcional. A falha é na etapa de validação e processamento da mensagem, o que destaca a importância de garantir que o formato dos dados recebidos esteja sempre correto.
 
-## ![Sensor Log](src/main/resources/static/assets/img/mqtt-amqp/Analise.Processamento-Dados.png)
+## ![Sensor Log](src/main/resources/static/assets/img/mqtt-amqp/Analise-Processamento-Dados.png)
 
 📦 Fluxo de Mensagens Completo (Simulado)
 
