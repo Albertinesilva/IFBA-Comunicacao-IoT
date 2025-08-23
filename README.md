@@ -264,7 +264,12 @@ Application.java           // Classe principal da aplicação, ponto de entrada.
 - ☕ **Java 17+**
 - 🌱 **Spring Boot 3.5.0**
 - 🔐 **Spring Security**
-- 📡 **MQTT (simulado)**
+
+📡 **MQTT (simulado)**
+
+- **Mosquitto Broker:** Para um ambiente real, um `broker` `MQTT` dedicado, como o `Mosquitto`, é usado para gerenciar a troca de mensagens.
+- Eclipse Paho Java Client: Uma biblioteca Java robusta para conectar o `Spring Boot` ao `broker` `Mosquitto`.
+
 - 📬 **RabbitMQ/AMQP (simulado)**
 - 🧵 **Concurrent Collections**
 - 🐘 **Maven**
@@ -280,6 +285,12 @@ Application.java           // Classe principal da aplicação, ponto de entrada.
 - 🔍 APIs `REST` para sensores.
 - 🔐 Segurança com autenticação JWT.
 - 🧩 Arquitetura modular e extensível.
+
+### 💡 Funcionalidades Adicionais
+
+- 📊 **Processamento de Dados em Tempo Real:** A aplicação se conecta a um `broker` `MQTT` real para receber e processar dados de `sensores` em tempo real.
+- 📈 **Gestão de Conexão com o Broker:** Implementação de lógica para reconectar automaticamente ao `broker MQTT` em caso de falha de conexão.
+- ⚙️ Topics Flexíveis: A aplicação é configurada para se inscrever em múltiplos tópicos (ex: `dados/sensores/#`) para capturar dados de diferentes locais ou tipos de sensores.
 
 ---
 
@@ -332,14 +343,29 @@ Este bloco define as variáveis de ambiente utilizadas para a comunicação do s
 
 - `AMQP`: protocolo robusto usado para filas de mensagens, configurado com `exchange` e `routing key` para roteamento das mensagens.
 
+📶 Configurações MQTT (IoT)
 ```properties
-mqtt.url=${MQTT_URL}
-mqtt.username=${MQTT_USER}
-mqtt.password=${MQTT_PASS}
-mqtt.topic=${MQTT_TOPIC}
+# URL do broker MQTT, usando variável de ambiente.
+mqtt.url=${MQTT_URL:tcp://localhost:1883}
 
-amqp.exchange=${AMQP_EXCHANGE}
-amqp.routing.key=${AMQP_ROUTING_KEY}
+# Credenciais de acesso
+mqtt.username=${MQTT_USER:guest}
+mqtt.password=${MQTT_PASS:guest}
+
+# Tópico principal para comunicação
+mqtt.topic=${MQTT_TOPIC:dados/sensores}
+
+# ID único do cliente (opcional, mas recomendado)
+mqtt.client.id=${MQTT_CLIENT_ID:iot-client-1234}
+```
+📨 Configurações AMQP (Filas)
+```properties
+# Exchange e Routing Key para roteamento de mensagens
+amqp.exchange=${AMQP_EXCHANGE:amqp.direct}
+amqp.routing.key=${AMQP_ROUTING_KEY:iot.routing}
+
+# Nome da fila
+amqp.queue=${AMQP_QUEUE:iot-queue}
 ```
 📝 Logging
 
