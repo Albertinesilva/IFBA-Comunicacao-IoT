@@ -6,7 +6,7 @@ Esta seção apresenta imagens capturadas durante os testes dos endpoints e da i
 
 Este log de inicialização detalha a configuração bem-sucedida dos componentes de mensageria da aplicação. Ele confirma que o sistema está pronto para interagir com o `broker RabbitMQ`, com a criação da fila `iot-queue` e do `iot-exchange`, e também com o `broker MQTT` (em `localhost`), onde se conecta e se inscreve para receber mensagens do tópico `dados/sensores/local1`. Esses eventos atestam que a aplicação está totalmente operacional para a comunicação e o processamento de dados de sensores.
 
-## ![Sensor Log](src/main/resources/static/assets/img/insert/1id.png)
+## ![Sensor Log](src/main/resources/static/assets/img/mqtt-amqp/Configuracao-Messageria.png)
 
 ## 🔄 Análise do Processamento de Dados MQTT
 
@@ -20,9 +20,11 @@ Este log detalha o ciclo completo de uma mensagem, desde a sua origem até a ten
 
 - **Validação da Comunicação:** O log comprova que a arquitetura de comunicação entre `MQTT` e `RabbitMQ` está funcional. A falha é na etapa de validação e processamento da mensagem, o que destaca a importância de garantir que o formato dos dados recebidos esteja sempre correto.
 
-## ![Sensor Log](src/main/resources/static/assets/img/insert/1id.png)
+## ![Sensor Log](src/main/resources/static/assets/img/mqtt-amqp/Analise.Processamento-Dados.png)
 
 📦 Fluxo de Mensagens Completo (Simulado)
+
+## ![Sensor Log](src/main/resources/static/assets/img/mqtt-amqp/Fluxo-de-Messagens.png)
 
 ## 📋 Listagem de Sensores
 
