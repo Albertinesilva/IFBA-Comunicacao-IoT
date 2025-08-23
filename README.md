@@ -895,6 +895,8 @@ Durante o desenvolvimento desta atividade para a disciplina de Tópicos Avançad
 
 O processo permitiu o aprimoramento de habilidades essenciais em comunicação entre cliente e servidor, modelagem de dados e arquitetura de APIs RESTful. A estruturação dos endpoints e a organização dos dados foram fundamentais para representar de forma eficaz um sistema de agricultura inteligente, tornando tangível o fluxo de informações que viria de sensores reais.
 
+A validação da arquitetura e do fluxo de dados foi realizada de forma prática, utilizando o comando mosquitto_pub -h localhost -t "dados/sensores/local1" -m '{"temperatura": 35.5}' para simular a transmissão de informações. Essa ação confirmou a capacidade do sistema de interagir com sucesso com fontes de dados externas.
+
 Em última análise, esta experiência contribuiu significativamente para a compreensão dos conceitos que regem o desenvolvimento de aplicações web que interagem com dados externos, fortalecendo a base para a implementação de soluções de software mais complexas e aplicáveis a cenários do mundo real.
 
 ---
