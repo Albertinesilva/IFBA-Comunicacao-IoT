@@ -1,6 +1,6 @@
 <h1 align="center">📸 Exibição de Resultados e Logs</h1>
 
-Esta seção apresenta imagens capturadas durante os testes dos endpoints e da integração simulada com RabbitMQ.
+Esta seção apresenta imagens capturadas de logs que comprovam o funcionamento dos endpoints e a integração com `RabbitMQ`.
 
 ## ⚙️ Configuração da Mensageria (MQTT e AMQP)
 
