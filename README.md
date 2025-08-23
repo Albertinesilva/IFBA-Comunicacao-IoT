@@ -33,25 +33,31 @@ Os arquivos serão gerados em:
 
 ### 🎯 Objetivo
 
-Demonstrar, de forma prática e simplificada, como funcionaria um backend de um sistema IoT para monitoramento de sensores em uma fazenda, com uma simulação realista e funcional que abrange:
+Demonstrar, de forma prática e simplificada, o funcionamento de um sistema backend de IoT para monitoramento de sensores em uma fazenda. O projeto abrange tanto o aspecto educacional e de simulação quanto uma implementação robusta para cenários de integração real.
 
-↔️ Integração e Orquestração de Protocolos Reais:
+📡 Fluxo de Dados: Simulação e Integração Real
 
-- **Integração de Mensageria Real:** Implementar clientes reais como o `Spring` Integration para `MQTT` e `Spring AMQP` para `RabbitMQ`.
+A arquitetura do projeto foi desenvolvida para ser flexível e didática, permitindo a execução em dois modos principais: `simulação` e `integração real`. Essa abordagem facilita o aprendizado e a demonstração, ao mesmo tempo que garante a capacidade de se conectar a sistemas externos de mensageria.
 
-- **Orquestração do Fluxo de Dados:** Criar a ponte entre os `brokers`, demonstrando como mensagens de um dispositivo (`MQTT`) podem ser roteadas e processadas por um serviço central (`AMQP`).
+🧪 Modo de Simulação
 
-- **Configuração de Ambiente:** Utilizar variáveis de ambiente para gerenciar credenciais e endpoints dos `brokers`, elevando o nível de segurança e boas práticas do projeto.
+Neste modo, o sistema mantém uma simulação completa das camadas de processamento Edge, Fog e Cloud, com a divisão de responsabilidades. Isso inclui:
 
-- **Arquitetura Distribuída:** Manter a simulação das camadas `Edge`, `Fog` e `Cloud` agora com um fluxo de dados real.
+- **Geração de Dados:** Simulação da leitura de dados de `sensores` de `temperatura`, `umidade` e `luminosidade`.
 
-📡 Simulação da comunicação IoT:
+- **Comunicação:** Simulação do envio de mensagens via `RabbitMQ` (`AMQP`) e `MQTT`, permitindo que o projeto funcione de forma independente.
 
-- **Arquitetura Distribuída:** Simulação das camadas de processamento `Edge`, `Fog` e `Cloud` para demonstrar o fluxo de dados e a divisão de responsabilidades.
+- **Processamento de Dados:** Simulação da aplicação de lógica de negócio e da geração de alertas automatizados com base nas leituras dos `sensores`.
 
-- **Comunicação IoT:** Simulação do envio de mensagens via `RabbitMQ (AMQP)` e `MQTT`.
+↔️ Modo de Integração Real e Orquestração
 
-- **Processamento e Registro de Dados:** Simulação da leitura de `sensores`, registro das leituras em tempo real, aplicação de lógica de negócio e geração de alertas automatizados.
+Além da simulação, o projeto foi evoluído para uma implementação funcional com `integração real` a `brokers` de mensagens. Essa nova arquitetura utiliza clientes e serviços reais para garantir que o fluxo de dados seja efetivo e confiável. Os principais pontos são:
+
+- **Integração de Mensageria:** Implementação de clientes reais, como o Spring Integration para `MQTT` e o `Spring AMQP` para `RabbitMQ`, para a conexão direta com `brokers` externos.
+
+- **Orquestração de Dados:** Criação de uma ponte entre os `brokers`, demonstrando como as mensagens de um dispositivo (`MQTT`) podem ser roteadas, processadas por um serviço central e reencaminhadas (`AMQP`).
+
+- **Configuração de Ambiente:** Utilização de variáveis de ambiente para gerenciar credenciais e endpoints dos `brokers`, garantindo maior segurança e portabilidade ao projeto.
 
 🌡️ Leitura e registro de sensores:
 
