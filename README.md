@@ -8,6 +8,8 @@
   
 Este projeto é uma aplicação backend robusta desenvolvida em `Java` com `Spring Boot` para o monitoramento de dados de sensores em ambientes agrícolas. A aplicação coleta, armazena e publica informações de sensores como temperatura, umidade e luminosidade, simulando a comunicação via protocolos `AMQP (RabbitMQ)` e `MQTT`.
 
+Além de uma simulação com os protocolos `AMQP` (`RabbitMQ`) e `MQTT`, o projeto também possui uma implementação funcional com integração real a brokers de mensagens. Essa nova arquitetura utiliza clientes e serviços reais para garantir que o fluxo de dados entre os dispositivos `IoT` simulados e o backend seja efetivo e confiável.
+
 A interação com os dados da `API` é feita por um frontend construído em `JavaScript` que utiliza requisições `fetch` para consumir e exibir as informações em tempo real.
 
 Trata-se de uma simulação educacional e funcional de um sistema `IoT` (Internet das Coisas), que representa o envio e recebimento de dados de sensores em uma fazenda inteligente. Os protocolos `AMQP` e `MQTT` são amplamente utilizados em aplicações reais para comunicação entre dispositivos IoT e servidores, e aqui são simulados com o objetivo de facilitar o aprendizado e a demonstração do funcionamento desses sistemas sem a necessidade de infraestrutura real.
@@ -32,6 +34,16 @@ Os arquivos serão gerados em:
 ### 🎯 Objetivo
 
 Demonstrar, de forma prática e simplificada, como funcionaria um backend de um sistema IoT para monitoramento de sensores em uma fazenda, com uma simulação realista e funcional que abrange:
+
+↔️ Integração e Orquestração de Protocolos Reais:
+
+- **Integração de Mensageria Real:** Implementar clientes reais como o `Spring` Integration para `MQTT` e `Spring AMQP` para `RabbitMQ`.
+
+- **Orquestração do Fluxo de Dados:** Criar a ponte entre os `brokers`, demonstrando como mensagens de um dispositivo (`MQTT`) podem ser roteadas e processadas por um serviço central (`AMQP`).
+
+- **Configuração de Ambiente:** Utilizar variáveis de ambiente para gerenciar credenciais e endpoints dos `brokers`, elevando o nível de segurança e boas práticas do projeto.
+
+- **Arquitetura Distribuída:** Manter a simulação das camadas `Edge`, `Fog` e `Cloud` agora com um fluxo de dados real.
 
 📡 Simulação da comunicação IoT:
 
