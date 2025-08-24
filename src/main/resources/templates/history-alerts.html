@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Histórico de Alertas</title>
+  <!-- Tailwind CSS para um estilo moderno e responsivo -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: #1a202c;
+      color: #e2e8f0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      padding: 1.5rem;
+    }
+
+    .container {
+      backdrop-filter: blur(10px);
+      background-color: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+  </style>
+</head>
+
+<body class="p-6">
+  <!-- Seção principal do histórico de alertas -->
+  <div class="container rounded-2xl p-6 md:p-12 w-full max-w-4xl shadow-xl">
+    <div class="flex flex-col md:flex-row justify-between items-center mb-8">
+      <a href="choice.html"
+        class="py-2 px-4 rounded-lg bg-gray-600 text-white font-semibold hover:bg-gray-700 transition duration-300 mb-4 md:mb-0">
+        Voltar ao Painel
+      </a>
+      <h1 class="text-3xl md:text-4xl font-bold text-white text-center flex-grow">Histórico de Alertas</h1>
+      <div class="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4">
+        <button id="refresh-button"
+          class="py-2 px-4 rounded-lg bg-blue-600 text-white font-semibold hover:bg-blue-700 transition duration-300">
+          Atualizar Histórico
+        </button>
+        <button id="logout-button"
+          class="py-2 px-4 rounded-lg bg-red-600 text-white font-semibold hover:bg-red-700 transition duration-300">
+          Sair
+        </button>
+      </div>
+    </div>
+
+    <!-- Container para a lista de alertas -->
+    <div id="alerts-history-container" class="bg-gray-800 rounded-lg p-4 max-h-[70vh] overflow-y-auto">
+      <p id="alerts-message" class="text-gray-400 text-center">Clique em "Atualizar Histórico" para carregar os alertas.
+      </p>
+      <ul id="alerts-list" class="space-y-4">
+        <!-- Alertas serão adicionados aqui pelo JavaScript -->
+      </ul>
+    </div>
+  </div>
+
+  <script>
+    // Endpoint para o histórico de alertas
+    const API_ALERTS_URL = 'https://localhost:8443/api/sensores/alertas';
+
+    // Verificação de autenticação ao carregar a página
+    window.onload = function () {
+      const jwtToken = localStorage.getItem('jwtToken');
+      if (!jwtToken) {
+        // Se não houver token, redireciona para a página de login
+        window.location.href = 'login.html';
+        return;
+      }
+    };
+
+    // Lógica para o botão de logout
+    document.getElementById('logout-button').addEventListener('click', () => {
+      // Remove o token e redireciona para o login
+      localStorage.removeItem('jwtToken');
+      window.location.href = 'login.html';
+    });
+
+    // Adiciona o listener para o novo botão de atualização
+    document.getElementById('refresh-button').addEventListener('click', fetchAlertHistory);
+
+    // Função para buscar e exibir o histórico de alertas
+    async function fetchAlertHistory() {
+      const alertsList = document.getElementById('alerts-list');
+      const alertsMessage = document.getElementById('alerts-message');
+
+      alertsList.innerHTML = ''; // Limpa a lista existente antes de carregar
+      alertsMessage.textContent = 'Carregando histórico de alertas...';
+
+      try {
+        const jwtToken = localStorage.getItem('jwtToken');
+        const response = await fetch(API_ALERTS_URL, {
+          headers: { 'Authorization': `Bearer ${jwtToken}` }
+        });
+
+        if (!response.ok) {
+          throw new Error('Falha ao obter o histórico de alertas.');
+        }
+
+        const alerts = await response.json();
+        displayAlerts(alerts);
+      } catch (error) {
+        console.error("Erro ao buscar histórico de alertas:", error);
+        alertsMessage.textContent = 'Erro ao carregar alertas. Tente novamente mais tarde.';
+      }
+    }
+
+    // Função para renderizar o histórico de alertas
+    function displayAlerts(alerts) {
+      const alertsList = document.getElementById('alerts-list');
+      const alertsMessage = document.getElementById('alerts-message');
+
+      if (alerts.length === 0) {
+        alertsMessage.textContent = 'Nenhum alerta encontrado no histórico.';
+      } else {
+        alertsMessage.classList.add('hidden');
+        alerts.forEach(alert => {
+          const li = document.createElement('li');
+          li.className = 'bg-gray-900 rounded-lg p-3 border border-red-500 text-red-300';
+          const timestamp = alert.timestamp ? new Date(alert.timestamp).toLocaleString() : 'Data indisponível';
+
+          // Extrai e formata as informações
+          const sensorName = alert.sensor || 'Nome indisponível';
+          const sensorValue = alert.valor !== undefined ? parseFloat(alert.valor).toFixed(2) : 'Valor indisponível';
+          const sensorUnit = alert.unidade || 'Unidade indisponível';
+          const alertMessage = alert.alertMessage || 'Mensagem indisponível';
+
+          li.innerHTML = `
+                        <div class="font-bold">Alerta em ${timestamp}</div>
+                        <div>Sensor: ${sensorName} | Valor: ${sensorValue} ${sensorUnit}</div>
+                        <div>Mensagem: ${alertMessage}</div>
+                    `;
+          alertsList.appendChild(li);
+        });
+      }
+    }
+  </script>
+</body>
+
+</html>

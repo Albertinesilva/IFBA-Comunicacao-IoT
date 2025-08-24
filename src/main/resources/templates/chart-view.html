@@ -59,6 +59,11 @@
         Voltar
       </a>
       <h1 class="text-3xl md:text-4xl font-bold text-white text-center flex-grow">Gráficos de Sensores</h1>
+      <!-- Botão para atualizar o gráfico manualmente -->
+      <button id="refresh-chart-button"
+        class="py-2 px-4 rounded-lg bg-indigo-600 text-white font-semibold hover:bg-indigo-700 transition duration-300 mr-2">
+        Atualizar Gráfico
+      </button>
       <button id="logout-button"
         class="py-2 px-4 rounded-lg bg-red-600 text-white font-semibold hover:bg-red-700 transition duration-300">
         Sair
@@ -70,9 +75,6 @@
       <h2 class="text-xl font-bold mb-4">Dados em Tempo Real</h2>
       <canvas id="realtime-chart"></canvas>
     </div>
-
-    <!-- Seção de cards de dados, ocultada nesta tela para focar no gráfico -->
-    <!-- Você pode copiar e colar os cards aqui se desejar um layout diferente -->
   </div>
 
   <script>
@@ -107,11 +109,8 @@
       // Inicializa o gráfico
       initializeChart();
 
-      // Inicia o carregamento de dados do backend (simulado)
+      // Faz a primeira requisição de dados ao carregar a página
       fetchSensorData();
-
-      // Atualiza os dados do backend (simulado) a cada 5 segundos
-      setInterval(fetchSensorData, 5000);
     };
 
     // Lógica para o botão de logout
@@ -120,6 +119,12 @@
       localStorage.removeItem('jwtToken');
       window.location.href = 'login.html';
     });
+
+    // Adiciona um listener para o novo botão de atualização
+    document.getElementById('refresh-chart-button').addEventListener('click', () => {
+      fetchSensorData();
+    });
+
 
     // FUNÇÃO DE SIMULAÇÃO - SUBSTITUI A CHAMADA AO BACKEND
     async function fetchSensorData() {

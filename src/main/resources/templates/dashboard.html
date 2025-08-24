@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Painel IoT</title>
+  <title>Painel IoT - Gestão de Sensores</title>
   <!-- Tailwind CSS para um estilo moderno e responsivo -->
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
@@ -62,19 +62,43 @@
         Voltar
       </a>
       <h1 class="text-3xl md:text-4xl font-bold text-white text-center flex-grow">Painel de Sensores IoT</h1>
-      <button id="logout-button"
-        class="py-2 px-4 rounded-lg bg-red-600 text-white font-semibold hover:bg-red-700 transition duration-300">
-        Sair
-      </button>
+      <div class="flex items-center space-x-4">
+        <a href="history-alerts.html"
+          class="py-2 px-4 rounded-lg bg-indigo-600 text-white font-semibold hover:bg-indigo-700 transition duration-300">
+          Histórico de Alertas
+        </a>
+        <button id="logout-button"
+          class="py-2 px-4 rounded-lg bg-red-600 text-white font-semibold hover:bg-red-700 transition duration-300">
+          Sair
+        </button>
+      </div>
     </div>
 
+    <!-- Formulário para Cadastro de Novo Sensor -->
+    <div class="card p-6 rounded-2xl shadow-lg mb-8">
+      <h2 class="text-xl font-bold mb-4">Cadastrar Nova Leitura</h2>
+      <form id="sensor-form" class="flex flex-col sm:flex-row gap-4">
+        <input type="text" id="sensor-name" placeholder="Nome do Sensor (ex: umidade)"
+          class="flex-1 p-3 rounded-lg bg-gray-700 text-white border border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
+          required>
+        <input type="number" id="sensor-value" placeholder="Valor"
+          class="flex-1 p-3 rounded-lg bg-gray-700 text-white border border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
+          step="0.01" required>
+        <button type="submit" id="submit-button"
+          class="w-full sm:w-auto px-6 py-3 rounded-lg bg-green-600 text-white font-semibold hover:bg-green-700 transition duration-300">
+          Enviar Leitura
+        </button>
+      </form>
+    </div>
+
+
     <!-- Área de Alerta (inicialmente oculta) -->
-    <div id="alert-message" class="bg-red-500 text-white p-4 rounded-lg text-center font-semibold mb-6 hidden">
+    <div id="alert-message"
+      class="bg-red-500 text-white p-4 rounded-lg text-center font-semibold mb-6 transition-opacity duration-500 opacity-0 hidden">
     </div>
 
     <!-- Layout em grid para os cards de sensores -->
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-
       <!-- Card de Temperatura -->
       <div class="card p-6 rounded-2xl shadow-lg">
         <div class="flex justify-between items-center mb-4">
@@ -89,7 +113,7 @@
           <span id="temp-value" class="skeleton w-24 h-10 inline-block"></span>
           <span class="ml-2">°C</span>
         </div>
-        <p class="text-sm text-gray-400">Atualizado a cada 5 segundos</p>
+        <p class="text-sm text-gray-400">Atualização automática</p>
       </div>
 
       <!-- Card de Umidade -->
@@ -106,7 +130,7 @@
           <span id="humidity-value" class="skeleton w-24 h-10 inline-block"></span>
           <span class="ml-2">%</span>
         </div>
-        <p class="text-sm text-gray-400">Atualizado a cada 5 segundos</p>
+        <p class="text-sm text-gray-400">Atualização automática</p>
       </div>
 
       <!-- Card de Luminosidade -->
@@ -124,7 +148,7 @@
           <span id="light-value" class="skeleton w-24 h-10 inline-block"></span>
           <span class="ml-2">lux</span>
         </div>
-        <p class="text-sm text-gray-400">Atualizado a cada 5 segundos</p>
+        <p class="text-sm text-gray-400">Atualização automática</p>
       </div>
 
       <!-- Card de Pressão Atmosférica -->
@@ -140,7 +164,7 @@
           <span id="pressure-value" class="skeleton w-24 h-10 inline-block"></span>
           <span class="ml-2">hPa</span>
         </div>
-        <p class="text-sm text-gray-400">Atualizado a cada 5 segundos</p>
+        <p class="text-sm text-gray-400">Atualização automática</p>
       </div>
 
       <!-- Card de Qualidade do Ar (CO2) -->
@@ -158,52 +182,140 @@
           <span id="air-value" class="skeleton w-24 h-10 inline-block"></span>
           <span class="ml-2">ppm</span>
         </div>
-        <p class="text-sm text-gray-400">Atualizado a cada 5 segundos</p>
+        <p class="text-sm text-gray-400">Atualização automática</p>
       </div>
-
     </div>
   </div>
 
   <script>
-    // Endpoint para o backend (ajuste se necessário)
-    const API_DASHBOARD_URL = 'https://localhost:8443/api/sensores/latest';
+    // Endpoint para o sensor mais recente e para o cadastro
+    const API_BASE_URL = 'https://localhost:8443/api/sensores';
+    const API_DASHBOARD_URL = `${API_BASE_URL}/latest`;
 
-    // Mapeamento dos tipos de sensores para seus respectivos IDs de HTML.
+    // Mapeamento de sensores e valores dinâmicos
     const sensorMap = {
       "temperatura": "temp-value",
       "umidade": "humidity-value",
       "luminosidade": "light-value"
     };
-
-    // Mapeamento para os sensores dinâmicos
     const dynamicSensorMap = {
-      "pressure-value": { min: 950, max: 1050, decimal: 1 }, // Pressão em hPa
-      "air-value": { min: 400, max: 600, decimal: 0 } // Qualidade do ar em ppm
+      "pressure-value": { min: 950, max: 1050, decimal: 1, alertThreshold: 1040, alertMessage: "Pressão atmosférica muito alta!" },
+      "air-value": { min: 400, max: 600, decimal: 0, alertThreshold: 550, alertMessage: "Nível de CO2 muito alto!" }
     };
 
-    // Verificação de autenticação e início dos intervalos ao carregar a página
+    // Variável para armazenar o ID do intervalo de atualização
+    let updateIntervalId;
+    const alertMessageElement = document.getElementById('alert-message');
+
+    /**
+     * Exibe uma notificação personalizada que desaparece após 5 segundos.
+     * @param {string} message - A mensagem a ser exibida.
+     * @param {boolean} isSuccess - Verdadeiro para notificação de sucesso (verde), falso para erro (vermelho).
+     */
+    function showNotification(message, isSuccess = true) {
+      const alertElement = document.getElementById('alert-message');
+      alertElement.textContent = message;
+      alertElement.className = isSuccess
+        ? 'bg-green-600 text-white p-4 rounded-lg text-center font-semibold mb-6 transition-opacity duration-500'
+        : 'bg-red-500 text-white p-4 rounded-lg text-center font-semibold mb-6 transition-opacity duration-500';
+
+      // Remove a classe 'hidden' para mostrar a notificação
+      alertElement.classList.remove('hidden');
+
+      // Timeout para ocultar a notificação
+      setTimeout(() => {
+        alertElement.classList.add('opacity-0');
+        // Oculta completamente após a transição
+        setTimeout(() => {
+          alertElement.classList.add('hidden');
+        }, 500);
+      }, 5000);
+    }
+
+    // Verificação de autenticação ao carregar a página
     window.onload = function () {
       const jwtToken = localStorage.getItem('jwtToken');
       if (!jwtToken) {
         // Se não houver token, redireciona para a página de login
         window.location.href = 'login.html';
       }
-      // Remove a classe de esqueleto ao carregar a página
+      // Remove a classe de esqueleto e inicia a busca automática
       document.querySelectorAll('.skeleton').forEach(el => el.classList.remove('skeleton'));
-
-      // Inicia o carregamento de dados do backend e a atualização dos sensores dinâmicos
-      fetchSensorData();
-      updateDynamicSensors();
+      startAutoUpdateSensors();
     };
+
+    // Inicia a atualização automática dos dados dos sensores principais
+    function startAutoUpdateSensors() {
+      // Executa a busca imediatamente para não esperar pelo primeiro intervalo
+      fetchSensorData();
+      // Define o intervalo para buscar novos dados a cada 5 segundos (5000ms)
+      updateIntervalId = setInterval(() => {
+        fetchSensorData();
+      }, 5000);
+    }
+
+    // Adiciona um listener para o formulário de cadastro de sensor
+    document.getElementById('sensor-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      const sensorName = document.getElementById('sensor-name').value;
+      const sensorValue = parseFloat(document.getElementById('sensor-value').value);
+
+      // Validação simples
+      if (isNaN(sensorValue)) {
+        showNotification("Erro: O valor do sensor deve ser um número.", false);
+        return;
+      }
+
+      // Exibir mensagem de carregamento
+      showNotification("Enviando leitura do sensor...", true);
+
+      const sensorData = {
+        sensor: sensorName,
+        valor: sensorValue
+      };
+
+      try {
+        const jwtToken = localStorage.getItem('jwtToken');
+        const response = await fetch(API_BASE_URL, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${jwtToken}`
+          },
+          body: JSON.stringify(sensorData)
+        });
+
+        const result = await response.json();
+
+        if (!response.ok) {
+          throw new Error(result.message || 'Falha ao cadastrar a leitura do sensor.');
+        }
+
+        // Exibir mensagem de sucesso
+        showNotification(`Sucesso: Leitura de '${sensorName}' enviada com sucesso!`, true);
+
+        // Limpa os campos do formulário após o sucesso
+        document.getElementById('sensor-name').value = '';
+        document.getElementById('sensor-value').value = '';
+
+      } catch (error) {
+        console.error("Erro ao cadastrar sensor:", error);
+        showNotification(`Erro: ${error.message}`, false);
+      }
+    });
+
 
     // Lógica para o botão de logout
     document.getElementById('logout-button').addEventListener('click', () => {
+      // Limpa o intervalo de atualização
+      clearInterval(updateIntervalId);
       // Remove o token e redireciona para o login
       localStorage.removeItem('jwtToken');
       window.location.href = 'login.html';
     });
 
-    // Função para buscar dados do backend
+    // Função para buscar dados do backend (latest)
     async function fetchSensorData() {
       try {
         const jwtToken = localStorage.getItem('jwtToken');
@@ -220,49 +332,40 @@
 
       } catch (error) {
         console.error("Erro ao buscar dados do sensor:", error);
-        document.getElementById('alert-message').textContent = 'Erro ao conectar com o servidor.';
-        document.getElementById('alert-message').classList.remove('hidden');
+        showNotification('Erro ao conectar com o servidor.', false);
       }
     }
 
     // Função para atualizar o painel com os dados do backend
     function updateDashboard(data) {
-      const alertMessageElement = document.getElementById('alert-message');
+      let hasLatestAlert = false;
 
-      // Verifica se há uma mensagem de alerta e a exibe
-      if (data.alertMessage) {
-        alertMessageElement.textContent = data.alertMessage;
-        alertMessageElement.classList.remove('hidden');
-      } else {
-        alertMessageElement.classList.add('hidden');
-      }
-
-      // Acessa o mapeamento com a chave do sensor em minúsculas
-      const sensorNameLower = data.sensor.toLowerCase();
-      const sensorId = sensorMap[sensorNameLower];
-
-      if (sensorId) {
-        const element = document.getElementById(sensorId);
-        if (element) {
-          element.textContent = data.valor;
+      // 1. Atualiza o sensor retornado pelo backend
+      if (data && data.sensor) {
+        const sensorId = sensorMap[data.sensor.toLowerCase()];
+        if (sensorId) {
+          const element = document.getElementById(sensorId);
+          if (element) {
+            element.textContent = data.valor;
+          }
         }
-      } else {
-        console.warn(`Sensor com nome "${data.sensor}" não encontrado no mapeamento.`);
+        // Verifica a mensagem de alerta do backend
+        if (data.alertMessage && data.alertMessage !== 'null') {
+          showNotification(`ALERTA: ${data.alertMessage}`, false);
+          hasLatestAlert = true;
+        }
       }
-    }
 
-    // Função para atualizar os sensores dinâmicos
-    function updateDynamicSensors() {
+      // 2. Atualiza os sensores dinâmicos (valores gerados no frontend)
       for (const sensorId in dynamicSensorMap) {
         const config = dynamicSensorMap[sensorId];
         const value = (Math.random() * (config.max - config.min) + config.min).toFixed(config.decimal);
-        document.getElementById(sensorId).textContent = value;
+        const element = document.getElementById(sensorId);
+        if (element) {
+          element.textContent = value;
+        }
       }
     }
-
-    // Atualiza os dados do backend e os dinâmicos a cada 5 segundos
-    setInterval(fetchSensorData, 5000);
-    setInterval(updateDynamicSensors, 5000);
   </script>
 </body>
 
