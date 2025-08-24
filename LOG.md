@@ -26,6 +26,16 @@ Este log detalha o ciclo completo de uma mensagem, desde a sua origem até a ten
 
 ## ![Sensor Log](src/main/resources/static/assets/img/mqtt-amqp/Fluxo-de-Mensagens.png)
 
+## 🔓 Evidência de Ataque Spoofing (IDOR) - Broken Access Control
+
+Este log demonstra a exploração de uma vulnerabilidade de Controle de Acesso Quebrado (Broken Access Control).
+
+- A requisição `PUT /api/sensores/1` foi enviada por um usuário autenticado (`albertinesilva@gmail.com`). No entanto, o sensor com `ID 1` não pertencia a ele.
+
+- Os logs detalham a tentativa de atualização e confirmam o sucesso da operação (`✅ Sensor com ID 1 do USUÁRIO ALVO atualizado com sucesso...`). Isso prova que um usuário mal-intencionado conseguiu alterar dados de outro, configurando um ataque de `Spoofing` via IDOR (Insecure Direct Object Reference).
+
+- A ausência de uma verificação de propriedade no código do endpoint permitiu que o usuário `albertinesilva@gmail.com` assumisse temporariamente a identidade e o controle de um recurso que não lhe pertencia, demonstrando a gravidade da falha.
+
 ## 📋 Listagem de Sensores
 
 Visualização dos sensores simulados retornados pelo endpoint `GET /sensores`.
