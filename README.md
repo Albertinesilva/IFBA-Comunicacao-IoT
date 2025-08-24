@@ -135,74 +135,76 @@ A arquitetura do projeto simula a distribuição do processamento, uma caracter�
 - 📂 Estrutura do Projeto
 
 ```java
-src/main/java/com/ifba/web/iot/api/spring
-├── amqp/                   // Aspectos (AOP) para lidar com funcionalidades cruzadas, como log ou segurança.
-│   └── AnqpPublisher.java // Publica mensagens ANQP, um aspecto para comunicação.
-│
-├── config/                // Configurações da aplicação e de terceiros.
-│   ├── CorsConfig.java    // Configurações para o CORS (Cross-Origin Resource Sharing).
-│   ├── MqttAnqpConfig.java// Configurações específicas para o cliente MQTT.
-│   └── RabbitMqpConfig.java// Configurações específicas para o cliente RabbitMQ.
-│
-├── controller/            // Camada de apresentação que lida com as requisições HTTP e roteia para os serviços.
-│   ├── dto/               // Objetos de Transferência de Dados (Data Transfer Objects).
-│   │   ├── form/          // Formulários para entrada de dados.
-│   │   │   ├── LoginForm.java  // Formulário para o login do usuário.
-│   │   │   └── RegisterForm.java // Formulário para o registro de novos usuários.
-│   │   └── view/          // Objetos para representar dados na camada de visualização.
-│   │       ├── LoginView.java   // Visão para os dados de login.
-│   │       ├── SensorView.java  // Visão para os dados do sensor.
-│   │       ├── UsuarioView.java // Visão para os dados do usuário.
-│   │       └── WeatherView.java // Visão para os dados meteorológicos.
-│   ├── AuthController.java// Lida com requisições de autenticação e autorização.
-│   ├── RabbitDataController.java// Gerencia o fluxo de dados via RabbitMQ.
-│   ├── SensorDataController.java// Gerencia o fluxo de dados do sensor.
-│   └── WeatherController.java // Lida com requisições relacionadas a dados meteorológicos.
-│
-├── jwt/                   // Classes relacionadas à segurança e tokens JWT.
-│   ├── JwtAuthenticationFilter.java // Filtro para interceptar requisições e validar o token JWT.
-│   └── JwtUtil.java       // Utilitário para gerar e validar tokens JWT.
-│
-├── model/                 // Camada de domínio que representa os dados da aplicação.
-│   ├── Alert.java         // Representa um alerta gerado por um sensor.
-│   ├── SensorData.java    // Representa os dados coletados por um sensor.
-│   └── Usuario.java       // Representa a entidade de usuário.
-│
-├── mqtt/                  // Classes relacionadas ao protocolo de comunicação MQTT.
-│   ├── MqttPublisher.java // Publica mensagens para um broker MQTT.
-│   └── MqttToAnqpBridge.java// Ponte entre o MQTT e o ANQP.
-│
-├── rabbitmq/              // Classes relacionadas ao protocolo de comunicação RabbitMQ.
-│   └── simulation/        // Simulação do ambiente RabbitMQ.
-│       ├── InMemoryRabbitListener.java // Simula um listener de mensagens em memória.
-│       └── InMemoryRabbitTemplate.java // Simula um template de envio de mensagens em memória.
-│
-├── repository/            // Camada de persistência que lida com o acesso aos dados.
-│   ├── AlertRepository.java// Interface de repositório para a entidade Alert.
-│   ├── SensorDataRepository.java// Interface de repositório para a entidade SensorData.
-│   └── UsuarioRepository.java// Interface de repositório para a entidade Usuario.
-│
-├── security/              // Configurações e classes de segurança.
-│   └── SecurityConfig.java// Configurações globais de segurança da aplicação.
-│
-└── service/               // Camada de negócios que contém a lógica da aplicação.
-    ├── AlertService.java  // Lógica para lidar com alertas.
-    ├── AnqpConsumerService.java// Consumidor de mensagens ANQP.
-    ├── AnqpProducerService.java// Produtor de mensagens ANQP.
-    ├── MqttBridgeService.java// Serviço de ponte para MQTT.
-    ├── SensorDataService.java// Lógica para lidar com os dados do sensor.
-    ├── SensorScheduler.java // Serviço para agendamento de tarefas de coleta de dados.
-    ├── UsuarioService.java  // Lógica de negócio para a entidade de usuário.
-    └── WeatherService.java  // Lógica para lidar com dados meteorológicos.
-Application.java           // Classe principal da aplicação, ponto de entrada.
-├── resources/        // Diretório para arquivos de configuração, templates e arquivos estáticos.
-├── static/                // Arquivos estáticos (CSS, JavaScript, imagens, etc.).
-├── templates/             // Templates de páginas web (ex: HTML, Thymeleaf).
-├── application-dev.properties // Propriedades de configuração para o ambiente de desenvolvimento.
-├── application-prod.properties// Propriedades de configuração para o ambiente de produção.
-├── application-test.properties// Propriedades de configuração para o ambiente de teste.
-├── application.properties // Propriedades gerais da aplicação.
-└── keystore.p12  // Arquivo de chave para segurança e criptografia.
+// Estrutura de pacotes do projeto
+// com.tfba.web.iot.api.spring
+//
+// Esta estrutura organiza o código da aplicação Spring Boot
+// de forma modular e clara, seguindo as melhores práticas.
+
+.
+├── main
+│   ├── java
+│   │   └── com
+│   │       └── tfba
+│   │           └── web
+│   │               └── iot
+│   │                   └── api
+│   │                       └── spring
+│   │                           ├── config        // Classes de configuração para a aplicação, como JWT, MQTT e RabbitMQ
+│   │                           │   ├── MqttAmqpConfig.java      // Configuração para integrações MQTT e AMQP
+│   │                           │   ├── RabbitMqConfig.java      // Configuração específica para o RabbitMQ
+|   |                           |   ├── CorsConfig.java          // Configuração de Cors
+│   │                           ├── controller    // Camada de controladores REST para gerenciar as requisições HTTP
+│   │                           │   ├── dto         // Objetos de Transferência de Dados (Data Transfer Objects) para as requisições
+│   │                           │   ├── form        // Objetos de formulário para dados de entrada (input)
+│   │                           │   ├── update      // Objetos de formulário para dados de update (input)
+│   │                           │   ├── view        // Objetos de visualização (views) para dados de saída (output)
+│   │                           │   ├── AuthController.java      // Controlador para autenticação de usuários
+│   │                           │   ├── RabbitSimulationController.java // Controlador para simulação de eventos RabbitMQ
+│   │                           │   ├── SensorDataController.java      // Controlador para dados de sensores
+│   │                           │   ├── UserController.java      // Controlador para operações relacionadas a usuários
+│   │                           │   └── WeatherController.java   // Controlador para dados meteorológicos
+│   │                           ├── jwt         // Classes relacionadas à geração e validação de tokens JWT
+│   │                           │   ├── JwtAuthenticationFilter.java   // Filtro para autenticação via JWT
+│   │                           │   └── JwtUtil.java               // Utilitário para manipulação de tokens JWT
+│   │                           ├── model       // Entidades de domínio que representam a estrutura de dados (banco de dados)
+│   │                           │   ├── Alert.java                 // Entidade que representa um alerta
+│   │                           │   ├── SensorData.java            // Entidade que representa dados de sensor
+│   │                           │   └── User.java                 // Entidade que representa um usuário
+│   │                           ├── protocolos  // Pacotes de protocolos de comunicação
+│   │                           │   ├── amqp        // Classes relacionadas ao protocolo AMQP (Advanced Message Queuing Protocol)
+│   │                           │   │   ├── AmqpPublisher.java     // Classe para publicar mensagens via AMQP
+│   │                           │   │   └── AmqpService.java       // Serviço para gerenciar as operações AMQP
+│   │                           │   └── mqtt        // Classes relacionadas ao protocolo MQTT (Message Queuing Telemetry Transport)
+│   │                           │       └── MqttToAmqpBridge.java  // Ponte de comunicação entre MQTT e AMQP
+│   │                           ├── rabbitmq    // Classes de configuração e simulação para RabbitMQ
+│   │                           │   └── simulation
+│   │                           │       ├── InMemoryRabbitListener.java  // Listener em memória para mensagens RabbitMQ
+│   │                           │       └── InMemoryRabbitTemplate.java  // Template em memória para operações RabbitMQ
+│   │                           ├── repository  // Interfaces de repositório para acesso a dados (camada de persistência)
+│   │                           │   ├── AlertRepository.java       // Repositório para a entidade Alert
+│   │                           │   ├── SensorDataRepository.java  // Repositório para a entidade SensorData
+│   │                           │   └── UserRepository.java      // Repositório para a entidade User
+│   │                           ├── security    // Classes relacionadas a segurança, incluindo a configuração do Spring Security
+│   │                           │   └── SecurityConfig.java        // Configuração de segurança da aplicação
+│   │                           ├── service     // Camada de serviços com a lógica de negócio da aplicação
+│   │                           │   ├── AlertService.java          // Serviço para gerenciar alertas
+│   │                           │   ├── AmqpConsumerService.java   // Serviço para consumir mensagens AMQP
+│   │                           │   ├── AmqpProducerService.java   // Serviço para produzir mensagens AMQP
+│   │                           │   ├── MqttAmqpBridgeService.java   // Serviço para gerenciar a ponte MQTT/AMQP
+│   │                           │   ├── SensorDataService.java     // Serviço para gerenciar dados de sensores
+│   │                           │   ├── SensorSchedule.java        // Classe para agendamento de tarefas (tarefas de agendamento)
+│   │                           │   ├── UserService.java           // Serviço para gerenciar usuários
+│   │                           │   └── WeatherService.java        // Serviço para gerenciar dados meteorológicos
+│   │                           └── Application.java      // Classe principal da aplicação Spring Boot
+│   └── resources
+│       ├── static
+│       ├── templates
+│       └── application-dev.properties // Arquivo de propriedades para o ambiente de desenvolvimento
+│       └── application-prod.properties // Arquivo de propriedades para o ambiente de produção
+│       └── application-test.properties // Arquivo de propriedades para o ambiente de teste
+│       └── keystore.p12            // Arquivo de chave para segurança (SSL/TLS)
+
 ```
 ---
 
