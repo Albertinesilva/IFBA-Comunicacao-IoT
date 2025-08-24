@@ -2,6 +2,7 @@ package com.ifba.web.iot.api.spring.controller;
 
 import org.apache.commons.lang3.tuple.Triple;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -128,55 +129,70 @@ public class SensorDataController {
     /**
      * Manipula a requisição HTTP PUT para atualizar um sensor existente.
      * <p>
-     * Este endpoint permite a atualização de um sensor específico identificado pelo
-     * seu ID.
-     * Ele extrai o ID do usuário autenticado para fins de logging de segurança.
-     *
+     * Este endpoint permite a atualização de um sensor específico identificado
+     * pelo seu ID. Ele verifica se o usuário autenticado é o proprietário
+     * do sensor antes de permitir a operação.
      * <p>
-     * <b>Vulnerabilidade de Segurança (IDOR)</b>
+     * <b>Mecanismo de Defesa contra IDOR</b>
      * <p>
-     * Como a lógica de autorização para garantir que o usuário só possa atualizar
-     * seus
-     * próprios sensores está ausente, este método possui uma vulnerabilidade
-     * de IDOR (Insecure Direct Object Reference). Um atacante poderia usar
-     * o token de um usuário para atualizar o sensor de outro usuário,
-     * simplesmente adivinhando ou alterando o ID na URL.
+     * Para mitigar a vulnerabilidade de IDOR, o método agora realiza uma
+     * verificação de autorização. Ele compara o ID do usuário autenticado,
+     * obtido do contexto de segurança, com o ID do proprietário associado
+     * ao sensor.
+     * Se os IDs não corresponderem, a requisição é negada com um status HTTP 403
+     * (Forbidden),
+     * demonstrando a atuação do mecanismo de defesa.
      *
      * @param id        O ID do sensor a ser atualizado. É extraído do caminho da
      *                  URL.
      * @param updateDTO O objeto de transferência de dados (DTO) contendo as
-     *                  informações
-     *                  atualizadas do sensor.
+     *                  informações atualizadas do sensor.
      * @return Um {@link org.springframework.http.ResponseEntity} com o
-     *         {@link br.com.example.view.SensorView}
-     *         atualizado e o status HTTP 200 (OK) se a atualização for
-     *         bem-sucedida.
-     *         Retorna um status HTTP 404 (Not Found) se o sensor com o ID fornecido
-     *         não for
-     *         encontrado.
+     *         {@link br.com.example.view.SensorView} atualizado e o status HTTP 200
+     *         (OK)
+     *         se a atualização for bem-sucedida. Retorna um status HTTP 403
+     *         (Forbidden)
+     *         se o usuário não for o proprietário do sensor, ou 404 (Not Found) se
+     *         o sensor não existir.
      */
     @PutMapping("/{id}")
     public ResponseEntity<SensorView> update(@PathVariable Long id, @RequestBody SensorUpdateDTO updateDTO) {
-        // Obtém o nome de usuário (ID) do contexto de segurança
+        // Obtém o ID do usuário autenticado do contexto de segurança
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String currentUsername = authentication.getName();
 
-        // 🚨 LOG PARA A SIMULAÇÃO DO ATAQUE
-        log.info("🚨 Simulação de Ataque: Usuário '{}' tentando atualizar o sensor com ID: {}", currentUsername, id);
+        // 🚨 LOG: Registra a tentativa de acesso e a ação
+        log.info("🚨 Simulação de Auditoria: Usuário '{}' tentando atualizar o sensor com ID: {}", currentUsername, id);
 
-        // A lógica para encontrar e atualizar é encapsulada no serviço.
-        // A VULNERABILIDADE AINDA ESTÁ AQUI, pois o ID do usuário logado NÃO É PASSADO.
-        SensorView updatedView = sensorService.update(id, updateDTO);
+        // 🛡️ MECANISMO DE DEFESA: Verifica a propriedade do sensor
+        if (!sensorService.isUserSensorOwner(currentUsername, id)) {
+            log.warn(
+                    "❌ ALERTA: Tentativa de acesso não autorizado! Usuário '{}' tentou modificar o sensor de outro usuário (ID: {}).",
+                    currentUsername, id);
+            // Retorna um erro 403 (Forbidden) para demonstrar o bloqueio
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        }
+
+        // A lógica de atualização é encapsulada no serviço, que agora recebe o ID do
+        // usuário
+        SensorView updatedView = sensorService.update(currentUsername, id, updateDTO);
 
         if (updatedView == null) {
             log.warn("Sensor com ID {} não encontrado.", id);
             return ResponseEntity.notFound().build();
         }
 
-        log.info("✅ Simulação de Ataque: Sensor com ID {} do USUÁRIO ALVO atualizado com sucesso por '{}'.", id,
-                currentUsername);
+        // ✅ LOG: Registra o sucesso da operação
+        log.info("✅ Operação Bem-Sucedida: Sensor com ID {} atualizado com sucesso por '{}'.", id, currentUsername);
         return ResponseEntity.ok(updatedView);
     }
+
+    // O método de serviço 'update' também precisa ser modificado para incluir o ID
+    // do usuário.
+    // public SensorView update(Long id, SensorUpdateDTO updatedDTO, String
+    // username) { ... }
+    // E o novo método de verificação de propriedade:
+    // public boolean isUserSensorOwner(String username, Long sensorId) { ... }
 
     /**
      * Envia uma leitura de sensor manualmente via protocolo AMQP.

@@ -22,6 +22,7 @@ import java.security.Principal;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 /**
  * **Serviço de Gerenciamento de Dados de Sensores**
@@ -210,31 +211,70 @@ public class SensorDataService {
     }
 
     /**
+     * **Verifica a Propriedade de um Sensor**
+     *
+     * <p>
+     * Este é o mecanismo de defesa contra o IDOR. Ele consulta o repositório para
+     * verificar se o sensor com o ID fornecido pertence ao usuário especificado.
+     * </p>
+     *
+     * @param username O nome de usuário do proprietário em potencial.
+     * @param sensorId O ID do sensor a ser verificado.
+     * @return {@code true} se o sensor pertencer ao usuário, {@code false} caso
+     *         contrário.
+     */
+    @Transactional(readOnly = true)
+    public boolean isUserSensorOwner(String username, Long sensorId) {
+        // Encontra o sensor pelo ID.
+        Optional<SensorData> sensorOptional = sensorDataRepository.findById(sensorId);
+
+        // Se o sensor existir, verifica se o nome de usuário do proprietário
+        // (acessado através da entidade 'Usuario') corresponde ao nome de usuário
+        // fornecido.
+        if (sensorOptional.isPresent()) {
+            SensorData sensor = sensorOptional.get();
+            // Acessa o objeto 'Usuario' e obtém o nome de usuário para a comparação.
+            return sensor.getUsuario().getEmail().equals(username);
+        }
+
+        // Se o sensor não for encontrado, ele não pertence ao usuário.
+        return false;
+    }
+
+    /**
      * **Atualiza os Dados de um Sensor Existente**
      *
      * <p>
-     * Atualiza uma entidade `SensorData` existente no banco de dados usando dados
-     * fornecidos por um DTO de atualização (`SensorUpdateDTO`). A lógica de
-     * atualização
-     * é encapsulada neste método de serviço. O método busca a entidade,
-     * atualiza seus campos e a salva novamente, com o Spring Data JPA gerenciando
-     * a transação e a persistência.
+     * Este método agora recebe o nome de usuário autenticado do controller para
+     * garantir que a operação seja segura. Ele valida a propriedade do sensor
+     * antes de prosseguir com a atualização.
      * </p>
      *
-     * @param id         O ID do sensor a ser atualizado.
-     * @param updatedDTO O DTO {@link SensorUpdateDTO} contendo os novos dados do
-     *                   sensor.
-     * @return O objeto {@link SensorView} com os dados atualizados, ou `null` se o
-     *         registro original não for encontrado.
+     * @param currentUsername O nome de usuário do usuário autenticado.
+     * @param id              O ID do sensor a ser atualizado.
+     * @param updatedDTO      O DTO {@link SensorUpdateDTO} contendo os novos dados
+     *                        do sensor.
+     * @return O objeto {@link SensorView} com os dados atualizados, ou {@code null}
+     *         se o
+     *         registro original não for encontrado ou se o usuário não for o
+     *         proprietário.
      */
     @Transactional
-    public SensorView update(Long id, SensorUpdateDTO updatedDTO) {
+    public SensorView update(String currentUsername, Long id, SensorUpdateDTO updatedDTO) {
+        // 🚨 Mecanismo de defesa: verifica a propriedade do sensor.
+        // A lógica de bloqueio de acesso não autorizado deve estar no controller,
+        // mas é essencial que o serviço forneça o método de verificação.
+        if (!isUserSensorOwner(currentUsername, id)) {
+            // Retorna null para sinalizar ao controller que a operação falhou
+            // por falta de autorização.
+            return null;
+        }
+
         SensorData existingData = sensorDataRepository.findById(id).orElse(null);
         if (existingData != null) {
             existingData.setSensor(updatedDTO.getSensor());
             existingData.setValor(updatedDTO.getValor());
             SensorData savedData = sensorDataRepository.save(existingData);
-            // O SensorView de retorno ainda pode ser gerado a partir da entidade salva
             return new SensorView("Dados atualizados com sucesso", savedData, "HTTP");
         }
         return null;
