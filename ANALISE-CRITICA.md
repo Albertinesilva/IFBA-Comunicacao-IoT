@@ -1,6 +1,57 @@
 <h2 align="center">🌾Análise Crítica de Segurança em Painéis IoT</h2>
 
-Este documento apresenta uma avaliação do impacto de ciberataques em uma arquitetura de painel IoT e discute as medidas de segurança, sugerindo boas práticas para mitigar riscos e garantir a conformidade.
+### Evidências e Análise Comparativa
+
+Este log serve como prova de que a aplicação não só bloqueia tentativas indevidas, mas também processa corretamente as solicitações legítimas, demonstrando a robustez dos controles de acesso e a prevenção eficaz contra vulnerabilidades IDOR.
+
+### Cenário 1: Antes da Segurança (Vulnerabilidade)
+
+## 🔓 Evidência de Ataque Spoofing (IDOR) - Broken Access Control
+
+Este log demonstra a exploração de uma vulnerabilidade de Controle de Acesso Quebrado (Broken Access Control).
+
+- A requisição `PUT /api/sensores/1` foi enviada por um usuário autenticado (`albertinesilva@gmail.com`). No entanto, o sensor com `ID 1` não pertencia a ele.
+
+- Os logs detalham a tentativa de atualização e confirmam o sucesso da operação (`✅ Sensor com ID 1 do USUÁRIO ALVO atualizado com sucesso...`). Isso prova que um usuário mal-intencionado conseguiu alterar dados de outro, configurando um ataque de `Spoofing` via IDOR (Insecure Direct Object Reference).
+
+- A ausência de uma verificação de propriedade no código do endpoint permitiu que o usuário `albertinesilva@gmail.com` assumisse temporariamente a identidade e o controle de um recurso que não lhe pertencia, demonstrando a gravidade da falha.
+
+![Sensor Log](src/main/resources/static/assets/img/ataque/Simulacao-de-Ataque-Spoofing.png)
+
+### Cenário 2: Depois da Segurança (Proteção Ativa)
+
+## 🚫 Log de Erro: Tentativa de Acesso com Token JWT Inválido
+
+Este log demonstra o comportamento de segurança da aplicação ao receber um `JSON Web Token` (JWT) malformado. Ele confirma que o sistema está corretamente configurado para rejeitar requisições que não apresentem um token válido, protegendo os endpoints da API.
+
+Detalhes do Erro
+
+- A exceção principal, `io.jsonwebtoken.MalformedJwtException`, indica que a biblioteca de `JWT` não conseguiu decodificar o token. A mensagem de erro específica, Malformed `JWT JSON`, aponta para um problema na estrutura do token, onde caracteres inesperados (como o $ no exemplo) foram encontrados.
+
+![Sensor Log](src/main/resources/static/assets/img/ataque/Token-invalido.png)
+
+## 🛡️🚫 Evidência de Bloqueio de Tentativa de Acesso Não Autorizado (IDOR)
+
+Este log mostra que a sua defesa contra acessos indevidos funcionou perfeitamente. Um usuário (albertinesilva@gmail.com) tentou alterar os dados de um sensor (ID: 1) que não era dele. A sua lógica de segurança, que impede o ataque IDOR (Insecure Direct Object Reference), percebeu que o usuário logado não tinha permissão para essa ação. Por isso, a tentativa foi negada, e o sistema respondeu com um erro 403 Forbidden. Isso prova que a proteção dos dados está ativa e segura.
+
+![Sensor Log](src/main/resources/static/assets/img/ataque/Tratamento-de-Ataque.png)
+
+## ✅ Log de Segurança: Operação Autorizada e Bem-Sucedida
+
+O log de auditoria a seguir demonstra uma operação de atualização de sensor bem-sucedida e autorizada, confirmando que os mecanismos de defesa contra `IDOR` permitem o acesso a recursos apenas para usuários com as permissões corretas.
+
+Análise do Log
+- Tentativa de Acesso (Linha 5): O usuário `albertinesilva@gmail.com` tenta atualizar o sensor com ID: 3. A aplicação registra este evento como parte de sua auditoria de segurança (`Simulação de Auditoria`).
+
+- Autorização e Execução (Linha 6): Após a verificação de autorização, o mecanismo de defesa permite a operação. A mensagem `✅ Operação Bem-Sucedida` confirma que a solicitação foi validada e o sensor foi atualizado com sucesso.
+
+- Confirmação do Servidor (Linha 10): A operação é finalizada com um status `200 OK`, indicando que a requisição foi processada sem erros e o recurso (o sensor) foi modificado conforme o esperado.
+
+Este log serve como prova de que a aplicação não só bloqueia tentativas indevidas, mas também processa corretamente as solicitações legítimas, demonstrando a robustez dos seus controles de acesso e a prevenção eficaz contra vulnerabilidades IDOR.
+
+## ![Sensor Log](src/main/resources/static/assets/img/ataque/Atualizacao-Sucesso.png)
+
+Isso demonstra que a aplicação não só bloqueia tentativas indevidas, mas também processa corretamente as solicitações legítimas, reforçando a robustez dos controles de acesso e a prevenção eficaz contra vulnerabilidades IDOR.
 
 1 - Impacto dos Ataques na Arquitetura
 
