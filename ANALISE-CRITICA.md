@@ -18,6 +18,8 @@ Este log demonstra a exploração de uma vulnerabilidade de Controle de Acesso Q
 
 ![Sensor Log](src/main/resources/static/assets/img/ataque/Simulacao-de-Ataque-Spoofing.png)
 
+---
+
 ### Cenário 2: Depois da Segurança (Proteção Ativa)
 
 ## 🚫 Log de Erro: Tentativa de Acesso com Token JWT Inválido
@@ -30,11 +32,15 @@ Detalhes do Erro
 
 ![Sensor Log](src/main/resources/static/assets/img/ataque/Token-invalido.png)
 
+---
+
 ## 🛡️🚫 Evidência de Bloqueio de Tentativa de Acesso Não Autorizado (IDOR)
 
 Este log mostra que a sua defesa contra acessos indevidos funcionou perfeitamente. Um usuário (albertinesilva@gmail.com) tentou alterar os dados de um sensor (ID: 1) que não era dele. A sua lógica de segurança, que impede o ataque IDOR (Insecure Direct Object Reference), percebeu que o usuário logado não tinha permissão para essa ação. Por isso, a tentativa foi negada, e o sistema respondeu com um erro 403 Forbidden. Isso prova que a proteção dos dados está ativa e segura.
 
 ![Sensor Log](src/main/resources/static/assets/img/ataque/Tratamento-de-Ataque.png)
+
+---
 
 ## ✅ Log de Segurança: Operação Autorizada e Bem-Sucedida
 
@@ -51,6 +57,36 @@ Este log serve como prova de que a aplicação não só bloqueia tentativas inde
 
 ## ![Sensor Log](src/main/resources/static/assets/img/ataque/Atualizacao-Sucesso.png)
 
+---
+### Lógica do Mecanismo de Defesa IDOR
+
+Este painel de monitoramento simula um sistema de segurança que protege contra ataques de IDOR (Insecure Direct Object Reference). O coração da defesa está em uma única e crucial verificação no "backend" simulado, que garante que um usuário só pode acessar os dados que lhe pertencem.
+
+A verificação é feita comparando a identidade do usuário logado com o dono real do sensor que ele está tentando acessar.
+
+![Sensor Log](src/main/resources/static/assets/img/ataque/Security-monitoring.png)
+
+Como a Verificação Acontece:
+
+1. **Dados de Propriedade:** O objeto `sensorOwners` atua como um pequeno banco de dados que associa cada sensor a um email de proprietário.
+
+2. **Identidade do Usuário:** Quando você simula uma operação, a aplicação decodifica seu `token` de login para extrair sua identidade única (`currentUserId`).
+
+3. A Verificação: A linha de código const `isUserOwner = sensorOwners[sensorId] === currentUserId`; faz a mágica.
+
+   - Ela busca quem é o dono do `sensorId` que está sendo acessado.
+
+   - Em seguida, ela compara essa informação com a identidade do currentUserId logado.
+
+4. Resultado da Simulação:
+
+    - Se as identidades não corresponderem, significa que um ataque IDOR está em andamento. A operação é bloqueada, e o painel registra um alerta de segurança.
+
+    - Se as identidades corresponderem, a operação é autorizada, e o painel registra um evento de sucesso.
+
+Essa lógica simples, mas poderosa, garante que mesmo que um atacante descubra o ID de um sensor de outro usuário, a tentativa de acesso será imediatamente barrada pela validação de propriedade.
+
+---
 Isso demonstra que a aplicação não só bloqueia tentativas indevidas, mas também processa corretamente as solicitações legítimas, reforçando a robustez dos controles de acesso e a prevenção eficaz contra vulnerabilidades IDOR.
 
 1 - Impacto dos Ataques na Arquitetura
@@ -76,6 +112,7 @@ Ciberataques podem comprometer seriamente o desempenho e a confiabilidade de um 
 - Perda de Pacotes e Integridade de Dados: O atacante pode modificar, corromper ou descartar pacotes de dados. Os dados de sensores exibidos no painel podem ser falsos ou incompletos.
 
 - Falhas de Autenticação: Credenciais podem ser roubadas, permitindo que o atacante se autentique como um usuário legítimo no futuro.
+---
 
 2 - Comparativo: Antes e Depois dos Mecanismos de Segurança
 
@@ -98,6 +135,7 @@ Cenário 2: Depois da Segurança (Proteção Ativa)
 - Validação de `Token JWT`: Outro log evidencia que o sistema rejeita requisições com tokens malformados (`io.jsonwebtoken.MalformedJwtException`), garantindo que apenas solicitações com autenticação válida e estruturada possam acessar a `API`.
 
 - **Operação Autorizada:** O log de auditoria confirma que, quando um usuário tenta modificar um recurso que realmente pertence a ele (`albertinesilva@gmail.com` tenta atualizar o sensor com ID 3), a operação é validada e executada com sucesso (200 OK).
+---
 
 3 - Boas Práticas de Segurança: LGPD e InteliIoT
 
@@ -122,3 +160,9 @@ Segurança no Design: A segurança deve ser uma consideração desde a fase de p
 - **Atualizações Seguras:** Garantir que o sistema possa ser atualizado de forma segura, evitando a instalação de código malicioso através de canais não confiáveis.
 
 - **Zero Trust (Confiança Zero):** Assumir que nenhuma entidade (usuário, dispositivo, servidor) é confiável por padrão. Cada requisição deve ser validada e verificada, independentemente de sua origem.
+
+---
+
+| 🌎 LinkedIn                                                              | 👨‍💻 **Autor**                                                                 |
+| ------------------------------------------------------------------------ | ---------------------------------------------------------------------------- |
+| [LinkedIn](https://www.linkedin.com/in/albert-backend-java-spring-boot/) | [Albert Silva](https://www.linkedin.com/in/albert-backend-java-spring-boot/) |
