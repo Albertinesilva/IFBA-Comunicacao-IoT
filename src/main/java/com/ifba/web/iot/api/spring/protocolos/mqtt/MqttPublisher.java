@@ -1,4 +1,4 @@
-package com.ifba.web.iot.api.spring.mqtt;
+package com.ifba.web.iot.api.spring.protocolos.mqtt;
 
 import java.time.LocalDateTime;
 

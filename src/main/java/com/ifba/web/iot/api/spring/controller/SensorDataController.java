@@ -8,12 +8,12 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
-import com.ifba.web.iot.api.spring.amqp.AmqpPublisher;
+import com.ifba.web.iot.api.spring.protocolos.amqp.AmqpPublisher;
 import com.ifba.web.iot.api.spring.controller.dto.update.SensorUpdateDTO;
 import com.ifba.web.iot.api.spring.controller.dto.view.SensorView;
 import com.ifba.web.iot.api.spring.model.Alert;
 import com.ifba.web.iot.api.spring.model.SensorData;
-import com.ifba.web.iot.api.spring.mqtt.MqttPublisher;
+import com.ifba.web.iot.api.spring.protocolos.mqtt.MqttPublisher;
 import com.ifba.web.iot.api.spring.service.AlertService;
 import com.ifba.web.iot.api.spring.service.SensorDataService;
 import lombok.extern.slf4j.Slf4j;

@@ -1,4 +1,4 @@
-package com.ifba.web.iot.api.spring.rabbitmq.simulation;
+package com.ifba.web.iot.api.spring.protocolos.rabbitmq.simulation;
 
 import java.util.concurrent.Executors;
 

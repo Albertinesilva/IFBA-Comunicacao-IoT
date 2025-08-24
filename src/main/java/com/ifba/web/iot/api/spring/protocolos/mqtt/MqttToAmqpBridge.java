@@ -1,10 +1,10 @@
-package com.ifba.web.iot.api.spring.mqtt;
+package com.ifba.web.iot.api.spring.protocolos.mqtt;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.ifba.web.iot.api.spring.model.SensorData;
-import com.ifba.web.iot.api.spring.rabbitmq.simulation.InMemoryRabbitTemplate;
+import com.ifba.web.iot.api.spring.protocolos.rabbitmq.simulation.InMemoryRabbitTemplate;
 
 import lombok.extern.slf4j.Slf4j;
 

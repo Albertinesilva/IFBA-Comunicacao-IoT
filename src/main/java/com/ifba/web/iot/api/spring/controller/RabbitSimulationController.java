@@ -5,8 +5,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.ifba.web.iot.api.spring.rabbitmq.simulation.InMemoryRabbitListener;
-import com.ifba.web.iot.api.spring.rabbitmq.simulation.InMemoryRabbitTemplate;
+import com.ifba.web.iot.api.spring.protocolos.rabbitmq.simulation.InMemoryRabbitListener;
+import com.ifba.web.iot.api.spring.protocolos.rabbitmq.simulation.InMemoryRabbitTemplate;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

@@ -1,4 +1,4 @@
-package com.ifba.web.iot.api.spring.amqp;
+package com.ifba.web.iot.api.spring.protocolos.amqp;
 
 import java.time.LocalDateTime;
 

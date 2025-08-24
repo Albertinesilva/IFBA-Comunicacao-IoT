@@ -4,14 +4,14 @@ import org.apache.commons.lang3.tuple.Triple;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import com.ifba.web.iot.api.spring.amqp.AmqpPublisher;
+import com.ifba.web.iot.api.spring.protocolos.amqp.AmqpPublisher;
 import com.ifba.web.iot.api.spring.controller.dto.update.SensorUpdateDTO;
 import com.ifba.web.iot.api.spring.controller.dto.view.SensorView;
 import com.ifba.web.iot.api.spring.model.Alert;
 import com.ifba.web.iot.api.spring.model.SensorData;
 import com.ifba.web.iot.api.spring.model.Usuario;
-import com.ifba.web.iot.api.spring.mqtt.MqttPublisher;
-import com.ifba.web.iot.api.spring.mqtt.MqttToAmqpBridge;
+import com.ifba.web.iot.api.spring.protocolos.mqtt.MqttPublisher;
+import com.ifba.web.iot.api.spring.protocolos.mqtt.MqttToAmqpBridge;
 import com.ifba.web.iot.api.spring.repository.SensorDataRepository;
 import com.ifba.web.iot.api.spring.repository.UsuarioRepository;
 
