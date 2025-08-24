@@ -132,16 +132,13 @@ A arquitetura do projeto simula a distribuição do processamento, uma caracter�
 
 3. **Camada Cloud (Nuvem):** A persistência dos dados no banco de dados H2 (simulando um banco de dados em nuvem) representa a camada Cloud. É aqui que os dados são armazenados de forma centralizada para análise de longo prazo, visualização e tomada de decisões estratégicas.
 
-- 📂 Estrutura do Projeto
+---
+
+### 📂 Estrutura do Projeto
+
+- Esta estrutura organiza o código da aplicação Spring Boot de forma modular e clara, seguindo as melhores práticas.
 
 ```java
-// Estrutura de pacotes do projeto
-// com.tfba.web.iot.api.spring
-//
-// Esta estrutura organiza o código da aplicação Spring Boot
-// de forma modular e clara, seguindo as melhores práticas.
-
-.
 ├── main
 │   ├── java
 │   │   └── com
