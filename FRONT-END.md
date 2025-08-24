@@ -74,7 +74,14 @@ A tela de `clima` permite que o usuário pesquise as condições `meteorológica
 <img src="src/main/resources/static/assets/img/frontend/Weather.png" alt="Tela de Clima" width="100%" height="100%">
 
 ---
+
+### ✅ Conclusão e Aprendizados
+
+Este projeto demonstra não apenas a capacidade de construir uma interface de usuário responsiva e intuitiva, mas também destaca a importância da comunicação entre o `frontend` e o `backend`. Através do uso de `JavaScript` puro e da `API fetch`, foi possível criar um painel de monitoramento em tempo real que simula um ambiente de agricultura inteligente, consumindo dados de `sensores` e apresentando-os de forma clara para o usuário.
+
+A experiência de desenvolver este sistema reforça o conhecimento sobre a `arquitetura` de aplicações web, o tratamento de dados `assíncronos` e a visualização de informações, elementos cruciais para o desenvolvimento de soluções `IoT`.
+
+---
 | 🌎 LinkedIn                                                              | 👨‍💻 **Autor**                                                                 |
 | ------------------------------------------------------------------------ | ---------------------------------------------------------------------------- |
 | [LinkedIn](https://www.linkedin.com/in/albert-backend-java-spring-boot/) | [Albert Silva](https://www.linkedin.com/in/albert-backend-java-spring-boot/) |
-
