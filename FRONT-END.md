@@ -40,7 +40,7 @@ O **Live Server** irá iniciar um servidor local e abrir a página no seu navega
 
 A tela de escolha é o ponto de partida. Ela permite para onde ir dentro do aplicativo.
 
-<img src="src/main/resources/static/assets/img/frontend/Choice.png" alt="Tela de Escolha" width="50%" height="450">
+<img src="src/main/resources/static/assets/img/frontend/Choice.png" alt="Tela de Escolha" width="40%" height="450">
 
 ---
 #### Telas de alertas de `Temperatura`, `Umidade` e `Luminosidade`.
@@ -85,3 +85,4 @@ A experiência de desenvolver este sistema reforça o conhecimento sobre a `arqu
 | 🌎 LinkedIn                                                              | 👨‍💻 **Autor**                                                                 |
 | ------------------------------------------------------------------------ | ---------------------------------------------------------------------------- |
 | [LinkedIn](https://www.linkedin.com/in/albert-backend-java-spring-boot/) | [Albert Silva](https://www.linkedin.com/in/albert-backend-java-spring-boot/) |
+
