@@ -2,7 +2,7 @@
 
 ### Evidências e Análise Comparativa
 
-Este log serve como prova de que a aplicação não só bloqueia tentativas indevidas, mas também processa corretamente as solicitações legítimas, demonstrando a robustez dos controles de acesso e a prevenção eficaz contra vulnerabilidades IDOR.
+Estes logs servem como prova de que a aplicação não só bloqueia tentativas indevidas, mas também processa corretamente as solicitações legítimas, demonstrando a robustez dos controles de acesso e a prevenção eficaz contra vulnerabilidades IDOR.
 
 ### Cenário 1: Antes da Segurança (Vulnerabilidade)
 
