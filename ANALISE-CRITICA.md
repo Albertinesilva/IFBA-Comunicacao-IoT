@@ -87,7 +87,7 @@ Como a Verificação Acontece:
 Essa lógica simples, mas poderosa, garante que mesmo que um atacante descubra o ID de um sensor de outro usuário, a tentativa de acesso será imediatamente barrada pela validação de propriedade.
 
 ---
-Isso demonstra que a aplicação não só bloqueia tentativas indevidas, mas também processa corretamente as solicitações legítimas, reforçando a robustez dos controles de acesso e a prevenção eficaz contra vulnerabilidades IDOR.
+Isso demonstra que a aplicação não só bloqueia tentativas indevidas, mas também processa corretamente as solicitações legítimas, reforçando a robustez dos controles de acesso e a prevenção eficaz contra vulnerabilidades IDOR, ao mesmo tempo em que garante a **interoperabilidade** segura de dados e a **privacidade** do usuário.
 
 1 - Impacto dos Ataques na Arquitetura
 
