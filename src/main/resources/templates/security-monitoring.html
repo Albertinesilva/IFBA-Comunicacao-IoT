@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Painel de Monitoramento de Segurança</title>
+  <!-- Tailwind CSS CDN para um estilo moderno e responsivo -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: #111827;
+      color: #e5e7eb;
+    }
+
+    /* Estilos personalizados para os logs */
+    .log-success {
+      border-left: 4px solid #10B981;
+      /* green-500 */
+    }
+
+    .log-warning {
+      border-left: 4px solid #F59E0B;
+      /* amber-500 */
+    }
+
+    .log-danger {
+      border-left: 4px solid #EF4444;
+      /* red-500 */
+    }
+
+    .log-entry:not(:last-child) {
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    /* Esconder a barra de rolagem */
+    .overflow-y-scroll::-webkit-scrollbar {
+      display: none;
+    }
+
+    .overflow-y-scroll {
+      -ms-overflow-style: none;
+      /* IE and Edge */
+      scrollbar-width: none;
+      /* Firefox */
+    }
+
+    .action-button {
+      transition: transform 0.1s ease-in-out, box-shadow 0.1s ease-in-out;
+    }
+
+    .action-button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    }
+
+    .action-button:active {
+      transform: translateY(0);
+      box-shadow: none;
+    }
+  </style>
+</head>
+
+<body class="p-6 md:p-8">
+  <!-- Container Principal do Painel -->
+  <div id="dashboard-container" class="container mx-auto">
+    <header class="mb-8 text-center">
+      <h1 class="text-4xl font-extrabold text-white mb-2">Painel de Monitoramento de Segurança</h1>
+      <p class="text-gray-400">Logado como: <span id="logged-in-user" class="font-bold text-blue-300"></span></p>
+      <p class="text-gray-400">Simulação de eventos de segurança e demonstração de mecanismos de defesa IDOR.</p>
+    </header>
+
+    <!-- Seção de Gráficos e Métricas -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
+      <div class="bg-gray-800 p-6 rounded-lg shadow-lg">
+        <h2 class="text-2xl font-bold text-white mb-4">Atividade de Ataques</h2>
+        <div class="h-64">
+          <canvas id="attackChart"></canvas>
+        </div>
+      </div>
+
+      <!-- Seção de Métricas Chave -->
+      <div class="grid grid-cols-2 gap-4">
+        <div class="bg-gray-800 p-6 rounded-lg shadow-lg flex flex-col justify-center items-center">
+          <p class="text-sm font-semibold text-gray-400">Ataques Bloqueados</p>
+          <p id="blockedCount" class="text-4xl font-extrabold text-yellow-500 mt-2">0</p>
+        </div>
+        <div class="bg-gray-800 p-6 rounded-lg shadow-lg flex flex-col justify-center items-center">
+          <p class="text-sm font-semibold text-gray-400">Operações Autorizadas</p>
+          <p id="authorizedCount" class="text-4xl font-extrabold text-green-500 mt-2">0</p>
+        </div>
+        <div class="bg-gray-800 p-6 rounded-lg shadow-lg flex flex-col justify-center items-center">
+          <p class="text-sm font-semibold text-gray-400">Tentativas Totais</p>
+          <p id="totalCount" class="text-4xl font-extrabold text-white mt-2">0</p>
+        </div>
+        <div class="bg-gray-800 p-6 rounded-lg shadow-lg flex flex-col justify-center items-center">
+          <p class="text-sm font-semibold text-gray-400">Taxa de Bloqueio</p>
+          <p id="blockRate" class="text-4xl font-extrabold text-orange-400 mt-2">0%</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Controles de Simulação -->
+    <div class="bg-gray-800 p-6 rounded-lg shadow-lg mb-8">
+      <h2 class="text-2xl font-bold text-white mb-4">Controles de Simulação</h2>
+      <div class="flex flex-col md:flex-row gap-4">
+        <button id="simulateBlockedBtn"
+          class="action-button w-full md:w-1/2 py-3 px-6 rounded-md bg-red-600 hover:bg-red-700 text-white font-bold transition-colors">
+          Simular Tentativa IDOR (Bloqueada)
+        </button>
+        <button id="simulateAuthorizedBtn"
+          class="action-button w-full md:w-1/2 py-3 px-6 rounded-md bg-green-600 hover:bg-green-700 text-white font-bold transition-colors">
+          Simular Operação Autorizada (Bem-Sucedida)
+        </button>
+      </div>
+    </div>
+
+    <!-- Seção de Registros de Eventos -->
+    <div class="bg-gray-800 p-6 rounded-lg shadow-lg">
+      <h2 class="text-2xl font-bold text-white mb-4">Registros de Eventos</h2>
+      <div id="eventLogContainer" class="max-h-96 overflow-y-scroll">
+        <!-- Logs serão inseridos aqui pelo JavaScript -->
+      </div>
+    </div>
+  </div>
+
+  <!-- Chart.js CDN para os gráficos -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      // DADOS MOCADOS: O `sensorOwners` simula a base de dados do backend,
+      // associando cada sensor a um email de usuário.
+      // NOTE: Este objeto será atualizado dinamicamente com o email do usuário logado.
+      const sensorOwners = {
+        1: 'outro_usuario@gmail.com', // Sensor 1 pertence a outro usuário
+      };
+
+      // Elementos do DOM
+      const loggedInUserEl = document.getElementById('logged-in-user');
+      const eventLogContainer = document.getElementById('eventLogContainer');
+      const blockedCountEl = document.getElementById('blockedCount');
+      const authorizedCountEl = document.getElementById('authorizedCount');
+      const totalCountEl = document.getElementById('totalCount');
+      const blockRateEl = document.getElementById('blockRate');
+      const simulateBlockedBtn = document.getElementById('simulateBlockedBtn');
+      const simulateAuthorizedBtn = document.getElementById('simulateAuthorizedBtn');
+
+      // Estado da aplicação
+      let totalEvents = 0;
+      let blockedAttacks = 0;
+      let authorizedOperations = 0;
+      let mySensorId = 3; // ID do sensor que será associado ao usuário logado
+
+      // Configuração e inicialização do gráfico Chart.js
+      const ctx = document.getElementById('attackChart').getContext('2d');
+      const attackChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+          labels: [],
+          datasets: [{
+            label: 'Ataques Bloqueados',
+            data: [],
+            borderColor: 'rgb(245, 158, 11)', // amber-500 (amarelo)
+            backgroundColor: 'rgba(245, 158, 11, 0.2)',
+            tension: 0.1,
+            fill: true,
+          }, {
+            label: 'Operações Autorizadas',
+            data: [],
+            borderColor: 'rgb(16, 185, 129)', // green-500 (verde)
+            backgroundColor: 'rgba(16, 185, 129, 0.2)',
+            tension: 0.1,
+            fill: true,
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          scales: {
+            y: {
+              beginAtZero: true,
+              grid: {
+                color: 'rgba(255, 255, 255, 0.1)'
+              },
+              ticks: {
+                color: 'rgb(209, 213, 219)'
+              }
+            },
+            x: {
+              grid: {
+                color: 'rgba(255, 255, 255, 0.1)'
+              },
+              ticks: {
+                color: 'rgb(209, 213, 219)'
+              }
+            }
+          },
+          plugins: {
+            legend: {
+              labels: {
+                color: 'rgb(209, 213, 219)'
+              }
+            }
+          }
+        }
+      });
+
+      /**
+       * Inicia a aplicação: verifica se há um token de login no localStorage.
+       */
+      function initializeApp() {
+        const token = localStorage.getItem('jwtToken');
+        if (!token) {
+          // Se não houver token, redireciona para a página de login
+          window.location.href = 'login.html';
+          return;
+        }
+
+        try {
+          // Decodifica o token para obter o email do usuário
+          const payload = JSON.parse(atob(token.split('.')[1]));
+          const userEmail = payload.sub;
+          loggedInUserEl.textContent = userEmail;
+
+          // ⭐ Ponto de correção: Associa o ID do sensor 3 ao email do usuário logado
+          sensorOwners[mySensorId] = userEmail;
+
+        } catch (error) {
+          // Se o token for inválido, remove e redireciona
+          console.error("Token inválido, redirecionando para login.", error);
+          localStorage.removeItem('jwtToken');
+          window.location.href = 'login.html';
+        }
+      }
+
+      /**
+       * Adiciona um novo registro ao log de eventos na UI.
+       * @param {Object} event - O objeto do evento a ser logado.
+       */
+      function addLogEntry(event) {
+        const logEl = document.createElement('div');
+        const timestamp = new Date().toLocaleTimeString('pt-BR');
+        let logClass = '';
+        let statusText = '';
+        let statusColor = '';
+
+        if (event.status === 'blocked') {
+          logClass = 'log-warning';
+          statusText = 'BLOQUEADO:';
+          statusColor = 'text-yellow-500';
+        } else if (event.status === 'success') {
+          logClass = 'log-success';
+          statusText = 'SUCESSO:';
+          statusColor = 'text-green-500';
+        } else {
+          logClass = 'log-danger';
+          statusText = 'ERRO:';
+          statusColor = 'text-red-500';
+        }
+
+        logEl.className = `log-entry p-4 my-2 rounded-lg bg-gray-700 hover:bg-gray-600 transition-colors duration-200 ${logClass}`;
+        logEl.innerHTML = `
+                      <div class="flex justify-between items-center">
+                          <span class="text-sm font-mono text-gray-400">${timestamp}</span>
+                          <span class="text-xs font-semibold px-2 py-1 rounded-full ${statusColor}">${statusText}</span>
+                      </div>
+                      <p class="mt-1">${event.message}</p>
+                  `;
+
+        if (eventLogContainer.firstChild) {
+          eventLogContainer.insertBefore(logEl, eventLogContainer.firstChild);
+        } else {
+          eventLogContainer.appendChild(logEl);
+        }
+
+        if (eventLogContainer.childElementCount > 30) {
+          eventLogContainer.removeChild(eventLogContainer.lastChild);
+        }
+      }
+
+      /**
+       * Atualiza os contadores e a taxa de bloqueio no painel.
+       */
+      function updateMetrics() {
+        blockedCountEl.textContent = blockedAttacks;
+        authorizedCountEl.textContent = authorizedOperations;
+        totalCountEl.textContent = totalEvents;
+
+        const attackAttempts = blockedAttacks + authorizedOperations;
+        const blockRate = attackAttempts > 0 ? (blockedAttacks / attackAttempts * 100).toFixed(1) : 0;
+        blockRateEl.textContent = `${blockRate}%`;
+      }
+
+      /**
+       * Atualiza os dados do gráfico.
+       */
+      function updateChart() {
+        const now = new Date().toLocaleTimeString('pt-BR');
+
+        attackChart.data.labels.push(now);
+        attackChart.data.datasets[0].data.push(blockedAttacks);
+        attackChart.data.datasets[1].data.push(authorizedOperations);
+
+        const maxPoints = 20;
+        if (attackChart.data.labels.length > maxPoints) {
+          attackChart.data.labels.shift();
+          attackChart.data.datasets[0].data.shift();
+          attackChart.data.datasets[1].data.shift();
+        }
+
+        attackChart.update();
+      }
+
+      /**
+       * Simula uma chamada de API para atualizar um sensor e receber o resultado do "backend".
+       * @param {number} sensorId - O ID do sensor a ser atualizado.
+       * @returns {Promise<Object>} Um Promise que resolve com o resultado da operação.
+       */
+      async function simulateBackendApiCall(sensorId) {
+        // Simula a latência da rede
+        await new Promise(resolve => setTimeout(resolve, 500));
+
+        // Obtém o token do localStorage
+        const token = localStorage.getItem('jwtToken');
+
+        // Se não houver token, retorna um erro de não autenticado
+        if (!token) {
+          return {
+            status: 'error',
+            message: '❌ ERRO: Nenhuma sessão de usuário encontrada. Por favor, faça o login novamente.'
+          };
+        }
+
+        // Decodifica (simula) o token para obter o ID do usuário
+        const payload = JSON.parse(atob(token.split('.')[1]));
+        const currentUserId = payload.sub;
+
+        // 🛡️ Simulação do Mecanismo de Defesa IDOR no "backend"
+        const isUserOwner = sensorOwners[sensorId] === currentUserId;
+
+        let event = {};
+        if (isUserOwner) {
+          event = {
+            status: 'success',
+            message: `✅ Operação Bem-Sucedida: Usuário '${currentUserId}' atualizou seu próprio sensor (ID: ${sensorId}).`
+          };
+        } else {
+          event = {
+            status: 'blocked',
+            message: `❌ ALERTA: Tentativa de acesso não autorizado! Usuário '${currentUserId}' tentou modificar o sensor de outro usuário (ID: ${sensorId}).`
+          };
+        }
+
+        return event;
+      }
+
+      // Listeners para os botões do painel
+      simulateBlockedBtn.addEventListener('click', async () => {
+        totalEvents++;
+        // ID de um sensor que NÃO pertence ao usuário logado
+        const sensorId = 1;
+        const result = await simulateBackendApiCall(sensorId);
+        if (result.status === 'blocked') blockedAttacks++;
+        addLogEntry(result);
+        updateMetrics();
+        updateChart();
+      });
+
+      simulateAuthorizedBtn.addEventListener('click', async () => {
+        totalEvents++;
+        // ID de um sensor que PERTENCE ao usuário logado
+        const sensorId = mySensorId; // Usando a variável dinâmica
+        const result = await simulateBackendApiCall(sensorId);
+        if (result.status === 'success') authorizedOperations++;
+        addLogEntry(result);
+        updateMetrics();
+        updateChart();
+      });
+
+      // Inicia a aplicação ao carregar a página
+      initializeApp();
+    });
+  </script>
+</body>
+
+</html>
