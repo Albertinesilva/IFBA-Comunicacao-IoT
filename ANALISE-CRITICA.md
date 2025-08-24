@@ -165,6 +165,10 @@ Segurança no Design: A segurança deve ser uma consideração desde a fase de p
 
 ### ✅ Conclusão
 
+A simulação do ataque `IDOR` foi um aprendizado fundamental, demonstrando como uma vulnerabilidade de controle de acesso pode comprometer a integridade de dados. Ao implementar a verificação de propriedade no `backend`, transformei a aplicação vulnerável em um sistema robusto e seguro. Este exercício reforça a importância de construir a segurança desde a fase de design, adotando uma abordagem de "`confiança zero`" para proteger os recursos de forma eficaz, que se baseia no princípio de "`nunca confie`, `sempre verifique`", garantindo que cada requisição seja validada, mesmo que pareça vir de uma fonte legítima.
+
+---
+
 | 🌎 LinkedIn                                                              | 👨‍💻 **Autor**                                                                 |
 | ------------------------------------------------------------------------ | ---------------------------------------------------------------------------- |
 | [LinkedIn](https://www.linkedin.com/in/albert-backend-java-spring-boot/) | [Albert Silva](https://www.linkedin.com/in/albert-backend-java-spring-boot/) |
