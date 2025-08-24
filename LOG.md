@@ -65,3 +65,9 @@ Confirmação de que os dados foram enviados para a fila RabbitMQ com sucesso.
 
 ### Temperatura abaixo de 30
 ![Sensor Log](src/main/resources/static/assets/img/rabbit/fila-rabbit-temperatura-abaixo-de-30.png)  
+
+---
+
+| 🌎 LinkedIn                                                              | 👨‍💻 **Autor**                                                                 |
+| ------------------------------------------------------------------------ | ---------------------------------------------------------------------------- |
+| [LinkedIn](https://www.linkedin.com/in/albert-backend-java-spring-boot/) | [Albert Silva](https://www.linkedin.com/in/albert-backend-java-spring-boot/) |
