@@ -8,6 +8,8 @@ import lombok.NoArgsConstructor;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -42,6 +44,17 @@ public class SensorData implements Serializable {
      * Momento em que a leitura foi realizada.
      */
     private LocalDateTime timestamp;
+
+    /**
+     * Relacionamento de "muitos-para-um" com a entidade Usuario.
+     * Múltiplas leituras de sensor podem pertencer a um único usuário.
+     * A anotação @JoinColumn define a chave estrangeira 'usuario_id' na tabela
+     * 'sensor_data'.
+     */
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "usuario_id", nullable = false)
+    @JsonIgnore
+    private Usuario usuario;
 
     /**
      * Construtor que inicializa o tipo do sensor e o valor, atribuindo o timestamp

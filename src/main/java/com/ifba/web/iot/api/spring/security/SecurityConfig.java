@@ -58,9 +58,10 @@ public class SecurityConfig {
     http
         .csrf(csrf -> csrf.disable())
         .cors(cors -> {
-        }) // <-- Ativa CORS
+        })
         .authorizeHttpRequests(auth -> auth
             .requestMatchers("/api/auth/**").permitAll()
+            .requestMatchers("/h2-console/**").permitAll()
             .requestMatchers("/api/clima/**").authenticated()
             .requestMatchers("/api/sensores/**").authenticated()
             .requestMatchers("/api/rabbit/**").authenticated()

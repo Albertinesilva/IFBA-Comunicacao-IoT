@@ -18,7 +18,7 @@ public class SensorView {
   private String protocolo;
 
   /** Dados do sensor que foi salvo. */
-  private SensorData data;
+  private SensorData sensorData;
 
   /**
    * Construtor completo que permite definir a mensagem principal,
@@ -28,9 +28,9 @@ public class SensorView {
    * @param data Dados do sensor.
    * @param protocolo Mensagem referente ao protocolo de envio.
    */
-  public SensorView(String message, SensorData data, String protocolo) {
+  public SensorView(String message, SensorData sensorData, String protocolo) {
     this.message = message;
-    this.data = data;
+    this.sensorData = sensorData;
     this.protocolo = protocolo;
   }
 

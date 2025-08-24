@@ -1,33 +1,42 @@
 package com.ifba.web.iot.api.spring.service;
 
 import org.apache.commons.lang3.tuple.Triple;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 import com.ifba.web.iot.api.spring.amqp.AmqpPublisher;
+import com.ifba.web.iot.api.spring.controller.dto.update.SensorUpdateDTO;
+import com.ifba.web.iot.api.spring.controller.dto.view.SensorView;
 import com.ifba.web.iot.api.spring.model.Alert;
 import com.ifba.web.iot.api.spring.model.SensorData;
+import com.ifba.web.iot.api.spring.model.Usuario;
 import com.ifba.web.iot.api.spring.mqtt.MqttPublisher;
 import com.ifba.web.iot.api.spring.mqtt.MqttToAmqpBridge;
 import com.ifba.web.iot.api.spring.repository.SensorDataRepository;
+import com.ifba.web.iot.api.spring.repository.UsuarioRepository;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
+import java.security.Principal;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
 
 /**
- * Serviço responsável pelo gerenciamento de dados dos sensores.
+ * **Serviço de Gerenciamento de Dados de Sensores**
+ *
  * <p>
- * Fornece métodos para:
- * <ul>
- * <li>Consulta de todos os registros de sensores</li>
- * <li>Persistência de dados de sensores</li>
- * <li>Publicação de dados via MQTT e AMQP</li>
- * <li>Detecção de alertas (ex.: temperatura elevada)</li>
- * </ul>
+ * Esta classe de serviço (`@Service`) centraliza a lógica de negócio
+ * relacionada aos dados dos sensores.
+ * Ela coordena a persistência dos dados, a detecção de alertas, e a comunicação
+ * assíncrona com outros sistemas através dos protocolos MQTT e AMQP.
+ * </p>
+ *
+ * <p>
+ * A anotação `@RequiredArgsConstructor` do Lombok gera um construtor com os
+ * campos
+ * `final`, facilitando a injeção de dependências de forma concisa.
  * </p>
  */
 @Slf4j
@@ -35,38 +44,97 @@ import java.util.Objects;
 @RequiredArgsConstructor
 public class SensorDataService {
 
-    private final SensorDataRepository sensorDatarepository;
+    private final SensorDataRepository sensorDataRepository;
+    private final UsuarioRepository usuarioRepository;
     private final AlertService alertService;
     private final MqttPublisher mqttPublisher;
     private final AmqpPublisher amqpPublisher;
     private final MqttToAmqpBridge mqttToAmqpBridge;
 
     /**
-     * Retorna todos os registros de dados dos sensores.
+     * **Busca Todos os Registros de Sensores**
      *
-     * @return Lista de {@link SensorData} contendo todos os registros persistidos.
+     * <p>
+     * Recupera todos os registros de dados de sensores persistidos no banco de
+     * dados.
+     * Este método é marcado como somente leitura (`@Transactional(readOnly =
+     * true)`) para
+     * otimizar o desempenho de consultas.
+     * </p>
+     *
+     * @return Uma `List` de objetos {@link SensorData} representando todos os
+     *         registros.
      */
     @Transactional(readOnly = true)
     public List<SensorData> findAll() {
-        return sensorDatarepository.findAll();
+        return sensorDataRepository.findAll();
     }
 
     /**
-     * Salva os dados de um sensor, define unidade de medida conforme o tipo,
-     * verifica alertas e publica os dados via MQTT ou AMQP.
+     * **SOBRECARGA 1: Salva e processa dados a partir de uma requisição de API.**
+     * <p>
+     * Este método é usado por endpoints da API. Ele usa o `Principal` para
+     * encontrar
+     * o usuário autenticado e, em seguida, chama a lógica de processamento
+     * principal.
+     * </p>
      *
-     * @param sensorData Dados do sensor a serem persistidos.
-     * @return {@link Triple} contendo:
-     *         <ol>
-     *         <li>Mensagem de alerta (caso exista, ou {@code null})</li>
-     *         <li>Objeto {@link SensorData} persistido</li>
-     *         <li>Mensagem de protocolo retornada pelo publicador (MQTT ou
-     *         AMQP)</li>
-     *         </ol>
+     * @param sensorData O objeto de dados do sensor.
+     * @param principal  O objeto de segurança do usuário autenticado.
+     * @return Um {@link Triple} com a mensagem de alerta, os dados salvos e a
+     *         mensagem do protocolo.
      */
     @Transactional
-    public Triple<String, SensorData, String> saveSensorData(SensorData sensorData) {
-        log.info("📥 Iniciando o salvamento dos dados do sensor...");
+    public Triple<String, SensorData, String> saveAndProcess(SensorData sensorData, Principal principal) {
+        if (principal == null) {
+            log.error("❌ Erro: Tentativa de criar sensor sem usuário autenticado.");
+            throw new AccessDeniedException("Usuário não autenticado. Acesso negado.");
+        }
+
+        Usuario usuario = usuarioRepository.findByEmail(principal.getName())
+                .orElseThrow(() -> new AccessDeniedException("Usuário não encontrado. Acesso negado."));
+
+        return processAndSave(sensorData, usuario);
+    }
+
+    /**
+     * **SOBRECARGA 2: Salva e processa dados a partir de um agendador interno.**
+     * <p>
+     * Este método é usado por processos internos, como o `SensorScheduler`, que já
+     * fornecem o objeto de usuário.
+     * </p>
+     *
+     * @param sensorData O objeto de dados do sensor.
+     * @param usuario    O objeto do usuário a ser associado aos dados.
+     * @return Um {@link Triple} com a mensagem de alerta, os dados salvos e a
+     *         mensagem do protocolo.
+     */
+    @Transactional
+    public Triple<String, SensorData, String> saveAndProcess(SensorData sensorData, Usuario usuario) {
+        if (usuario == null) {
+            log.error("❌ Erro: Tentativa de processar dados com usuário nulo.");
+            throw new IllegalArgumentException("O usuário não pode ser nulo para esta operação.");
+        }
+        return processAndSave(sensorData, usuario);
+    }
+
+    /**
+     * **Método Privado para a Lógica Principal de Salvamento e Processamento.**
+     * <p>
+     * Este método encapsula toda a lógica de negócio principal, evitando duplicação
+     * de código entre os métodos públicos.
+     * </p>
+     *
+     * @param sensorData O objeto de dados do sensor.
+     * @param usuario    O objeto do usuário a ser associado.
+     * @return Um {@link Triple} com a mensagem de alerta, os dados salvos e a
+     *         mensagem do protocolo.
+     */
+    private Triple<String, SensorData, String> processAndSave(SensorData sensorData, Usuario usuario) {
+        log.info("📥 Iniciando o salvamento e processamento dos dados do sensor...");
+
+        sensorData.setUsuario(usuario);
+        log.info("👤 Associando a leitura ao usuário: {}", usuario.getNome());
 
         String sensor = Objects.requireNonNull(sensorData.getSensor(), "O tipo do sensor não pode ser nulo.");
         double valor = sensorData.getValor();
@@ -89,19 +157,9 @@ public class SensorDataService {
 
         log.debug("📊 Dados recebidos: {}", sensorData);
 
-        String alertMessage = null;
+        String alertMessage = verificarAlerta(sensorData);
 
-        // Verificação de alertas
-        if ("temperatura".equals(sensor) && valor > 30) {
-            alertMessage = "🌡️ Alerta! Temperatura elevada detectada. Verifique as condições da lavoura.";
-        } else if ("umidade".equals(sensor) && (valor < 20 || valor > 80)) {
-            alertMessage = "💧 Alerta! Nível de umidade fora do ideal. Ajuste a irrigação.";
-        } else if ("luminosidade".equals(sensor) && valor < 200) {
-            alertMessage = "💡 Alerta! Baixo nível de luminosidade detectado. Acione as luzes auxiliares.";
-        }
-
-        // Salvar alerta no banco de dados, se houver e se a funcionalidade estiver
-        // ativada
+        // Salvar alerta no banco de dados, se houver
         if (alertMessage != null) {
             log.warn("⚠️ Alerta gerado: {}", alertMessage);
             if (alertService.isAlertSavingEnabled()) {
@@ -115,7 +173,7 @@ public class SensorDataService {
             log.info("✅ Nenhum alerta necessário. Dados dentro dos parâmetros normais.");
         }
 
-        SensorData saved = sensorDatarepository.save(sensorData);
+        SensorData saved = sensorDataRepository.save(sensorData);
         log.info("💾 Dados do sensor salvos com sucesso. ID: {}", saved.getId());
 
         // Publicação dos dados conforme tipo do sensor
@@ -123,7 +181,6 @@ public class SensorDataService {
         if ("temperatura".equals(sensor)) {
             protocoloMsg = mqttPublisher.publish(saved);
             log.info("📡 Dados de temperatura publicados via MQTT:\n{}", saved);
-            // Removido a chamada de 'save' duplicada e desnecessária
             mqttToAmqpBridge.forwardToQueue(saved);
         } else {
             protocoloMsg = amqpPublisher.publish(saved);
@@ -135,22 +192,85 @@ public class SensorDataService {
     }
 
     /**
-     * Busca o último registro de dados do sensor com base no timestamp.
+     * **Busca um Registro de Sensor por ID**
+     *
      * <p>
-     * Este método utiliza o repositório de dados do sensor para buscar o
-     * registro mais recente no banco de dados.
+     * Encontra uma entidade {@link SensorData} no banco de dados a partir de seu
+     * ID.
+     * Este método é transacional e retorna `null` se o registro não for encontrado.
      * </p>
      *
-     * @return O objeto SensorData mais recente, ou null se nenhum dado for
-     *         encontrado.
+     * @param id O ID do registro de sensor a ser buscado.
+     * @return O objeto {@link SensorData} correspondente ao ID, ou `null` se não
+     *         existir.
      */
-    public SensorData findLatest() {
-        return sensorDatarepository.findFirstByOrderByTimestampDesc().orElse(null);
+    @Transactional
+    public SensorData findById(Long id) {
+        return sensorDataRepository.findById(id).orElse(null);
     }
 
+    /**
+     * **Atualiza os Dados de um Sensor Existente**
+     *
+     * <p>
+     * Atualiza uma entidade `SensorData` existente no banco de dados usando dados
+     * fornecidos por um DTO de atualização (`SensorUpdateDTO`). A lógica de
+     * atualização
+     * é encapsulada neste método de serviço. O método busca a entidade,
+     * atualiza seus campos e a salva novamente, com o Spring Data JPA gerenciando
+     * a transação e a persistência.
+     * </p>
+     *
+     * @param id         O ID do sensor a ser atualizado.
+     * @param updatedDTO O DTO {@link SensorUpdateDTO} contendo os novos dados do
+     *                   sensor.
+     * @return O objeto {@link SensorView} com os dados atualizados, ou `null` se o
+     *         registro original não for encontrado.
+     */
+    @Transactional
+    public SensorView update(Long id, SensorUpdateDTO updatedDTO) {
+        SensorData existingData = sensorDataRepository.findById(id).orElse(null);
+        if (existingData != null) {
+            existingData.setSensor(updatedDTO.getSensor());
+            existingData.setValor(updatedDTO.getValor());
+            SensorData savedData = sensorDataRepository.save(existingData);
+            // O SensorView de retorno ainda pode ser gerado a partir da entidade salva
+            return new SensorView("Dados atualizados com sucesso", savedData, "HTTP");
+        }
+        return null;
+    }
+
+    /**
+     * **Busca o Registro de Sensor Mais Recente**
+     *
+     * <p>
+     * Recupera o registro de sensor mais recente do banco de dados, ordenando-o
+     * pela data e hora de registro em ordem decrescente.
+     * </p>
+     *
+     * @return O objeto {@link SensorData} com o timestamp mais recente,
+     *         ou `null` se o banco de dados não contiver registros.
+     */
+    public SensorData findLatest() {
+        return sensorDataRepository.findFirstByOrderByTimestampDesc().orElse(null);
+    }
+
+    /**
+     * **Verifica a Ocorrência de Alertas**
+     *
+     * <p>
+     * Este método utilitário checa se os dados de um sensor excedem limites
+     * pré-definidos. Ele é chamado por outros métodos de serviço para
+     * determinar a necessidade de gerar uma mensagem de alerta.
+     * </p>
+     *
+     * @param data O objeto {@link SensorData} contendo os dados a serem
+     *             verificados.
+     * @return Uma `String` com a mensagem de alerta se os limites forem excedidos,
+     *         ou `null` caso os dados estejam dentro do normal.
+     */
     public String verificarAlerta(SensorData data) {
         String alertMessage = null;
-
         if ("temperatura".equals(data.getSensor()) && data.getValor() > 30) {
             alertMessage = "🌡️ Alerta! Temperatura elevada detectada.";
         } else if ("umidade".equals(data.getSensor()) && (data.getValor() < 20 || data.getValor() > 80)) {
@@ -160,5 +280,4 @@ public class SensorDataService {
         }
         return alertMessage;
     }
-
 }

@@ -36,6 +36,8 @@ Este log demonstra a exploração de uma vulnerabilidade de Controle de Acesso Q
 
 - A ausência de uma verificação de propriedade no código do endpoint permitiu que o usuário `albertinesilva@gmail.com` assumisse temporariamente a identidade e o controle de um recurso que não lhe pertencia, demonstrando a gravidade da falha.
 
+![Sensor Log](src/main/resources/static/assets/img/ataque/Simulacao-de-Ataque-Spoofing.png)
+
 ## 🚫 Log de Erro: Tentativa de Acesso com Token JWT Inválido
 
 Este log demonstra o comportamento de segurança da aplicação ao receber um `JSON Web Token` (JWT) malformado. Ele confirma que o sistema está corretamente configurado para rejeitar requisições que não apresentem um token válido, protegendo os endpoints da API.
@@ -43,6 +45,8 @@ Este log demonstra o comportamento de segurança da aplicação ao receber um `J
 Detalhes do Erro
 
 - A exceção principal, `io.jsonwebtoken.MalformedJwtException`, indica que a biblioteca de `JWT` não conseguiu decodificar o token. A mensagem de erro específica, Malformed `JWT JSON`, aponta para um problema na estrutura do token, onde caracteres inesperados (como o $ no exemplo) foram encontrados.
+
+![Sensor Log](src/main/resources/static/assets/img/ataque/Token-invalido.png)
 
 ## 📋 Listagem de Sensores
 
