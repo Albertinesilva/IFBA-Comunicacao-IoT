@@ -42,7 +42,7 @@ Este log demonstra o comportamento de segurança da aplicação ao receber um `J
 
 Detalhes do Erro
 
-- A exceção principal, io.jsonwebtoken.MalformedJwtException, indica que a biblioteca de `JWT` não conseguiu decodificar o token. A mensagem de erro específica, Malformed `JWT JSON`, aponta para um problema na estrutura do token, onde caracteres inesperados (como o $ no exemplo) foram encontrados.
+- A exceção principal, `io.jsonwebtoken.MalformedJwtException`, indica que a biblioteca de `JWT` não conseguiu decodificar o token. A mensagem de erro específica, Malformed `JWT JSON`, aponta para um problema na estrutura do token, onde caracteres inesperados (como o $ no exemplo) foram encontrados.
 
 ## 📋 Listagem de Sensores
 
