@@ -64,14 +64,14 @@ A tela de escolha é o ponto de partida. Ela permite para onde ir dentro do apli
 <img src="src/main/resources/static/assets/img/frontend/Alert-Luminosidade.png" alt="Tela de Alert de Luminosidade" width="100%" height="100%">
 
 ---
-### Tela de `Gráfico`
+### 📈 Tela de `Gráfico`
 
 Visualização de Dados com `Gráficos`
 
 <img src="src/main/resources/static/assets/img/frontend/Chart-View.png" alt="Tela de Graficos" width="100%" height="100%">
 
 ---
-### Tela de Clima das `Cidades`
+### ☀️ 🌧️ Tela de Clima das `Cidades`
 
 A tela de `clima` permite que o usuário pesquise as condições `meteorológicas` de qualquer `cidade`. É possível usar os botões pré-definidos para cidades populares ou digitar o nome da cidade desejada e buscar.
 
@@ -79,7 +79,7 @@ A tela de `clima` permite que o usuário pesquise as condições `meteorológica
 
 ---
 
-### Tela de Historico de Sensores
+### 📅 Tela de Historico de Sensores
 
 <img src="src/main/resources/static/assets/img/frontend/History-Alerts.png" alt="Tela de Historico" width="100%" height="100%">
 
@@ -95,4 +95,5 @@ A experiência de desenvolver este sistema reforça o conhecimento sobre a `arqu
 | 🌎 LinkedIn                                                              | 👨‍💻 **Autor**                                                                 |
 | ------------------------------------------------------------------------ | ---------------------------------------------------------------------------- |
 | [LinkedIn](https://www.linkedin.com/in/albert-backend-java-spring-boot/) | [Albert Silva](https://www.linkedin.com/in/albert-backend-java-spring-boot/) |
+
 
