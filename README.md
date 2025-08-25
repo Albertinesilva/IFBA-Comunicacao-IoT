@@ -18,6 +18,8 @@ Trata-se de uma simulação educacional e funcional de um sistema `IoT` (Interne
 
 🖼️ Para visualizar as telas e a interface do sistema, [clique aqui](https://github.com/Albertinesilva/IFBA-Comunicacao-IoT/blob/main/FRONT-END.md) para ver as capturas de tela do frontend.
 
+🔍 Para visualizar a análise crítica do sistema, [clique aqui](https://github.com/Albertinesilva/IFBA-Comunicacao-IoT/blob/main/ANALISE-CRITICA.md) para ver a análise completa.
+
 📚 Para acessar a documentação técnica completa do backend gerada com JavaDocs, basta rodar o comando:
 ```java
 mvn javadoc:javadoc
